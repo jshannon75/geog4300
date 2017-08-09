@@ -91,8 +91,18 @@ summary(test_df)
 #Most of what we cover in this course, though, uses data frames
 
 
+#Much of R's functionality comes from add-ons created by developers. 
+#These are called libraries or packages. You can install them several ways. Here's one:
+install.packages("tidyverse")
 
-#Let's try this with data from the census
+#Then "call" the library to activate
+library(tidyverse)
+
+
+
+
+
+#Let's try working with data from the census
 
 #Import census data on household dynamics from Github
 census_cty<-read_csv("https://raw.githubusercontent.com/jshannon75/geog4300/master/Data/ACSCtyData_2014ACS.csv")
@@ -116,6 +126,13 @@ hist(census_cty$HS_pct)
 boxplot(census_cty$HS_pct)
 
 #Compare pct finishing HS to total population
-plot(census_cty$totpop_ed,census_cty$HS_pct)
+#We're using ggplot, a popular visualization library that's part of the "tidyverse" 
+ggplot(census_cty,aes(x=totpop_ed,y=HSGrad_pct)) + geom_point()
+
 #Change x axis to a log scale--controls for outliers
-plot(census_cty$totpop_ed,census_cty$HS_pct,log="x") 
+ggplot(census_cty,aes(x=log(totpop_ed),y=HSGrad_pct)) + geom_point()
+
+#Use latitude and longitude to plot and look at HS Grad %
+ggplot(census_cty,aes(x=LAT,y=LONG,color=HSGrad_pct)) + 
+  geom_point()+
+  scale_colour_distiller(palette="RdBu")
