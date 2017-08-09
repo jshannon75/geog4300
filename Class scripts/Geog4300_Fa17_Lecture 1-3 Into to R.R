@@ -91,10 +91,11 @@ summary(test_df)
 #Most of what we cover in this course, though, uses data frames
 
 
+
 #Let's try this with data from the census
 
-#Import census data on household dynamics
-census_cty<-read.csv("ACSCtyData_2014ACS.csv")
+#Import census data on household dynamics from Github
+census_cty<-read_csv("https://raw.githubusercontent.com/jshannon75/geog4300/master/Data/ACSCtyData_2014ACS.csv")
 
 #Examine these data in the table view in R. You can sort columns by values
 #You can also ask for a list of variable names and types
@@ -106,8 +107,7 @@ summary(census_cty$totpop_rac)
 hist(census_cty$totpop_rac)
 boxplot(census_cty$totpop_rac)
 
-#Calculate the % of the population whose highest
-#educational attainment is HS or less
+#Calculate the % of the population whose highest educational attainment is HS or less
 census_cty$HS_pct<-(census_cty$HSGrad+census_cty$LessHS)/census_cty$totpop_ed
 
 #What's the distribution of this population?
@@ -119,7 +119,3 @@ boxplot(census_cty$HS_pct)
 plot(census_cty$totpop_ed,census_cty$HS_pct)
 #Change x axis to a log scale--controls for outliers
 plot(census_cty$totpop_ed,census_cty$HS_pct,log="x") 
-
-
-
-
