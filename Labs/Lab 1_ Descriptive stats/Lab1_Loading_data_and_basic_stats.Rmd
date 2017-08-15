@@ -44,10 +44,10 @@ Load the tidyverse package and import the data from GitHub:
 
 ```{r}
 library(tidyverse)
-Daymet_Cty_Summary_2005_2015 <- read_csv("Daymet_Cty_Summary_2005_2015.csv")
+Daymet_Cty_Summary_2005_2015 <- read_csv("https://github.com/jshannon75/geog4300/raw/master/Labs/Lab%201_%20Descriptive%20stats/Daymet_Cty_Summary_2005_2015.csv")
 ```
 
-Load the file into R and closely examine each variable. 
+After loading the file into R, closely examine each variable. 
 
 ***Question 1 (2 points):** Provide an example of nominal, ordinal, interval, and ratio data within this dataset. Explain why each fits in the level of measurement you chose in a sentence or two . If you cannot find an example for one of these four data types (no nominal variables, for example), given an example of climate data that would fit this type.*
 

@@ -145,7 +145,28 @@ $(document).ready(function () {
 </ul>
 <p>These labs are meant to be done collaboratively, but your final submission should demonstrate your own original thought (don’t just copy your classmate’s work or turn in identical assignments). Your answers to the lab questions should be typed in the provided RMarkdown template and turned in using the Assignment Dropbox on the ELC site.</p>
 <p><strong>Procedure:</strong></p>
-<p>Download the csv file from the course ELC site. Load the file into R and closely examine each variable.</p>
+<p>Load the tidyverse package and import the data from GitHub:</p>
+<pre class="r"><code>library(tidyverse)
+Daymet_Cty_Summary_2005_2015 &lt;- read_csv(&quot;https://github.com/jshannon75/geog4300/raw/master/Labs/Lab%201_%20Descriptive%20stats/Daymet_Cty_Summary_2005_2015.csv&quot;)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   gisjn_cty = col_character(),
+##   year = col_integer(),
+##   month = col_character(),
+##   dayl = col_double(),
+##   srad = col_double(),
+##   tmax = col_double(),
+##   tmin = col_double(),
+##   vap_pres = col_double(),
+##   prcp = col_integer(),
+##   CTY_NAME = col_character(),
+##   State = col_character(),
+##   Region = col_character(),
+##   Division = col_character(),
+##   Lon = col_double(),
+##   Lat = col_double()
+## )</code></pre>
+<p>After loading the file into R, closely examine each variable.</p>
 <p><em><strong>Question 1 (2 points):</strong> Provide an example of nominal, ordinal, interval, and ratio data within this dataset. Explain why each fits in the level of measurement you chose in a sentence or two . If you cannot find an example for one of these four data types (no nominal variables, for example), given an example of climate data that would fit this type.</em></p>
 <p>There are a lot of observations here, 413,820 to be exact. To get a better grasp on it, we can use group_by and summarise in the tidyverse package. Here’s an example.</p>
 <pre class="r"><code>Daymet_Cty_Summary_2005_2015 %&gt;% group_by(Region) %&gt;% summarise(mean_srad=mean(srad))</code></pre>
