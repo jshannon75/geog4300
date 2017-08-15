@@ -13,6 +13,11 @@ Your name: {Name here}
 
 In the spaces below, insert your code and/or explanation as notes. Look for the angle brackets-{like these}-for where a response is needed.
 
+When you are done, click on the arrow next to "knit" and choose "Knit as PDF" to save. You'll need to have installed MiKTex (Windows) or MacTeX (Mac) first if using your own computer. If all else fails, just upload this Rmd document.
+
+* MiKTeX: https://miktex.org/2.9/setup
+* MacTeX: https://tug.org/mactex/mactex-download.html (warning--really big file)
+
 Load the data and the tidyverse package in the code chunk below
 
 ```{r data andlibrary}
