@@ -1,0 +1,130 @@
+---
+title: "Geog4/6300: Lab 1"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+Daymet_Cty_Summary_2005_2015 <- read_csv("Daymet_Cty_Summary_2005_2015.csv")
+```
+
+##Loading data into R, data transformation, and summary statistics
+
+**Due:** Monday, Sept. 18
+
+**Value:** 20 points
+
+**Overview:**
+
+This lab is intended to assess your ability to use R to load data and to generate basic descriptive statistics. You’ll be using monthly weather data from the Daymet climate database (http://daymet.ornl.gov) for all counties in the United States over a 10 year period (2005-2015). These data are available on the Github repo for our course. The following  variables are provided:
+
+* gisjn_cty: Code for joining to census data
+* year: Year of observation
+* month: Month of observation
+* dayl: Mean length of daylight (in seconds)
+* srad: Mean solar radiation per day
+* tmax: Mean maximum recorded temperature (Celsius)
+* tmin: Mean minimum recorded temperature (Celsius)
+* vap_pres: Mean vapor pressure (indicative of humidity)
+* prcp: Total recorded prcpitation (mm)
+* cty_name: Name of the county
+* state: state of the county
+* region: Census region (map: https://www2.census.gov/geo/pdfs/maps-data/maps/reference/us_regdiv.pdf)
+* division: Census division
+* lon: Longitude of the point
+* lat: Latitude of the point
+
+These labs are meant to be done collaboratively, but your final submission should demonstrate your own original thought (don’t just copy your classmate’s work or turn in identical assignments). Your answers to the lab questions should be typed in the provided RMarkdown template and turned in using the Assignment Dropbox on the ELC site. 
+
+**Procedure:**
+
+Download the csv file from the course ELC site. Load the file into R and closely examine each variable. 
+
+***Question 1 (2 points):** Provide an example of nominal, ordinal, interval, and ratio data within this dataset. Explain why each fits in the level of measurement you chose in a sentence or two . If you cannot find an example for one of these four data types (no nominal variables, for example), given an example of climate data that would fit this type.*
+
+There are a lot of observations here, 413,820 to be exact. To get a better grasp on it, we can use group_by and summarise in the tidyverse package. Here's an example.
+
+```{r}
+Daymet_Cty_Summary_2005_2015 %>% group_by(Region) %>% summarise(mean_srad=mean(srad))
+```
+
+This command returns the mean value of solar radiation received by counties in each census region during our study period. You could replace “mean” with “sd” to get a similar summary of standard deviation. You may want to change the new variable name ("mean_srad") above as well.
+
+Now try a VERY simple model of climate change. Let’s say that 100 years from now, temperatures in these cities will be warmer by exactly 2 degrees Celsius. You can create a new variable showing the projected new minimum temperatures. The command below uses the mutate function from the tidyverse to create a new variable (tmin_new) with values two degrees higher than the old one (tmin). It then uses select to get just our variables of interest.
+
+```{r}
+daymet_climatechg<-Daymet_Cty_Summary_2005_2015 %>% mutate(tmin_new=tmin+2) %>% select(tmin,tmin_new)
+daymet_climatechg
+```
+
+
+***Question 2 (2 points):** Use the commands shown above, calculate the mean and standard deviation for the original minimum temperature variable and a new one two degrees higher. How do these compare? Explain any similarities or differences you find.*
+
+You can also create a table showing summary statistics for each variable. For example, if you wanted to know the mean, median, standard deviation coefficient of variation (CV), and IQR for the tmax variable, you can use group_by and summarise:
+
+```{r}
+daymet_summarystats<-Daymet_Cty_Summary_2005_2015 %>% 
+  group_by(Region) %>%
+  summarise(tmax_mean=mean(tmax),
+            tmax_med=median(tmax),
+            tmax_sd=sd(tmax),
+            tmax_cv=tmax_sd/tmax_mean,
+            tmax_iqr=IQR(tmax))
+daymet_summarystats
+```
+
+***Question 3 (4 points):** Adapting the command above, create a table that shows the mean, median, standard deviation, CV, and IQR for the prcp variable. Based on this table, are these data skewed or roughly normal in distribution? Which measures of central tendency and dispersion should you use as a result?*
+
+We can also look at variables over time. For instance, we can use facet_wrap with boxplot to see how the distribution of maximum temperatures varies by region:
+
+```{r}
+ggplot(Daymet_Cty_Summary_2005_2015, aes(x=year,y=tmax,group=year))+geom_boxplot()+facet_wrap(~Region)
+```
+
+Suppose we are just interested in the median. We would then want to create a dataset where the value of tmax is summarized by each year for each census division. You can do so using the combination of group_by and summarise, similar to the command above.
+
+```{r}
+daymet_summary_region<-Daymet_Cty_Summary_2005_2015 %>% group_by(Region, year) %>% summarise(tmax_med=median(tmax))
+daymet_summary_region
+```
+
+Notice how much smaller this dataset is already. Plot it out using ggplot:
+```{r}
+ggplot(daymet_summary_region, aes(x=year,y=tmax_med, group=Region, colour=Region))+geom_line()
+```
+
+Suppose you wanted to see the distribution of the average maximum temperatures of all counties by region. You can summarise that in this way:
+
+```{r}
+daymet_summary_county <- Daymet_Cty_Summary_2005_2015 %>% group_by(Region,gisjn_cty) %>% summarise(tmax_mean=mean(tmax))
+daymet_summary_county
+```
+
+You can then create a density plot of these mean values by region, again using facet_wrap to separate them.
+
+```{r}
+ggplot(daymet_summary_county, aes(x=tmax_mean))+geom_density()+facet_wrap(~Region)
+```
+
+We can use the filter command to further specify things, selecting only a single month for comparison over this timeframe.
+
+```{r}
+daymet_july<-Daymet_Cty_Summary_2005_2015 %>% 
+     filter(month=="July")
+daymet_july
+```
+
+***Question 4 (2 points):** Adapt the above command to create a new data frame, changing “July” to a month of your choosing and using tmin (rather than tmax) as your variable of interest. You'll need two commands--one to create the data frame and another to "call" it, just like you see above.*
+
+***Question 5 (6 points):** With your subsetted data, create the three graphs below using the graphs listed earlier as a guide. You may need to further transform the data in order to make each graph.
+
+* Create a box plot showing the value distribution for tmin in each of the four regions over all 10 years. 
+* Create a line chart showing the median value of tmin for each region over all 10 years.
+* Create a faceted density plot like the one above showing the distribution of median minimum temperatures for all regions. 
+
+Don’t worry about things like column names or customization for now—these will be addressed in lab 2.*
+
+***Question 6 (4 points):** Each of the three graphic you created above tells a particular story about the data. Summarize what you think we learn about regional differences or trends from each graphic. Concentrate on the "headlines" from each one, using details to illustrate your points and also noting exceptions to the trend. Which do you think tells the most compelling story?*
