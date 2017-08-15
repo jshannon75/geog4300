@@ -1,0 +1,74 @@
+---
+title: 'Lab 1: Your responses'
+output:
+  html_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Your name: {Name here}
+
+In the spaces below, insert your code and/or explanation as notes. Look for the angle brackets-{like these}-for where a response is needed.
+
+Load the data and the tidyverse package in the code chunk below
+
+```{r data andlibrary}
+
+```
+
+***Question 1 (2 points):** Provide an example of nominal, ordinal, interval, and ratio data within this dataset. Explain why each fits in the level of measurement you chose in a sentence or two . If you cannot find an example for one of these four data types (no nominal variables, for example), given an example of climate data that would fit this type.*
+
+{Your response goes here}
+
+***Question 2 (2 points):** Use the commands shown above, calculate the mean and standard deviation for the original minimum temperature variable and a new one two degrees higher. How do these compare? Explain any similarities or differences you find.*
+
+```{r question2}
+#Calculate the mean and sd here
+
+```
+
+{Your explanation of the results}
+
+***Question 3 (4 points):** Adapting the command above, create a table that shows the mean, median, standard deviation, CV, and IQR for the prcp variable. Based on this table, are these data skewed or roughly normal in distribution? Which measures of central tendency and dispersion should you use as a result?*
+
+```{r question3}
+#Code for creating the table
+
+```
+
+{Your explanation of the results}
+
+***Question 4 (2 points):** Adapt the above command to create a new data frame, changing “July” to a month of your choosing and using tmin (rather than tmax) as your variable of interest. You'll need two commands--one to create the data frame and another to "call" it, just like you see above.*
+
+```{r question4}
+#Code for creating the new data frame for a single month
+
+```
+
+***Question 5 (6 points):** With your subsetted data, create the three graphs below using the graphs listed earlier as a guide. You may need to further transform the data in order to make each graph.*
+
+* *Create a box plot showing the value distribution for tmin in each of the four regions over all 10 years.* 
+* *Create a line chart showing the median value of tmin for each region over all 10 years.*
+* *Create a faceted density plot like the one above showing the distribution of median minimum temperatures for all regions.* 
+
+```{r question5a}
+#Code for creating the box plot
+
+```
+
+```{r question5b}
+#Code for creating the line chart
+
+```
+
+```{r question5c}
+#Code for creating the density plot
+
+```
+
+***Question 6 (4 points):** Each of the three graphics you created above tells a particular story about the data. Summarize what you think we learn about regional differences or trends from each graphic. Concentrate on the "headlines" from each one, using details to illustrate your points and also noting exceptions to the trend. Which do you think tells the most compelling story?*
+
+{Your response goes here}

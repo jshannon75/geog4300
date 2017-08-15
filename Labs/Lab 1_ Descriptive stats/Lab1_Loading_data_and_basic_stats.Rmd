@@ -132,4 +132,4 @@ daymet_july
 
 Don’t worry about things like column names or customization for now—these will be addressed in lab 2.
 
-***Question 6 (4 points):** Each of the three graphic you created above tells a particular story about the data. Summarize what you think we learn about regional differences or trends from each graphic. Concentrate on the "headlines" from each one, using details to illustrate your points and also noting exceptions to the trend. Which do you think tells the most compelling story?*
+***Question 6 (4 points):** Each of the three graphics you created above tells a particular story about the data. Summarize what you think we learn about regional differences or trends from each graphic. Concentrate on the "headlines" from each one, using details to illustrate your points and also noting exceptions to the trend. Which do you think tells the most compelling story?*
