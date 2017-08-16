@@ -1,7 +1,8 @@
 ---
-title: "Geog4/6300: Lab 1"
+title: 'Geog4/6300: Lab 1'
 output:
-  github_document
+  pdf_document: default
+  github_document: default
 ---
 
 ```{r setup, include=FALSE}
