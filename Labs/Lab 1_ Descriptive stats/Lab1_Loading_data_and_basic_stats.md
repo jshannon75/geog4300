@@ -65,7 +65,9 @@ After loading the file into R, closely examine each variable.
 There are a lot of observations here, 413,820 to be exact. To get a better grasp on it, we can use group\_by and summarise in the tidyverse package. Here's an example.
 
 ``` r
-Daymet_Cty_Summary_2005_2015 %>% group_by(Region) %>% summarise(mean_srad=mean(srad))
+Daymet_Cty_Summary_2005_2015 %>% 
+  group_by(Region) %>% 
+  summarise(mean_srad=mean(srad))
 ```
 
     ## # A tibble: 4 x 2
@@ -81,7 +83,9 @@ This command returns the mean value of solar radiation received by counties in e
 Now try a VERY simple model of climate change. Let’s say that 100 years from now, temperatures in these cities will be warmer by exactly 2 degrees Celsius. You can create a new variable showing the projected new minimum temperatures. The command below uses the mutate function from the tidyverse to create a new variable (tmin\_new) with values two degrees higher than the old one (tmin). It then uses select to get just our variables of interest.
 
 ``` r
-daymet_climatechg<-Daymet_Cty_Summary_2005_2015 %>% mutate(tmin_new=tmin+2) %>% select(tmin,tmin_new)
+daymet_climatechg<-Daymet_Cty_Summary_2005_2015 %>% 
+  mutate(tmin_new=tmin+2) %>% 
+  select(tmin,tmin_new)
 daymet_climatechg
 ```
 
@@ -128,7 +132,9 @@ daymet_summarystats
 We can also look at variables over time. For instance, we can use facet\_wrap with boxplot to see how the distribution of maximum temperatures varies by region:
 
 ``` r
-ggplot(Daymet_Cty_Summary_2005_2015, aes(x=year,y=tmax,group=year))+geom_boxplot()+facet_wrap(~Region)
+ggplot(Daymet_Cty_Summary_2005_2015, aes(x=year,y=tmax,group=year))+
+  geom_boxplot()+
+  facet_wrap(~Region)
 ```
 
 ![](Lab1_Loading_data_and_basic_stats_files/figure-markdown_github/unnamed-chunk-5-1.png)
@@ -136,7 +142,9 @@ ggplot(Daymet_Cty_Summary_2005_2015, aes(x=year,y=tmax,group=year))+geom_boxplot
 Suppose we are just interested in the median. We would then want to create a dataset where the value of tmax is summarized by each year for each census division. You can do so using the combination of group\_by and summarise, similar to the command above.
 
 ``` r
-daymet_summary_region<-Daymet_Cty_Summary_2005_2015 %>% group_by(Region, year) %>% summarise(tmax_med=median(tmax))
+daymet_summary_region<-Daymet_Cty_Summary_2005_2015 %>% 
+  group_by(Region, year) %>% 
+  summarise(tmax_med=median(tmax))
 daymet_summary_region
 ```
 
@@ -161,7 +169,8 @@ daymet_summary_region
 Notice how much smaller this dataset is already. Plot it out using ggplot:
 
 ``` r
-ggplot(daymet_summary_region, aes(x=year,y=tmax_med, group=Region, colour=Region))+geom_line()
+ggplot(daymet_summary_region, aes(x=year,y=tmax_med, group=Region, colour=Region))+
+  geom_line()
 ```
 
 ![](Lab1_Loading_data_and_basic_stats_files/figure-markdown_github/unnamed-chunk-7-1.png)
@@ -169,7 +178,9 @@ ggplot(daymet_summary_region, aes(x=year,y=tmax_med, group=Region, colour=Region
 Suppose you wanted to see the distribution of the average maximum temperatures of all counties by region. You can summarise that in this way:
 
 ``` r
-daymet_summary_county <- Daymet_Cty_Summary_2005_2015 %>% group_by(Region,gisjn_cty) %>% summarise(tmax_mean=mean(tmax))
+daymet_summary_county <- Daymet_Cty_Summary_2005_2015 %>% 
+  group_by(Region,gisjn_cty) %>% 
+  summarise(tmax_mean=mean(tmax))
 daymet_summary_county
 ```
 
