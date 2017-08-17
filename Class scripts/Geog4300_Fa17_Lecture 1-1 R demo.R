@@ -2,11 +2,15 @@
 #install.packages("mapview")
 #install.packages("tidyverse")
 #install.packages("tmap")
+#install.packages("forcats")
+#install.packages("sf")
 
 library(tidycensus)
 library(tidyverse)
 library(mapview)
 library(tmap)
+library(forcats)
+library(sf)
 options(tigris_use_cache = TRUE)
 
 census_api_key("733eb53a4287ab992637dcdd57408410992465ed")
@@ -40,7 +44,7 @@ Atl_race_transform<-Atl_race %>%
                                Latinx = "P0040003")) %>%
   select(-value) %>%
   filter(summary_value!=0) %>%
-  spread(variable,pct)
+  spread(variable,pct) 
 
 #Map using tmap
 tm_shape(Atl_race_transform) +
