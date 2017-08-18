@@ -1,7 +1,13 @@
 ##Geography 4300/6300: Reading in data using CSVs
 
-#Most scripts this semester will start by loading the tidyverse package.
+#Much of R's functionality comes from add-ons created by developers. 
+#These are called libraries or packages. You can install them several ways. Here's one:
+install.packages("tidyverse")
+
+#Then "call" the library to activate
 library(tidyverse)
+
+#Tidyverse has LOTS of tools that make working with data easier
 
 #Start by downloading some county level data from GitHub
 #This data is stored in a csv and is available at this URL:
@@ -82,6 +88,13 @@ census_data_pov<-census_data %>%
 
 census_data_pov<-census_data %>%
   select(1,5,6,47)
+
+#Lastly, you can use base R commands to create new variables.
+#There's a better way to do this, which we'll talk about next time
+
+census_data$less_BA_pct<-census_data$LessHS_pct+census_data$HSGrad_pct+census_data$SomeCol_pct
+hist(census_data$less_BA_pct)
+hist(census_data$BADeg_pct)
 
 #You try it! Our survey responses are online at 
 #https://github.com/jshannon75/geog4300/raw/master/Data/geog4300_survey.csv

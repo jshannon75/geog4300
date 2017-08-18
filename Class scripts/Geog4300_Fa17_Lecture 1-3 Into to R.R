@@ -4,8 +4,8 @@
 #R won't read anything on this line.
 
 #First things first--let's make R talk
-#The command below just returns the text
-print("Hello, World!")
+#The command below just returns the text listed.
+print("Hello, world!")
 
 #R can do math
 3 + 8
@@ -19,8 +19,11 @@ print("Hello, World!")
 #In R these are called objects. Think of them as boxes. You can store lots of stuff in them.
 #Objects can be numeric, string (characters/text), dates, or logical (true/false)
 #Both "<-" and "=" can be used to *assign* a value to any object.
-Text<-"Hello, World!"
+Text<-"Hello, world!"
 Text
+
+Text1="Hello, world!"
+Text1
 
 A<-1
 A
@@ -48,7 +51,6 @@ A+B
 
 
 
-
 #A group of objects is called a vector. Each vector can have only one type of object
 #Use "c()" to group objects together into a vector
 A<-c(1,2,3,4,5)
@@ -59,6 +61,9 @@ B
 
 C<-c("Red","Blue","Green","Purple","Yellow")
 C
+
+D<-c(1,"Map",2,"Globe",3,"Atlas")
+D
 
 #You can apply functions to vectors.
 #Functions are specific operations
@@ -90,49 +95,21 @@ summary(test_df)
 #There are other data structures such as matrices or lists in R.
 #Most of what we cover in this course, though, uses data frames
 
+#There's also lots of functions in R for mathematical calculation
+A<-c(1,2,3,4,5)
 
-#Much of R's functionality comes from add-ons created by developers. 
-#These are called libraries or packages. You can install them several ways. Here's one:
-install.packages("tidyverse")
+sum(A)
+sum_A<-sum(A)
+sum_A
 
-#Then "call" the library to activate
-library(tidyverse)
+mean(A)
+median(A)
+sd(A)
+summary(A)
 
 
-
-
-
-#Let's try working with data from the census
-
-#Import census data on household dynamics from Github
-census_cty<-read_csv("https://raw.githubusercontent.com/jshannon75/geog4300/master/Data/ACSCtyData_2014ACS.csv")
-
-#Examine these data in the table view in R. You can sort columns by values
-#You can also ask for a list of variable names and types
-names(census_cty) #Names for each column
-str(census_cty) #Data types (string/text, numeric, factor, etc.)
- 
-#What's the distribution of the total county population?
-summary(census_cty$totpop_rac)
-hist(census_cty$totpop_rac)
-boxplot(census_cty$totpop_rac)
-
-#Calculate the % of the population whose highest educational attainment is HS or less
-census_cty$HS_pct<-(census_cty$HSGrad+census_cty$LessHS)/census_cty$totpop_ed
-
-#What's the distribution of this population?
-summary(census_cty$HS_pct)
-hist(census_cty$HS_pct)
-boxplot(census_cty$HS_pct)
-
-#Compare pct finishing HS to total population
-#We're using ggplot, a popular visualization library that's part of the "tidyverse" 
-ggplot(census_cty,aes(x=totpop_ed,y=HSGrad_pct)) + geom_point()
-
-#Change x axis to a log scale--controls for outliers
-ggplot(census_cty,aes(x=log(totpop_ed),y=HSGrad_pct)) + geom_point()
-
-#Use latitude and longitude to plot and look at HS Grad %
-ggplot(census_cty,aes(x=LAT,y=LONG,color=HSGrad_pct)) + 
-  geom_point()+
-  scale_colour_distiller(palette="RdBu")
+#You try it! Use the card decks provided to deal three poker hands (5 cards).
+#Count Jacks as 11, Queens as 12, Kings as 13, and Aces as 1
+#Create vectors for each hand, then combine them into a single data frame
+#Calculate the mean value and standard deviation of each of your hands
+#Then figure out how to construct a data frame where each hand is a *row* rather than a single *column.*
