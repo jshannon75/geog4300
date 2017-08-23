@@ -20,7 +20,7 @@
 #install.packages("jsonlite")
 #install.packages("magrittr")
 
-#library(httr)
+library(httr)
 library(tidyverse)
 library(jsonlite)
 library(magrittr)
@@ -53,7 +53,7 @@ planets <- GET("http://swapi.co/api/planets") %>% stop_for_status()
 json_planets <- json_parse(planets)
 swapi_planets <- json_planets$results
 
-#The videos above go into more detail and in greater depth.
+#The videos above go into greater depth.
 #There's also a package called rwars built just for this API: https://github.com/Ironholds/rwars
 
 
@@ -70,8 +70,8 @@ swapi_planets <- json_planets$results
 #The daymetr package allows you to access these data directly
 #We'll use this dataset in your first lab.
 
-#install.packages("devtools")
-#devtools::install_github("khufkens/daymetr") #Installing the package directly from github
+#install.packages("devtools") #This package allows installation from Github
+#devtools::install_github("khufkens/daymetr") #Installing the package directly from Github
 library(daymetr) # load the package
 
 #Load 10 years of data on Athens
@@ -80,5 +80,24 @@ download_daymet(site="athens",lat=33.948693,lon=-83.375475,start=2005,end=2015,i
 #The file will show up in your working directory. We can load it from there.
 athens_2005_2015 <- read_csv("athens_2005_2015.csv", skip = 7) #The skip command here skips the first few rows which have metadata.
 
+#Now we can use tools from the tidyverse to adapt these data.
+#Let's keep just the timestamp, amount of daylight, and max temp
+#We'll also use "rename" to make variables easier to handle
 
-###Add mutate and summarise
+athens_daymet<-athens_2005_2015 %>%
+  rename(dayl=`dayl (s)`,
+         tmax=`tmax (deg c)`) %>%
+  select(year,yday,dayl,tmax)
+
+#What if we want to change daylight from seconds to hours?
+#We can do so using "mutate"
+
+athens_daymet<-athens_daymet %>%
+  mutate(dayl_hr = dayl / 3600) #60*60=3600 seconds per hour
+
+#What if we want a new variable showing the average max. temp for each year?
+#In tidyverse, we do this using group_by and summarise
+
+athens_daymet_summary <- athens_daymet %>%
+  group_by(year) %>%
+  summarise(tmax_mean=mean(tmax))
