@@ -80,6 +80,11 @@ download_daymet(site="athens",lat=33.948693,lon=-83.375475,start=2005,end=2015,i
 #The file will show up in your working directory. We can load it from there.
 athens_2005_2015 <- read_csv("athens_2005_2015.csv", skip = 7) #The skip command here skips the first few rows which have metadata.
 
+###You try it!
+###Download 10 years of climate data for a point of your choosing.
+
+
+
 #Now we can use tools from the tidyverse to adapt these data.
 #Let's keep just the timestamp, amount of daylight, and max temp
 #We'll also use "rename" to make variables easier to handle
@@ -101,3 +106,24 @@ athens_daymet<-athens_daymet %>%
 athens_daymet_summary <- athens_daymet %>%
   group_by(year) %>%
   summarise(tmax_mean=mean(tmax))
+
+#Lastly, we can use a table linking the days to their respective months to add those to our data.
+#In tidyverse, this is most commonly done with left_join
+
+day_month<-read_csv("https://raw.githubusercontent.com/jshannon75/geog4300/master/Data/daymet%20day_month.csv")
+
+#The data frames can be linked with separate commands
+athens_daymet_month<-left_join(athens_daymet,day_month)
+athens_daymet_month_summary<-athens_daymet_month %>%
+  group_by(year,month) %>%
+  summarise(tmax_mean=mean(tmax))
+
+#Or you can just add left_join at the beginning of the chain
+athens_daymet_month_summary<-athens_daymet %>%
+  left_join(day_month) %>%
+  group_by(year,month) %>%
+  summarise(tmax_mean=mean(tmax))
+
+
+###You try it!
+#Calculate the mean precip by month for the data you downloaded earlier
