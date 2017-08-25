@@ -82,7 +82,7 @@ census_data_sepov<-census_data %>%
   filter(pov_pop_pct>30)
 View(census_data_sepov)
 
-#The "select" command allows you to reduce your dataset.
+#The "select" command allows you to reduce the number of variables
 #You can select by column names or numbers
 
 names(census_data)
