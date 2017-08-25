@@ -1,5 +1,9 @@
 ##Geography 4300/6300: Reading in data using CSVs
 
+#Before starting this script, make sure that you've created a new Project in RStudio.
+#You can do so using the Project dropdown menu in the upper right.
+#Put this script file inside the folder for this project.
+
 #Much of R's functionality comes from add-ons created by developers. 
 #These are called libraries or packages. You can install them several ways. Here's one:
 install.packages("tidyverse")
@@ -9,7 +13,7 @@ library(tidyverse)
 
 #Tidyverse has LOTS of tools that make working with data easier
 
-#Start by downloading some county level data from GitHub
+#Next download some county level data from GitHub
 #This data is stored in a csv and is available at this URL:
 #https://github.com/jshannon75/geog4300/blob/master/Data/ACSCtyData_2014ACS.csv
 #Right click (or ctrl-click on Mac) on the Download button and save the file.
