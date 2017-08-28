@@ -29,23 +29,23 @@ dagobah <- GET("http://swapi.co/api/planets/?search=dagobah") #retrieve content
 dagobah$headers$`content-type` #look at the format
 names(dagobah) #see what's in this object. We'll eventually want just "content".
 
-text_content <- content(dagobah, as = "text", encoding = "UTF-8")
+text_content <- content(dagobah, as = "text", encoding = "UTF-8") #command from httr package that loads the json content
 text_content #The content function gets us closer, but still not there.
 
 #The jsonlite package changes this to a dataframe--parsing the data
-json_content <- text_content %>% fromJSON
+json_content <- fromJSON(text_content)
 json_content
 planetary_data <- json_content$results
 names(planetary_data)
 
-#We can even download multiple planets at once.
+#Now let's download multiple planets at once.
 planets <- GET("http://swapi.co/api/planets") %>% stop_for_status()
 
 #The code below creates a function that parses all results
 json_parse <- function(req) {
-  text <- content(req, as = "text", encoding = "UTF-8")
-  if (identical(text, "")) warn("No output to parse.")
-  fromJSON(text)
+  text <- content(req, as = "text", encoding = "UTF-8") #Parses the json file (same as l. 32)
+  if (identical(text, "")) warn("No output to parse.") #Checks that there's data
+  fromJSON(text) #Creates a list with data as output
 }
 
 #Now we get data on the first 10 planets and parse it using our function
@@ -75,6 +75,7 @@ swapi_planets <- json_planets$results
 library(daymetr) # load the package
 
 #Load 10 years of data on Athens
+#The value for site will be the name of the new file
 download_daymet(site="athens",lat=33.948693,lon=-83.375475,start=2005,end=2015,internal=TRUE)
 
 #The file will show up in your working directory. We can load it from there.
@@ -118,12 +119,11 @@ athens_daymet_month_summary<-athens_daymet_month %>%
   group_by(year,month) %>%
   summarise(tmax_mean=mean(tmax))
 
-#Or you can just add left_join at the beginning of the chain
+#Or you can just add left_join at the beginning of the dplyr chain
 athens_daymet_month_summary<-athens_daymet %>%
   left_join(day_month) %>%
   group_by(year,month) %>%
   summarise(tmax_mean=mean(tmax))
-
 
 ###You try it!
 #Calculate the mean precip by month for the data you downloaded earlier

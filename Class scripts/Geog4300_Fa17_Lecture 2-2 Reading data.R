@@ -103,6 +103,6 @@ hist(census_data$BADeg_pct)
 #You try it! Our survey responses are online at 
 #https://github.com/jshannon75/geog4300/raw/master/Data/geog4300_survey.csv
 #Load the data into R. Then do the following
-# *Figure out how many people have used R before using table
+# *Figure out how many people have used R before using table (used_r)
 # *Create a histogram for the athens_year variable (years lived in Athens)
 # *Filter for only those records where the person has attended a college football game (the football variable)
