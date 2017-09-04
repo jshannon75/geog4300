@@ -6,11 +6,11 @@ Loading data into R, data transformation, and summary statistics
 
 **Due:** Monday, Sept. 18
 
-**Value:** 20 points
+**Value:** 30 points
 
 **Overview:**
 
-This lab is intended to assess your ability to use R to load data and to generate basic descriptive statistics. You’ll be using monthly weather data from the Daymet climate database (<http://daymet.ornl.gov>) for all counties in the United States over a 10 year period (2005-2015). These data are available on the Github repo for our course. The following variables are provided:
+This lab is intended to assess your ability to use R to load data and to generate basic descriptive statistics. You'll be using monthly weather data from the Daymet climate database (<http://daymet.ornl.gov>) for all counties in the United States over a 10 year period (2005-2015). These data are available on the Github repo for our course. The following variables are provided:
 
 -   gisjn\_cty: Code for joining to census data
 -   year: Year of observation
@@ -28,7 +28,7 @@ This lab is intended to assess your ability to use R to load data and to generat
 -   lon: Longitude of the point
 -   lat: Latitude of the point
 
-These labs are meant to be done collaboratively, but your final submission should demonstrate your own original thought (don’t just copy your classmate’s work or turn in identical assignments). Your answers to the lab questions should be typed in the provided RMarkdown template and turned in using the Assignment Dropbox on the ELC site.
+These labs are meant to be done collaboratively, but your final submission should demonstrate your own original thought (donât just copy your classmateâs work or turn in identical assignments). Your answers to the lab questions should be typed in the provided RMarkdown template and turned in using the Assignment Dropbox on the ELC site.
 
 **Procedure:**
 
@@ -60,7 +60,7 @@ Daymet_Cty_Summary_2005_2015 <- read_csv("https://github.com/jshannon75/geog4300
 
 After loading the file into R, closely examine each variable.
 
-***Question 1 (2 points):** Provide an example of nominal, ordinal, interval, and ratio data within this dataset. Explain why each fits in the level of measurement you chose in a sentence or two . If you cannot find an example for one of these four data types (no nominal variables, for example), given an example of climate data that would fit this type.*
+***Question 1 (4 points):** Provide an example of nominal, ordinal, interval, and ratio data within this dataset. Explain why each fits in the level of measurement you chose in a sentence or two . If you cannot find an example for one of these four data types (no nominal variables, for example), given an example of climate data that would fit this type.*
 
 There are a lot of observations here, 413,820 to be exact. To get a better grasp on it, we can use group\_by and summarise in the tidyverse package. Here's an example.
 
@@ -78,9 +78,9 @@ Daymet_Cty_Summary_2005_2015 %>%
     ## 3     South Region  344.1628
     ## 4      West Region  342.4914
 
-This command returns the mean value of solar radiation received by counties in each census region during our study period. You could replace “mean” with “sd” to get a similar summary of standard deviation. You may want to change the new variable name ("mean\_srad") above as well.
+This command returns the mean value of solar radiation received by counties in each census region during our study period. You could replace âmeanâ with âsdâ to get a similar summary of standard deviation. You may want to change the new variable name ("mean\_srad") above as well.
 
-Now try a VERY simple model of climate change. Let’s say that 100 years from now, temperatures in these cities will be warmer by exactly 2 degrees Celsius. You can create a new variable showing the projected new minimum temperatures. The command below uses the mutate function from the tidyverse to create a new variable (tmin\_new) with values two degrees higher than the old one (tmin). It then uses select to get just our variables of interest.
+Now try a VERY simple model of climate change. Letâs say that 100 years from now, temperatures in these cities will be warmer by exactly 2 degrees Celsius. You can create a new variable showing the projected new minimum temperatures. The command below uses the mutate function from the tidyverse to create a new variable (tmin\_new) with values two degrees higher than the old one (tmin). It then uses select to get just our variables of interest.
 
 ``` r
 daymet_climatechg<-Daymet_Cty_Summary_2005_2015 %>% 
@@ -104,7 +104,7 @@ daymet_climatechg
     ## 10  6.8666667  8.866667
     ## # ... with 413,810 more rows
 
-***Question 2 (2 points):** Use the commands shown above, calculate the mean and standard deviation for the original minimum temperature variable and a new one two degrees higher. How do these compare? Explain any similarities or differences you find.*
+***Question 2 (3 points):** Use the commands shown above, calculate the mean and standard deviation for the original minimum temperature variable and a new one two degrees higher. How do these compare? Explain any similarities or differences you find.*
 
 You can also create a table showing summary statistics for each variable. For example, if you wanted to know the mean, median, standard deviation coefficient of variation (CV), and IQR for the tmax variable, you can use group\_by and summarise:
 
@@ -127,7 +127,7 @@ daymet_summarystats
     ## 3     South Region  22.78074 23.75806  8.338996 0.3660547 13.48387
     ## 4      West Region  16.11225 16.12500 10.504552 0.6519604 16.38602
 
-***Question 3 (4 points):** Adapting the command above, create a table that shows the mean, median, standard deviation, CV, and IQR for the prcp variable. Based on this table, are these data skewed or roughly normal in distribution? Which measures of central tendency and dispersion should you use as a result?*
+***Question 3 (6 points):** Adapting the command above, create a table that shows the mean, median, standard deviation, CV, and IQR for the prcp variable. Based on this table, are these data skewed or roughly normal in distribution? Which measures of central tendency and dispersion should you use as a result?*
 
 We can also look at variables over time. For instance, we can use facet\_wrap with boxplot to see how the distribution of maximum temperatures varies by region:
 
@@ -137,7 +137,7 @@ ggplot(Daymet_Cty_Summary_2005_2015, aes(x=year,y=tmax,group=year))+
   facet_wrap(~Region)
 ```
 
-![](Lab1_Loading_data_and_basic_stats_files/figure-markdown_github/unnamed-chunk-5-1.png)
+![](Lab1_Loading_data_and_basic_stats_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-5-1.png)
 
 Suppose we are just interested in the median. We would then want to create a dataset where the value of tmax is summarized by each year for each census division. You can do so using the combination of group\_by and summarise, similar to the command above.
 
@@ -148,10 +148,8 @@ daymet_summary_region<-Daymet_Cty_Summary_2005_2015 %>%
 daymet_summary_region
 ```
 
-    ## Source: local data frame [44 x 3]
-    ## Groups: Region [?]
-    ## 
     ## # A tibble: 44 x 3
+    ## # Groups:   Region [?]
     ##            Region  year tmax_med
     ##             <chr> <int>    <dbl>
     ##  1 Midwest Region  2005 17.70968
@@ -173,7 +171,7 @@ ggplot(daymet_summary_region, aes(x=year,y=tmax_med, group=Region, colour=Region
   geom_line()
 ```
 
-![](Lab1_Loading_data_and_basic_stats_files/figure-markdown_github/unnamed-chunk-7-1.png)
+![](Lab1_Loading_data_and_basic_stats_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-7-1.png)
 
 Suppose you wanted to see the distribution of the average maximum temperatures of all counties by region. You can summarise that in this way:
 
@@ -184,10 +182,8 @@ daymet_summary_county <- Daymet_Cty_Summary_2005_2015 %>%
 daymet_summary_county
 ```
 
-    ## Source: local data frame [3,135 x 3]
-    ## Groups: Region [?]
-    ## 
     ## # A tibble: 3,135 x 3
+    ## # Groups:   Region [?]
     ##            Region gisjn_cty tmax_mean
     ##             <chr>     <chr>     <dbl>
     ##  1 Midwest Region    G17001  17.10559
@@ -208,7 +204,7 @@ You can then create a density plot of these mean values by region, again using f
 ggplot(daymet_summary_county, aes(x=tmax_mean))+geom_density()+facet_wrap(~Region)
 ```
 
-![](Lab1_Loading_data_and_basic_stats_files/figure-markdown_github/unnamed-chunk-9-1.png)
+![](Lab1_Loading_data_and_basic_stats_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-9-1.png)
 
 We can use the filter command to further specify things, selecting only a single month for comparison over this timeframe.
 
@@ -235,14 +231,14 @@ daymet_july
     ## #   CTY_NAME <chr>, State <chr>, Region <chr>, Division <chr>, Lon <dbl>,
     ## #   Lat <dbl>
 
-***Question 4 (2 points):** Adapt the above command to create a new data frame, changing “July” to a month of your choosing and using tmin (rather than tmax) as your variable of interest. You'll need two commands--one to create the data frame and another to "call" it, just like you see above.*
+***Question 4 (3 points):** Adapt the above command to create a new data frame, changing âJulyâ to a month of your choosing and using tmin (rather than tmax) as your variable of interest. You'll need two commands--one to create the data frame and another to "call" it, just like you see above.*
 
-***Question 5 (6 points):** With your subsetted data, create the three graphs below using the graphs listed earlier as a guide. You may need to further transform the data in order to make each graph.*
+***Question 5 (9 points):** With your subsetted data, create the three graphs below using the graphs listed earlier as a guide. You may need to further transform the data in order to make each graph.*
 
 -   *Create a box plot showing the value distribution for tmin in each of the four regions over all 10 years.*
 -   *Create a line chart showing the median value of tmin for each region over all 10 years.*
 -   *Create a faceted density plot like the one above showing the distribution of median minimum temperatures for all regions.*
 
-Don’t worry about things like column names or customization for now—these will be addressed in lab 2.
+Donât worry about things like column names or customization for nowâthese will be addressed in lab 2.
 
-***Question 6 (4 points):** Each of the three graphics you created above tells a particular story about the data. Summarize what you think we learn about regional differences or trends from each graphic. Concentrate on the "headlines" from each one, using details to illustrate your points and also noting exceptions to the trend. Which do you think tells the most compelling story?*
+***Question 6 (5 points):** Each of the three graphics you created above tells a particular story about the data. Summarize what you think we learn about regional differences or trends from each graphic. Concentrate on the "headlines" from each one, using details to illustrate your points and also noting exceptions to the trend. Which do you think tells the most compelling story?*

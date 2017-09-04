@@ -1,5 +1,5 @@
 #install.packages("sf")
-#install.packageS("tmap")
+#install.packages("tmap")
 
 library(tidyverse)
 library(sf)
