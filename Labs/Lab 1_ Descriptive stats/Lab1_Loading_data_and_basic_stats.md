@@ -28,7 +28,7 @@ This lab is intended to assess your ability to use R to load data and to generat
 -   lon: Longitude of the point
 -   lat: Latitude of the point
 
-These labs are meant to be done collaboratively, but your final submission should demonstrate your own original thought (donât just copy your classmateâs work or turn in identical assignments). Your answers to the lab questions should be typed in the provided RMarkdown template and turned in using the Assignment Dropbox on the ELC site.
+These labs are meant to be done collaboratively, but your final submission should demonstrate your own original thought (don’t just copy your classmate’s work or turn in identical assignments). Your answers to the lab questions should be typed in the provided RMarkdown template and turned in using the Assignment Dropbox on the ELC site.
 
 **Procedure:**
 
@@ -78,9 +78,9 @@ Daymet_Cty_Summary_2005_2015 %>%
     ## 3     South Region  344.1628
     ## 4      West Region  342.4914
 
-This command returns the mean value of solar radiation received by counties in each census region during our study period. You could replace âmeanâ with âsdâ to get a similar summary of standard deviation. You may want to change the new variable name ("mean\_srad") above as well.
+This command returns the mean value of solar radiation received by counties in each census region during our study period. You could replace “mean” with “sd” to get a similar summary of standard deviation. You may want to change the new variable name ("mean\_srad") above as well.
 
-Now try a VERY simple model of climate change. Letâs say that 100 years from now, temperatures in these cities will be warmer by exactly 2 degrees Celsius. You can create a new variable showing the projected new minimum temperatures. The command below uses the mutate function from the tidyverse to create a new variable (tmin\_new) with values two degrees higher than the old one (tmin). It then uses select to get just our variables of interest.
+Now try a VERY simple model of climate change. Let’s say that 100 years from now, temperatures in these cities will be warmer by exactly 2 degrees Celsius. You can create a new variable showing the projected new minimum temperatures. The command below uses the mutate function from the tidyverse to create a new variable (tmin\_new) with values two degrees higher than the old one (tmin). It then uses select to get just our variables of interest.
 
 ``` r
 daymet_climatechg<-Daymet_Cty_Summary_2005_2015 %>% 
@@ -127,7 +127,7 @@ daymet_summarystats
     ## 3     South Region  22.78074 23.75806  8.338996 0.3660547 13.48387
     ## 4      West Region  16.11225 16.12500 10.504552 0.6519604 16.38602
 
-***Question 3 (6 points):** Adapting the command above, create a table that shows the mean, median, standard deviation, CV, and IQR for the prcp variable. Based on this table, are these data skewed or roughly normal in distribution? Which measures of central tendency and dispersion should you use as a result?*
+***Question 3 (6 points):** Adapting the script above, create a data frame that shows the mean, median, standard deviation, CV, and IQR for the ***prcp*** variable. Based on these data, are these data skewed or roughly normal in distribution? Which measures of central tendency and dispersion should you use as a result?*
 
 We can also look at variables over time. For instance, we can use facet\_wrap with boxplot to see how the distribution of maximum temperatures varies by region:
 
@@ -231,7 +231,7 @@ daymet_july
     ## #   CTY_NAME <chr>, State <chr>, Region <chr>, Division <chr>, Lon <dbl>,
     ## #   Lat <dbl>
 
-***Question 4 (3 points):** Adapt the above command to create a new data frame, changing âJulyâ to a month of your choosing and using tmin (rather than tmax) as your variable of interest. You'll need two commands--one to create the data frame and another to "call" it, just like you see above.*
+***Question 4 (3 points):** Adapt the above command to create a new data frame, changing “July” to a month of your choosing and using tmin (rather than tmax) as your variable of interest. You'll need two commands--one to create the data frame and another to "call" it, just like you see above.*
 
 ***Question 5 (9 points):** With your subsetted data, create the three graphs below using the graphs listed earlier as a guide. You may need to further transform the data in order to make each graph.*
 
@@ -239,6 +239,6 @@ daymet_july
 -   *Create a line chart showing the median value of tmin for each region over all 10 years.*
 -   *Create a faceted density plot like the one above showing the distribution of median minimum temperatures for all regions.*
 
-Donât worry about things like column names or customization for nowâthese will be addressed in lab 2.
+Don’t worry about things like column names or customization for now—these will be addressed in lab 2.
 
 ***Question 6 (5 points):** Each of the three graphics you created above tells a particular story about the data. Summarize what you think we learn about regional differences or trends from each graphic. Concentrate on the "headlines" from each one, using details to illustrate your points and also noting exceptions to the trend. Which do you think tells the most compelling story?*

@@ -37,10 +37,10 @@ Load the data and the tidyverse package in the code chunk below
 
 {Your explanation of the results}
 
-***Question 3 (6 points):** Adapting the command above, create a table that shows the mean, median, standard deviation, CV, and IQR for the prcp variable. Based on this table, are these data skewed or roughly normal in distribution? Which measures of central tendency and dispersion should you use as a result?*
+***Question 3 (6 points):** Adapting the command above, create a data frame that shows the mean, median, standard deviation, CV, and IQR for the prcp variable. Based on this table, are these data skewed or roughly normal in distribution? Which measures of central tendency and dispersion should you use as a result?*
 
 ```{r question3}
-#Code for creating the table
+#Code for creating and displaying the data frame
 
 ```
 
