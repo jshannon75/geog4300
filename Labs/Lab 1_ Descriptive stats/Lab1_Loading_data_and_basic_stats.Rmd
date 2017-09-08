@@ -86,7 +86,7 @@ daymet_summarystats<-Daymet_Cty_Summary_2005_2015 %>%
 daymet_summarystats
 ```
 
-***Question 3 (6 points):** Adapting the command above, create a table that shows the mean, median, standard deviation, CV, and IQR for the prcp variable. Based on this table, are these data skewed or roughly normal in distribution? Which measures of central tendency and dispersion should you use as a result?*
+***Question 3 (6 points):** Adapting the script above, create a data frame that shows the mean, median, standard deviation, CV, and IQR for the _**prcp**_ variable. Based on these data, are these data skewed or roughly normal in distribution? Which measures of central tendency and dispersion should you use as a result?*
 
 We can also look at variables over time. For instance, we can use facet_wrap with boxplot to see how the distribution of maximum temperatures varies by region:
 
