@@ -2,7 +2,7 @@
 
 #Before starting this lab, download the zipped ACS county data shapefile from GitHub.
 #Copy the files into the data folder of your class project.
-#Link: https://github.com/jshannon75/geog4300/raw/master/Data/ACSCtyData_2014ACS.zip
+#Link: https://github.com/jshannon75/geog4300/raw/master/Data/ACSCtyDat_2014ACS_simplify.zip
 
 #There are several packages available to create and edit spatial data in R.
 #This includes both raster and vector data. This script focuses on the latter.
