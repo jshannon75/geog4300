@@ -55,7 +55,8 @@ tm_shape(ACSctydata_ga)+
 tm_shape(ACSctydata_ga)+
   tm_polygons("POV_POP_PC", title="% in poverty")+
   tm_compass()+
-  tm_scale_bar(position="left")
+  tm_scale_bar(position="left")+
+  tm_style_natural()
 
 #Create a small multiples map for our race variables. There's several ways to do this.
 #The easiest is simply to list multiple variables
@@ -63,6 +64,16 @@ tm_shape(ACSctydata_ga)+
   tm_polygons(c("WHT_POP_PC","AFAM_POP_P","ASN_POP_PC"),
               style="jenks", #define classification scheme
               title=c("% White","% African American","% Asian American"))
+
+#You can also make a map interactive with the tmap_leaflet command
+povmap<-tm_shape(ACSctydata_ga)+
+  tm_polygons("POV_POP_PC", title="% in poverty")
+tmap_leaflet(povmap)
+
+#Or change the basemap with tm_view
+tmap_mode("view")
+povmap+tm_view(basemaps="OpenStreetMap.BlackAndWhite",alpha=0.5)
+#See a list of many available basemaps here: http://leaflet-extras.github.io/leaflet-providers/preview/
 
 #You try it!
 #Use tmap to create a thematic map of the rate of insurance for U.S. born citizens (NAT_INS_PC) 
