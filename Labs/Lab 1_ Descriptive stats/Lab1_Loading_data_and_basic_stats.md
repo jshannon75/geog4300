@@ -237,7 +237,7 @@ daymet_july
     ## #   CTY_NAME <chr>, State <chr>, Region <chr>, Division <chr>, Lon <dbl>,
     ## #   Lat <dbl>
 
-***Question 4 task (3 points):** Adapt the above command to create a new data frame, changing “July” to a month of your choosing and using tmin (rather than tmax) as your variable of interest. You'll need two commands--one to create the data frame and another to "call" it, just like you see above.*
+***Question 4 task (3 points):** Adapt the above command to create a new data frame, changing “July” to a month of your choosing and using tmin (rather than tmax) as your variable of interest. You should also be sure to keep the region and year variables for use in question 5. You'll need two commands--one to create the data frame and another to "call" it, just like you see above.*
 
 ***Question 5 task (9 points):** With your subsetted data, create the three graphs below using the graphs listed earlier as a guide. You may need to further transform the data in order to make each graph.*
 

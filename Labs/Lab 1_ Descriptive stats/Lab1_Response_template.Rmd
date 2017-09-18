@@ -46,7 +46,7 @@ Load the data and the tidyverse package in the code chunk below
 
 {Your explanation of the results}
 
-***Question 4 (3 points):** Adapt the above command to create a new data frame, changing “July” to a month of your choosing and using tmin (rather than tmax) as your variable of interest. You'll need two commands--one to create the data frame and another to "call" it, just like you see above.*
+***Question 4 (3 points):** Adapt the above command to create a new data frame, changing “July” to a month of your choosing and using tmin (rather than tmax) as your variable of interest. You should also be sure to keep the region and year variables for use in question 5. You'll need two commands--one to create the data frame and another to "call" it, just like you see above.*
 
 ```{r question4}
 #Code for creating the new data frame for a single month
