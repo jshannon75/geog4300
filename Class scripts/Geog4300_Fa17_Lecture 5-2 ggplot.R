@@ -53,15 +53,26 @@ two.regions<-census_data %>% filter(Region=="SW" | Region=="SE")
 #Here's a scatterplot for all those counties together.
 ggplot(two.regions, aes(x=afam_pop_pct,y=BADeg_pct))+geom_point()
 
+#We can also add a smoothed trendline
+ggplot(two.regions, aes(x=afam_pop_pct,y=BADeg_pct))+
+  geom_point()+
+  geom_smooth()
+
 #Now color those points by region
 ggplot(two.regions, aes(x=afam_pop_pct,y=BADeg_pct))+geom_point(aes(color=Region))
 
 #Now create separate graphs for each region
-ggplot(two.regions, aes(x=afam_pop_pct,y=BADeg_pct))+geom_point(aes(color=Region))+facet_grid(Region~.)
+ggplot(two.regions, aes(x=afam_pop_pct,y=BADeg_pct))+
+  geom_point(aes(color=Region))+
+  geom_smooth()+
+  facet_grid(Region~.)
 
 #Do the same thing for states in the south
 south<-census_data %>% filter(Region=="SE")
-ggplot(south, aes(x=afam_pop_pct,y=BADeg_pct))+geom_point()+facet_wrap(~St_name)
+ggplot(south, aes(x=afam_pop_pct,y=BADeg_pct))+
+  geom_point()+
+  geom_smooth()+
+  facet_wrap(~St_name)
 
 #We can also look at data over time using line graphs.
 #For example, let's look at the Daymet data from lab 1
