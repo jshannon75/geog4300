@@ -74,7 +74,7 @@ daymet_climatechg
 ```
 
 
-***Question 2 task (3 points):** Calculate the mean and standard deviation for the original minimum temperature variable and a new one two degrees higher, grouping these by each census region as shown above. How do these compare? Explain any similarities or differences you find.*
+***Question 2 task (3 points):** Calculate the mean and standard deviation for the original minimum temperature variable and a new one two degrees higher, grouping these by each census region as shown above. How do these compare? Explain any similarities or differences you find.
 
 ###Question 3
 
