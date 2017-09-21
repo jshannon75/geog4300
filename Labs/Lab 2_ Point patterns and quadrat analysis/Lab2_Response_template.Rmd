@@ -1,0 +1,79 @@
+---
+title: 'Lab 2: Your responses'
+output:
+  pdf_document: default
+  github_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Your name: {Name here}
+
+In the spaces below, insert your code and/or explanation as notes. Look for the angle brackets-{like these}-for where a response is needed.
+
+When you are done, click on the arrow next to "knit" and choose "Knit as PDF" to save. 
+
+Load the data and the tidyverse package in the code chunk below
+
+```{r data andlibrary}
+library(tidyverse)
+library(sf)
+spokane_crimes_all<-read_csv("https://github.com/jshannon75/geog4300/raw/master/Labs/Lab%202_%20Point%20patterns%20and%20quadrat%20analysis/Spokane_crimes_all.csv")
+
+spokane_crimes_sf<-st_as_sf(spokane_crimes_all,coords=c("Long","Lat"),crs=4326)
+
+spokaneprecincts_data<-st_read("https://github.com/jshannon75/geog4300/raw/master/Labs/Lab%202_%20Point%20patterns%20and%20quadrat%20analysis/SpokanePrecincts_data.geojson")
+```
+
+**Question 1 (4 points):** _Using the Offense variable and working with the spokane_crimes_all data, select just Murder and Vehicle Theft as crimes. Using tmap, create a map that shows the location of all reports in the this data frame and the precinct boundaries. See script 6-2 for a model to work from or the example for question 3 below._
+
+```{r question_1a}
+#Create a data frame with just reports of murder and vehicle theft
+```
+
+```{r question_1b}
+#Create your map of just murders
+```
+
+**Question 2 (2 points):** _Create a new data frame with the mean centers for each type of crime listed in the spokane_crime_sf data frame._ 
+
+```{r question2}
+#Create your data frame here
+
+```
+
+**Question 3 (3 points):** _Map the mean centers you created in question 2 using tmap. To do so, you'll need to use st_as_sf to convert your new data frame to sf format. Use tm_dots to show the points in different colors, as in the example above (though here you're showing only the mean centers)._
+
+```{r question3}
+#Code for creating the map of mean centers here
+
+```
+
+**Question 4 (2 points)** _Interpret how geographic differences between the mean centers you calculated are meaningful. What do they tell you about the locations of these crimes?_
+
+{Your response here}
+
+**Question 5 (2 points):** _The nearest neighbor index for vehicle thefts in this dataset is 0.44 compared to 1.51 for murders. Explain what these two numbers tell you about the distribution of these two point datasets._
+
+{Your response here}
+
+```{r question5a}
+#Code for creating the box plot
+
+```
+
+```{r question5b}
+#Code for creating the line chart
+
+```
+
+```{r question5c}
+#Code for creating the density plot
+
+```
+
+***Question 6 (5 points):** Each of the three graphics you created above tells a particular story about the data. Summarize what you think we learn about regional differences or trends from each graphic. Concentrate on the "headlines" from each one, using details to illustrate your points and also noting exceptions to the trend. Which do you think tells the most compelling story?*
+
+{Your response goes here}
