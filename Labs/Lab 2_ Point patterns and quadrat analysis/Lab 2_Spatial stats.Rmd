@@ -14,11 +14,17 @@ knitr::opts_chunk$set(echo = TRUE)
 **Value:** 30 points
 
 **Overview:**
+This lab covers  two main topics: basic spatial statistics and probability distributions. Your answers to the lab questions should be typed in the response template and turned in using the Assignment Dropbox on the ELC site. 
 
-Overview: This lab covers  two main topics: basic spatial statistics and probability distributions. Your answers to the lab questions should be typed in a separate Word document and turned in using the Assignment Dropbox on the ELC site. 
+##Procedure for spatial statistics##
 
-Spatial statistics:
-1.	The lab folder on Google Drive has two files with crime data for Spokane, Washington.  “Spokane_crimes_all” has data for every crime committed in from 2000-2015. “SpokanePrecinct_2014_crimecounts” has the number of crimes in 2014 broken down by type for each voting precinct in the city. Download these files to your computer as csv files.
+The lab folder on Google Drive has two files with crime data for Spokane, Washington.  “Spokane_crimes_all” has data for every crime committed in from 2000-2015. “SpokanePrecinct_2014_crimecounts” has the number of crimes in 2014 broken down by type for each voting precinct in the city. You can load each file using the commands below
+
+```{r loading data}
+library(tidyverse)
+```
+
+
 
 Question 1 (3 points): Use Rstudio or Excel to open the first data set, Spokane_crimes_all. Calculate the mean center for (1) all crimes, (2) all robberies (see the “Offense” column). The “subset” command can be used to select just robberies. What are the coordinates of each? Interpret how any difference between them (e.g., direction and distance) is meaningful
 
