@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 **Overview:**
 This lab covers  two main topics: basic spatial statistics and probability distributions. Your answers to the lab questions should be typed in the response template and turned in using the Assignment Dropbox on the ELC site. 
 
-##Procedure for spatial statistics##
+##Part 1: mapping the data and mean centers##
 
 The lab folder on Google Drive has three files related to crime data for Spokane, Washington.  
 *“Spokane_crimes_all” has data for every crime committed in from 2000-2015. 
@@ -36,9 +36,22 @@ spokaneprecinct_2014_crimecounts<-read_csv("https://github.com/jshannon75/geog43
 spokaneprecincts<-st_read("https://github.com/jshannon75/geog4300/raw/master/Labs/Lab%202_%20Point%20patterns%20and%20quadrat%20analysis/SpokanePrecincts_pop.geojson")
 ```
 
-**Question 1 task (4 points):** _Create a map using the tmap package that shows the location of all the crimes in the spokane_crimes data frame and the precinct boundaries. Using tmap's view mode, add the Carto Positron basemap as well._
+**Question 1 (4 points):** _Using tmap in view mode, create a map using the tmap package that shows the location of all the crimes in the spokane_crimes data frame and the precinct boundaries. Add the Carto Positron basemap as well. See script 6-2 for a model to work from._
 
-**Question 2 task (4 points):** _For the crimes dataset, create code to calculate the mean center for (1) all crimes, (2) all robberies (see the “Offense” column). What are the coordinates of each? Interpret how any difference between them (e.g., direction and distance) is meaningful._
+**Question 2 (2 points):** _Using the Offense variable and working with the spokane_crimes_all data, select just Murder and Vehicle Theft as crimes. Create a data frame with the mean center of each group. 
+
+**Question 3 (2 points):**_Map the mean centers you created in question 2 using tmap in view mode. To do so, you'll need to use st_as_sf to convert the data frame to sf format. Use tm_dots to show the points, as in this example, which shows all reported crimes for drugs and robbery (not the mean centers, which you need to calculate):
+
+```{r q3 example}
+library(tmap)
+tmap_mode("view")
+sample_crimes<-spokane_crimes_sf %>% filter(Offense=="Drugs" | Offense=="Robbery")
+
+tm_shape(sample_crimes) + 
+  tm_dots("Offense")
+```
+
+**Question 4 (2 points) Interpret how any difference between the mean centers you calculated (e.g., direction and distance) is meaningful. What does it tell you about the locations of these crimes?_
 
 
 

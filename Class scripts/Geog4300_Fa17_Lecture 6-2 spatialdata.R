@@ -1,9 +1,5 @@
 #Spatial data in R
 
-#Before starting this lab, download the zipped ACS county data shapefile from GitHub.
-#Copy the files into the data folder of your class project.
-#Link: https://github.com/jshannon75/geog4300/raw/master/Data/ACSCtyDat_2014ACS_simplify.zip
-
 #There are several packages available to create and edit spatial data in R.
 #This includes both raster and vector data. This script focuses on the latter.
 #The relatively new sf (stands for simple features) package is one efficent way to load vector data.
@@ -14,8 +10,9 @@
 library(tidyverse)
 library(sf)
 
-#Read in the shapefile (assuming you have it in a folder called "Data")
-ACSctydata<-st_read("Data/ACSCtyDat_2014ACS_simplify.shp")
+#Read in the data. It's stored as a geojson file
+#That's similar to a shapefile but all in one file.
+ACSctydata<-st_read("https://github.com/jshannon75/geog4300/raw/master/Data/ACSCtyDat_2014ACS_simplify.geojson")
 
 #Notice when you load the data, you're given the number of features and fields, projection ID (4326),
 #and type of objects (multipolygon). You can also view the attribute table:
@@ -26,7 +23,7 @@ View(ACSctydata)
 #Let's just select Georgia counties. 
 ACSctydata_ga<-ACSctydata %>% filter(State=="Georgia")
 
-#We could just plot this data set. But it's messy.
+#We could just plot this data set. But it's messy and ugly.
 plot(ACSctydata_ga)
 
 #Let's use the also still new mapview package to view these data.
@@ -51,12 +48,23 @@ tm_shape(ACSctydata_ga)+
 tm_shape(ACSctydata_ga)+
   tm_polygons("POV_POP_PC", title="% in poverty")
 
+#Add in a new layer--major cities
+GA_cities<-st_read("https://github.com/jshannon75/geog4300/raw/master/Data/GA_cities.geojson")
+
+tm_shape(ACSctydata_ga)+
+  tm_polygons("POV_POP_PC", title="% in poverty")+
+tm_shape(GA_cities)+
+  tm_bubbles(size=0.5)+
+  tm_text("Name",ymod=1) #Adds a text label above the dot
+  
 #Add scale bar and north arrow
 tm_shape(ACSctydata_ga)+
   tm_polygons("POV_POP_PC", title="% in poverty")+
-  tm_compass()+
-  tm_scale_bar(position="left")+
-  tm_style_natural()
+tm_shape(GA_cities)+
+  tm_bubbles(size=0.5)+
+  tm_text("Name",ymod=1)+
+tm_compass()+
+tm_scale_bar(position="left")
 
 #Create a small multiples map for our race variables. There's several ways to do this.
 #The easiest is simply to list multiple variables
@@ -65,15 +73,28 @@ tm_shape(ACSctydata_ga)+
               style="jenks", #define classification scheme
               title=c("% White","% African American","% Asian American"))
 
-#You can also make a map interactive with the tmap_leaflet command
-povmap<-tm_shape(ACSctydata_ga)+
+#You can also make a map interactive by shifting to the view mode
+tmap_mode("view") #To shift back to static maps, use tmap_mode("plot")
+tm_shape(ACSctydata_ga)+
   tm_polygons("POV_POP_PC", title="% in poverty")
-tmap_leaflet(povmap)
 
-#Or change the basemap with tm_view
-tmap_mode("view")
-povmap+tm_view(basemaps="OpenStreetMap.BlackAndWhite",alpha=0.5)
-#See a list of many available basemaps here: http://leaflet-extras.github.io/leaflet-providers/preview/
+#You can specify the basemap for interactvie maps
+tm_shape(ACSctydata_ga)+
+  tm_polygons("POV_POP_PC", title="% in poverty")+
+  tm_layout(basemaps = c("CartoDB.Positron"))
+
+tm_shape(ACSctydata_ga)+
+  tm_polygons("POV_POP_PC", title="% in poverty")+
+  tm_layout(basemaps = c("Thunderforest.SpinalMap"))
+
+#See a list of many available basemaps here: 
+#http://leaflet-extras.github.io/leaflet-providers/preview/
+
+#In view mode, what happens to the faceted maps?
+tm_shape(ACSctydata_ga)+
+  tm_polygons(c("WHT_POP_PC","AFAM_POP_P","ASN_POP_PC"),
+              style="jenks", 
+              title=c("% White","% African American","% Asian American"))
 
 #You try it!
 #Use tmap to create a thematic map of the rate of insurance for U.S. born citizens (NAT_INS_PC) 
