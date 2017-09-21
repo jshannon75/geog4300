@@ -1,0 +1,14 @@
+{
+"type": "FeatureCollection",
+"name": "GA_cities",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "Name": "Augusta", "Acres": 196317.0, "Sq_Miles": 306.746 }, "geometry": { "type": "Point", "coordinates": [ -82.070901578081248, 33.364426473255463 ] } },
+{ "type": "Feature", "properties": { "Name": "Athens", "Acres": 75615.3, "Sq_Miles": 118.149 }, "geometry": { "type": "Point", "coordinates": [ -83.368914772429136, 33.950817225569885 ] } },
+{ "type": "Feature", "properties": { "Name": "Savannah", "Acres": 61106.3, "Sq_Miles": 95.4786 }, "geometry": { "type": "Point", "coordinates": [ -81.168846893524133, 32.039187073493864 ] } },
+{ "type": "Feature", "properties": { "Name": "Columbus", "Acres": 141427.0, "Sq_Miles": 220.98 }, "geometry": { "type": "Point", "coordinates": [ -84.87703971146216, 32.509958571827681 ] } },
+{ "type": "Feature", "properties": { "Name": "Albany", "Acres": 35758.4, "Sq_Miles": 55.8726 }, "geometry": { "type": "Point", "coordinates": [ -84.176284061032646, 31.577593368544768 ] } },
+{ "type": "Feature", "properties": { "Name": "Atlanta", "Acres": 85711.2, "Sq_Miles": 133.924 }, "geometry": { "type": "Point", "coordinates": [ -84.423162733400176, 33.762805227154253 ] } },
+{ "type": "Feature", "properties": { "Name": "Macon", "Acres": 36047.0, "Sq_Miles": 56.3234 }, "geometry": { "type": "Point", "coordinates": [ -83.649525130165841, 32.832080608054952 ] } }
+]
+}
