@@ -59,21 +59,52 @@ spokaneprecincts_data<-st_read("https://github.com/jshannon75/geog4300/raw/maste
 
 {Your response here}
 
-```{r question5a}
-#Code for creating the box plot
+**Question 6 (5 points)** _Select just the precinct number, population (totpop), and burglary rate from the precincts data frame. Then create a new variable for this rate using the formula above. Then do the following: 1) Call your dataset once you've created it to show your results. 2) Create a histogram using ggplot showing the distribution of these data. 3) Map the rates using tmap._
+
+```{r question 6a}
+#Subset your data and calculate burglary rates. Call the data frame when done
 
 ```
 
-```{r question5b}
-#Code for creating the line chart
+```{r question 6b}
+#Histogram of the burglary rates using ggplot
 
 ```
 
-```{r question5c}
-#Code for creating the density plot
+```{r question 6a}
+#Map of the burglary rates using tmap
 
 ```
 
-***Question 6 (5 points):** Each of the three graphics you created above tells a particular story about the data. Summarize what you think we learn about regional differences or trends from each graphic. Concentrate on the "headlines" from each one, using details to illustrate your points and also noting exceptions to the trend. Which do you think tells the most compelling story?*
+**Question 7 (2 points)** _The burglary rate for the city of Spokane in this dataset is 10,639 per 100,000 residents. Using this figure, calculate the location quotient for burglary in each precinct within the city._
 
-{Your response goes here}
+```{r question 7}
+#Calculate lQ
+
+```
+
+**Question 8 (3 points)** _Using the script from week 7 in class as a guide, combine the kernel density map and appropriately sized quadrat grid for robberies in Spokane during the study period. You’ll need to include “add=TRUE” for the quadratcount function to layer it and change the text color to white as we did in class._
+
+```{r quetsion 8}
+#Kernel density and quadrat map here
+
+```
+
+**Question 9 (4 points)** _Based on your analysis in the questions 6 through 8, describe the statistical and geographic distribution of burglary in the city of Spokane in a paragraph. Specifically address any skew in this data and the geographic location of the highest and lowest values for the burglary rate. Which of these visualizations was most helpful to you and why?_
+
+{Your response here}
+
+**Question 10 (2 points):** _Calculate the probability of observing each possible count of persons in a camping party for each reservation (including no shows)._ 
+
+```{r }
+#Calculate the probabilities here
+
+```
+
+**Question 11 (2 points):** _Calculate the probabilities the stream flow in a given year will exceed 42 and 48 CFM._
+
+
+```{r }
+#Calculate the probabilities here
+
+```
