@@ -14,7 +14,27 @@ library(sf)
 #That's similar to a shapefile but all in one file.
 ACSctydata<-st_read("https://github.com/jshannon75/geog4300/raw/master/Data/ACSCtyDat_2014ACS_simplify.geojson")
 
-#Notice when you load the data, you're given the number of features and fields, projection ID (4326),
+#First a review. We can identify high poverty (rate of >20%) counties in this dataset using ifelse
+ACSctydata$highpov<-ifelse(ACSctydata$POV_POP_PC>=20,1,0)
+
+#We can also use table to look at the overall pattern
+table(ACSctydata$highpov)
+
+#Let's make a non-spatial dataframe
+countydata<-ACSctydata
+st_geometry(countydata)<-NULL
+
+#Using group_by and summarise allows us to summarise by state
+statepov<-countydata %>%
+  group_by(State) %>%
+  summarise(counties=n(),
+            highpov=sum(highpov))
+
+#Your task--figure out how to calculate a location quotient for high poverty counties in each state!
+
+######
+
+#Notice when you load the geojson (ACSctydata), you're given the number of features and fields, projection ID (4326),
 #and type of objects (multipolygon). You can also view the attribute table:
 View(ACSctydata)
 
