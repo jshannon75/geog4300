@@ -69,7 +69,7 @@ Now try a VERY simple model of climate change. Let’s say that 100 years from n
 ```{r}
 daymet_climatechg<-Daymet_Cty_Summary_2005_2015 %>% 
   mutate(tmin_new=tmin+2) %>% 
-  select(tmin,tmin_new)
+  select(Region,tmin,tmin_new)
 daymet_climatechg
 ```
 

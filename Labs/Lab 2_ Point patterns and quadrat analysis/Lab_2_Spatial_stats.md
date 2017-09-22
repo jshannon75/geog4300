@@ -8,7 +8,7 @@ Spatial statistics and probability distributions
 
 **Value:** 30 points
 
-**Overview:** This lab covers two main topics: basic spatial statistics and probability distributions. Your answers to the lab questions should be typed in the response template and turned in using the Assignment Dropbox on the ELC site.
+**Overview:** This lab has four main sections: mapping point patterns, calculating rates and location quotients, quadrat analysis, and probability distributions. Your answers to the lab questions should be typed in the response template and turned in using the Assignment Dropbox on the ELC site.
 
 ### Part 1: mapping the data and its distribution
 
@@ -73,7 +73,7 @@ Use the mutate command from the tidyverse to create this variable.
 
 **Question 7 (2 points)** *The burglary rate for the city of Spokane in this dataset is 10,639 per 100,000 residents. Using this figure, calculate the location quotient for burglary in each precinct within the city.*
 
-### Quadrat analysis
+### Part 3: Quadrat analysis
 
 You can also use the spatstat package to create a ppp object for your robbery data.
 
@@ -95,16 +95,18 @@ plot(robberypoints)
 
 ![](Lab_2_Spatial_stats_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-2-1.png)
 
-**Question 8 (3 points)** *Using the script from week 7 in class as a guide, combine the kernel density map and appropriately sized quadrat grid for robberies in Spokane during the study period. You’ll need to include “add=TRUE” for the quadratcount function to layer it and change the text color to white as we did in class.*
+**Question 8 (2 points)** *Using the script from week 7 in class as a guide, combine the kernel density map and appropriately sized quadrat grid for robberies in Spokane during the study period. You’ll need to include “add=TRUE” for the quadratcount function to layer it and change the text color to white as we did in class.*
 
-**Question 9 (4 points)** *Based on your analysis in the questions 6 through 8, describe the statistical and geographic distribution of burglary in the city of Spokane in a paragraph. Specifically address any skew in this data and the geographic location of the highest and lowest values for the burglary rate. Which of these visualizations was most helpful to you and why?*
+**Question 9 (3 points)** *Based on your analysis in the questions 6 through 8, describe two notable patterns you see in the statistical and geographic distribution of burglary in the city of Spokane.*
 
-### Probability
+**Question 10 (2 points)** *In this lab, you have used mean center, calculated rates, location quotients, kernel density mapping, and quadrat analysis to analyze the distribution of crime in Spokane. Pick **two** of these and compare what they tell you about this dataset. How are they similar and/or different?*
+
+### Part 4: Probability
 
 The number of persons in each camping party that reserves a campsite at Dawgsville National Park is assumed to be distributed as a Poisson distribution. The maximum number of persons in a camping party is 6. The mean number of persons in a camping party is 2.43.
 
-**Question 10 (2 points):** *Calculate the probability of observing each possible count of persons in a camping party for each reservation (including no shows).*
+**Question 11 (2 points):** *Calculate the probability of observing each possible count of persons in a camping party for each reservation (including no shows).*
 
 For the past 100 years, a stream close to Athens has been measured at a gauging station. The station measures the volume passing a point in a minute, so the values obtained are in units of cubic feet per minute (or CFM). A USGS scientist has crunched these numbers and determined that the results are normally distributed, with a mean of 35.26 CFM and a standard deviation of 4.61 CFM
 
-**Question 11 (2 points):** *Calculate the probabilities the stream flow in a given year will exceed 42 and 48 CFM.*
+**Question 12 (2 points):** *Calculate the probabilities the stream flow in a given year will exceed 42 and 48 CFM.*
