@@ -5,7 +5,7 @@
 #The relatively new sf (stands for simple features) package is one efficent way to load vector data.
 #Other popular packages for spatial data are rgdal, sp, and raster.
 
-#install.packages(sf)
+#install.packages("sf")
 
 library(tidyverse)
 library(sf)
