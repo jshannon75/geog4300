@@ -1,4 +1,4 @@
-#Load the tidyverse
+#Load the tidyverse and sf
 library(tidyverse)
 library(sf)
 
@@ -8,6 +8,8 @@ tornado_points<-read_csv("https://raw.githubusercontent.com/jshannon75/geog4300/
 #Let's just take a quick look at these data using mapview
 library(mapview)
 
+#The st_as_sf function allows you to convert non-spatial point data to spatial data using lat/long coordinates
+#CRS command defines the spatial projection (here, WGS84)
 tornado_points_sf<-st_as_sf(tornado_points,coords=c("CLONG","CLAT"),crs=4326)
 mapview(tornado_points_sf)
 
@@ -18,9 +20,13 @@ install.packages("spatstat")
 library(spatstat)
 
 #To use the spatstat package, you must first determine the maximum and minimum values for your lat/long coordinates.
-#You should now be able to easily do this using "summary"
+maxlat<-max(tornado_points$CLAT)
+minlat<-min(tornado_points$CLAT)
+maxlon<-max(tornado_points$CLONG)
+minlon<-min(tornado_points$CLONG)
+
 #Spatstat uses a "ppp" object, which takes your X and Y points plus the range of your X and Y coordinates.
-tornado_ppp<-ppp(tornado_points$CLONG,tornado_points$CLAT,c(-92,-75),c(30,37))
+tornado_ppp<-ppp(tornado_points$CLONG,tornado_points$CLAT,c(minlon,maxlon),c(minlat,maxlat))
 plot(tornado_ppp)
 
 #Basic descriptives
@@ -28,10 +34,10 @@ summary(tornado_ppp) #Remember that the unit here is decimal degrees
 plot(density(tornado_ppp)) #This creates a kernel density map
 
 #We can change the size of the "kernel" used to interpolate this map
+plot(density(tornado_ppp,.1))
 plot(density(tornado_ppp,.25))
 plot(density(tornado_ppp,.5))
 plot(density(tornado_ppp,1))
-plot(density(tornado_ppp,3))
 
 #Countour map of tornado count
 contour(density(tornado_ppp))
@@ -40,11 +46,10 @@ contour(density(tornado_ppp))
 qmap<-quadratcount(tornado_ppp,10,5) #How does the pattern change with size?
 plot(qmap)
 
-plot(density(tornado_ppp,.5))
+plot(density(tornado_ppp,.25))
 plot(qmap, add=TRUE,col="white") #Messy, but can see how the points intersect with the grid boundaries
 
 ##You try it! Create a kernel density map for just tornadoes in Georgia
 ##Use the "ST" field to subset the dataset
-##Longitude for Georgia goes from -80.7 to -85.8
-##Latitude is from 35.1 to 30.3
+#How does it look compared to the map you made here?
 
