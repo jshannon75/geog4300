@@ -27,7 +27,7 @@ spokane_crimes_sf<-st_as_sf(spokane_crimes_all,coords=c("Long","Lat"),crs=4326)
 spokaneprecincts_data<-st_read("https://github.com/jshannon75/geog4300/raw/master/Labs/Lab%202_%20Point%20patterns%20and%20quadrat%20analysis/SpokanePrecincts_data.geojson")
 ```
 
-**Question 1 (4 points):** _Using the Offense variable and working with the spokane_crimes_all data, select just Murder and Vehicle Theft as crimes. Using tmap, create a map that shows the location of all reports in the this data frame and the precinct boundaries. See script 6-2 for a model to work from or the example for question 3 below._
+**Question 1 (4 points):** _Using the Offense variable and working with the spokane_crimes_all data, select just murder and arson as crimes. Using tmap, create a map that shows the location of all reports in the this data frame and the precinct boundaries. See script 6-2 for a model to work from or the example for below._
 
 ```{r question_1a}
 #Create a data frame with just reports of murder and vehicle theft
