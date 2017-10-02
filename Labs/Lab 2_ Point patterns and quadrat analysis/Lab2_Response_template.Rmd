@@ -30,7 +30,7 @@ spokaneprecincts_data<-st_read("https://github.com/jshannon75/geog4300/raw/maste
 **Question 1 (3 points):** _Using the Offense variable and working with the spokane_crimes_all data, select just murder as the offense type. Using tmap, create a map that shows the location of all reports in the this data frame and the precinct boundaries. See script 6-2 for a model to work from or the example for below._
 
 ```{r question_1a}
-#Create a data frame with just reports of murder and vehicle theft
+#Create a data frame with just reports of murder.
 ```
 
 ```{r question_1b}
@@ -90,18 +90,22 @@ spokaneprecincts_data<-st_read("https://github.com/jshannon75/geog4300/raw/maste
 
 ```
 
-**Question 9 (4 points)** _Based on your analysis in the questions 6 through 8, describe the statistical and geographic distribution of burglary in the city of Spokane in a paragraph. Specifically address any skew in this data and the geographic location of the highest and lowest values for the burglary rate. Which of these visualizations was most helpful to you and why?_
+**Question 9 (3 points)** _Based on your analysis in the questions 6 through 8, describe two notable patterns you see in the statistical and geographic distribution of burglary in the city of Spokane._
 
 {Your response here}
 
-**Question 10 (2 points):** _Calculate the probability of observing each possible count of persons in a camping party for each reservation (including no shows)._ 
+**Question 10 (2 points)** _In this lab, you have used mean center, calculated rates, location quotients, kernel density mapping, and quadrat analysis to analyze the distribution of crime in Spokane. Pick **two** of these and compare what they tell you about this dataset. How are they similar and/or different?_ 
+
+{Your response here}
+
+**Question 11 (2 points):** _Calculate the probability of observing each possible count of persons in a camping party for each reservation (including no shows)._ 
 
 ```{r }
 #Calculate the probabilities here
 
 ```
 
-**Question 11 (2 points):** _Calculate the probabilities the stream flow in a given year will exceed 42 and 48 CFM._
+**Question 12 (2 points):** _Calculate the probabilities the stream flow in a given year will exceed 42 and 48 CFM._
 
 
 ```{r }
