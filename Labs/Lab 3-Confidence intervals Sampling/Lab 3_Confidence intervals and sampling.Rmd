@@ -1,0 +1,43 @@
+---
+title: 'Geog 4/6300: Lab 3'
+output:
+  github_document: default
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Confidence Intervals and Sampling
+
+**Due:** Monday, Oct. 16
+
+**Value:** 30 points
+
+**Overview:**
+This lab covers  two main topics: basic spatial statistics and probability distributions. We will be using individual level “microdata” from the Current Population Survey (CPS). It is designed as an ongoing (collected monthly) set of data on financial and demographic characteristics. One main use of the CPS is to calculate national levels of food insecurity. Each December, a food security supplement is added to the regular survey, and data from the supplement is included here.
+
+To load these data, load the csv file:
+
+```{r}
+#*****ADD CODE HERE***
+```
+
+This contains a csv file with microdata from the CPS that is de-identified and publically available through the Minnesota Population Center (https://cps.ipums.org/cps/index.shtml). There is also a Word codebook describing each of those variables: **ADD LINK HERE**
+
+
+###Part 1: Summarizing immigration data###
+Look at the information on the YRIMMIG variable in the codebook, which describes when foreign born respondents arrived in the U.S. Much statistical data comes with a “missing variable” identifier, which in this case you want to leave out of your analysis. It’s labeled here as “NIU”. 
+
+**Question 1 (3 points)** _Create a script that subsets this data so that only records with meaningful responses are included. Then create a histogram of the resulting subset to show the distribution. Also calculate the mean, median, standard deviation, and IQR (see lab 1) of this variable._ 
+
+**Question 2 (1 point)** _Lastly, describe what the histogram and summary statistics tell you about the distribution of the YRIMMIG variable._
+
+###Question 2###
+The FSSTATUS variable describes the food security of respondents. While food security status is often grouped into “low” and “very low” food security, these two are often just combined to a single measure: food insecure. Using the information on this variable in the codebook (p. 12), create a subset of records without missing data. Then use the table function to create counts of respondents in each category. Use those counts to calculate what percentage of respondents are food insecure. 
+
+**Question 1 (4 points)** _Using the information on this variable in the codebook (p. 12), create a subset of records without missing data. _
+
+
