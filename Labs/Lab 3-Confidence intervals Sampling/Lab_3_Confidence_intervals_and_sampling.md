@@ -19,15 +19,7 @@ cps_data<-read_csv("https://github.com/jshannon75/geog4300/raw/master/Labs/Lab%2
 
 This contains a csv file with microdata from the CPS that is de-identified and publically available through the Minnesota Population Center (<https://cps.ipums.org/cps/index.shtml>). There is also a [codebook available on Github](https://github.com/jshannon75/geog4300/raw/master/Labs/Lab%203-Confidence%20intervals%20Sampling/IPUMS_CPS_Codebook.pdf) describing each of those variables.
 
-### Part 1: Summarizing immigration data
-
-Look at the information on the YRIMMIG variable in the codebook, which describes when foreign born respondents arrived in the U.S. Much statistical data comes with a “missing variable” identifier, which in this case you want to leave out of your analysis. In this case, those are records marked with a 0, labeled in the codebook as "NIU" (or "not in universe").
-
-**Question 1 (3 points)** *Create a script that subsets this data so that only records with meaningful responses are included. Then create a histogram (using either base R or ggplot) of the resulting subset to show the distribution. Also calculate the mean, median, standard deviation, and IQR (see lab 1) of this variable.*
-
-**Question 2 (1 point)** *Lastly, describe what the histogram and summary statistics tell you about the central tendancy and distribution of the YRIMMIG variable.*
-
-### Part 2: Calculating food insecurity
+### Part 1: Calculating national food insecurity
 
 The n() function can be used to count records in a group. See this example for immigration:
 
@@ -54,13 +46,105 @@ cps_data %>%
 
 For this response, look at the FSSTATUS variable, which describes the food security of respondents. While food security status is often grouped into “low” and “very low” food security, these two are often just combined to a single measure: food insecure.
 
-**Question 3 (3 points)** *Using the information on this variable in the codebook (p. 12), create a subset of records without the NIU or missing response records. Then use group\_by and summarise to calculate the number of individuals grouped in each status as shown above. Use the resulting data frame to calculate an estimate of the national food insecurity rate.*
+**Question 1 (4 points)** *Using the information on this variable in the codebook (p. 12), create a subset of records without the NIU or missing response records. Then use group\_by and summarise to calculate the number of individuals grouped in each status as shown above. Use the resulting data frame to calculate an estimate of the national food insecurity rate.*
 
-**Question 4 (2 points)** *Using the formula for confidence intervals for proportions shown in class, calculate a confidence interval for the rate you identified in question 3.*
+**Question 2 (3 points)** *Using the formula for confidence intervals for proportions shown in class, calculate a confidence interval for the rate you identified in question 3. Interpret what that confidence interval tells you.*
 
-**Question 5 (4 points)** *Now use filter with the STATE variable to select records with food security data from Georgia and from Colorado. Compute the same confidence interval as you did above for just these records. Then do the same for Colorado. Calculate an estimated food insecurity rate for both states along with a related confidence interval.*
+### Part 2: Analyzing state food insecurity data
 
-**Question 6 (2 points)** *Is the size of confidence interval different between the states and national data? If so, why?*
+We can also use the "STATE" variable to calculate rates for each state. To do this, we'll need to use the *spread* function from tidyverse. Spread converts "long" data to "wide." Here's an example using the immigration data. First, let's filtering all records with a 0 and use ifelse to create a dummy variable for all individuals immigrating in the year 2000 or after.
+
+``` r
+cps_data_2000<-cps_data %>%
+  filter(YRIMMIG!=0) %>%
+  mutate(yr_2000=ifelse(YRIMMIG>=2000,1,0)) 
+
+cps_data_2000
+```
+
+    ## # A tibble: 64,872 x 28
+    ##     YEAR    CPSID STATEFIP STATECENSUS       STATE METAREA FSSTATUS
+    ##    <int>    <dbl>    <int>       <int>       <chr>   <int>    <int>
+    ##  1  2010 2.01e+13        1          63     Alabama    3440        1
+    ##  2  2010 2.01e+13        1          63     Alabama    3440        1
+    ##  3  2010 2.01e+13        1          63     Alabama    3440        3
+    ##  4  2010 2.01e+13        1          63     Alabama    3440        3
+    ##  5  2010 2.01e+13        1          63     Alabama    3440        3
+    ##  6  2010 2.01e+13        9          16 Connecticut    1161        2
+    ##  7  2010 2.01e+13        9          16 Connecticut    1161        2
+    ##  8  2010 2.01e+13        9          16 Connecticut    1161        2
+    ##  9  2010 2.01e+13        9          16 Connecticut    1161        2
+    ## 10  2010 2.01e+13        9          16 Connecticut    1161        2
+    ## # ... with 64,862 more rows, and 21 more variables: FSSTATUSA <int>,
+    ## #   FSSTATUSC <int>, FSFDSTMP <int>, FSWIC <int>, FSFDBNK <int>,
+    ## #   FSSOUPK <int>, FSPOOR <int>, AGE <int>, SEX <int>, RACE <int>,
+    ## #   MARST <int>, BPL <int>, YRIMMIG <int>, CITIZEN <int>, HISPAN <int>,
+    ## #   EDUC <int>, EMPSTAT <int>, IND <int>, EARNWEEK <dbl>, DIFFANY <int>,
+    ## #   yr_2000 <dbl>
+
+Then we can use group\_by, summarise, and spread to count the number of immigrants before and after 2000.
+
+``` r
+cps_data_2000_wide<-cps_data_2000 %>%
+  group_by(STATE,yr_2000) %>%
+  summarise(count=n()) %>%
+  spread(yr_2000,count)
+
+cps_data_2000_wide
+```
+
+    ## # A tibble: 51 x 3
+    ## # Groups:   STATE [51]
+    ##                   STATE   `0`   `1`
+    ##  *                <chr> <int> <int>
+    ##  1              Alabama    95   108
+    ##  2               Alaska   375   302
+    ##  3              Arizona   672   298
+    ##  4             Arkansas   180   128
+    ##  5           California  8917  3755
+    ##  6             Colorado   745   487
+    ##  7          Connecticut  1210   625
+    ##  8             Delaware   441   358
+    ##  9 District of Columbia   637   405
+    ## 10              Florida  2856  1750
+    ## # ... with 41 more rows
+
+To convert this to a rate, we can use mutate with the above function. Here's the percentage of the immigrant population arriving since 2000. Note that in this case, since your variables will be numbers, R requires tags around them: `1`, not just 1.
+
+``` r
+cps_data_2000_wide<-cps_data_2000 %>%
+  group_by(STATE,yr_2000) %>%
+  summarise(count=n()) %>%
+  spread(yr_2000,count) %>%
+  mutate(total=`0` + `1`,
+         rt2000=`1`/total*100)
+
+cps_data_2000_wide
+```
+
+    ## # A tibble: 51 x 5
+    ## # Groups:   STATE [51]
+    ##                   STATE   `0`   `1` total   rt2000
+    ##                   <chr> <int> <int> <int>    <dbl>
+    ##  1              Alabama    95   108   203 53.20197
+    ##  2               Alaska   375   302   677 44.60857
+    ##  3              Arizona   672   298   970 30.72165
+    ##  4             Arkansas   180   128   308 41.55844
+    ##  5           California  8917  3755 12672 29.63226
+    ##  6             Colorado   745   487  1232 39.52922
+    ##  7          Connecticut  1210   625  1835 34.05995
+    ##  8             Delaware   441   358   799 44.80601
+    ##  9 District of Columbia   637   405  1042 38.86756
+    ## 10              Florida  2856  1750  4606 37.99392
+    ## # ... with 41 more rows
+
+**Question 3 (5 points)** *Adapting the above function, create an estimated food insecurity rate for each state from these data. To do so, you'll need to create counts for each response (food secure, low food security, very low food insecurity), sum the latter two, and divide by the total responses within each state.*
+
+**Question 4 (3 points)** *Create a command that estimates the margin of error for each state based on the national rate you calculated in question 1 and the total responses for each state.*
+
+**Question 5 (3 points)** *Compare the margin of error you calculated for Georgia to the national margin of error. How do they differ? Mathematically, why are they different?*
+
+**Question 6 (5 points)** *Create a column in your state food insecurity estimates that converts each state's food insecurity rate to a z score based on the whole population. What are the z scores for Wisconsin, Washington, and Mississippi? What do those z scores tell you?*
 
 ### Part 3: Sampling
 

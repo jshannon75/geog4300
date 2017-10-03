@@ -11,7 +11,8 @@ z.score<-(29-21)/5.3
 z.score
 
 #You could even convert the whole dataset to z scores
-ACT.scores$z_score<-(ACT.scores$scores-21)/5.3
+ACT.scores$z_score<-(ACT.scores$scores-21)/5.3 #Do it manually
+ACT.scores$z_score2<-scale(ACT.scores$scores) #Use the scale function
 
 #T scores follow a similar logic.
 #Create a dataset of 10 variables with the t-distribution when df=10 (mean=0 and sd=1)
