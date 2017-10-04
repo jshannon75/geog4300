@@ -1,9 +1,9 @@
 ---
 title: 'Geog 4/6300: Lab 3'
 output:
-  github_document: default
-  html_document: default
   pdf_document: default
+  html_document: default
+  github_document: default
 ---
 
 ```{r setup, include=FALSE}
