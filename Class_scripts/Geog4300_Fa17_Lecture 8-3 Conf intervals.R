@@ -5,9 +5,9 @@
 mean<-43
 se<-(6.2/sqrt(174))
 z.score<-qnorm(.975)
-error=(se*z.score)
-CI.lower<-mean-error
-CI.upper<-mean+error
+moe=(se*z.score)
+CI.lower<-mean-moe
+CI.upper<-mean+moe
 #What happens to the CI as the sample size goes up and down?
 
 #Confidence intervals for proportions would require a different standard error calculation.
@@ -15,6 +15,6 @@ CI.upper<-mean+error
 p<-.6475
 se<-sqrt((.6475*(1-.6475))/399)
 z.score<-qnorm(.975)
-error<-se*z.score
-CI.lower<-p-error
-CI.upper<-p+error
+moe<-se*z.score
+CI.lower<-p-moe
+CI.upper<-p+moe
