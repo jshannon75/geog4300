@@ -1,0 +1,101 @@
+---
+title: 'Lab 4: Your responses'
+output:
+  pdf_document: default
+  github_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Your name: {Name here}
+
+In the spaces below, insert your code and/or explanation as notes. Look for the angle brackets-{like these}-for where a response is needed.
+
+When you are done, click on the arrow next to "knit" and choose "Knit as PDF" to save. 
+
+Load the data and the tidyverse package in the code chunk below
+
+```{r data andlibrary}
+library(tidyverse)
+cps_data<-read_csv("https://github.com/jshannon75/geog4300/raw/master/Labs/Lab%204-Normality%20and%20t-tests/IPUMS_CPS_FoodSec.csv")
+```
+
+###Part 1
+
+**Question 1 (4 points)** _To assess the normality of the EARNWEEK variable, do the following: 1) Perform a Shapiro-Wilk normality test on the data. 2) Create a Q-Q plot with a line showing the normal distribution. 3) Create a histogram using ggplot or the base R function._
+
+```{r question_1a}
+#Normality test
+```
+
+```{r question_1b}
+#QQ Plot with normal line
+```
+
+```{r question_1c}
+#Histogram
+```
+
+**Question 2 (2 points)** _Based on the results you saw in question 1, is this variable normally distributed? How do each of those three tests inform your decision?_
+
+Your response here
+
+###Part 2
+
+**Question 3 (2 points)** _Based on the normality of the data, what is the appropriate test for determining if actual household incomes between these two states are significantly different (p=0.05)? Explain why this test is appropriate and give a null and alternative hypothesis for this test_
+
+Your response here
+
+**Question 4 (3 points)** _Create separate data frames for each state and calculate the median or mean (whichever is appropriate) for weekly income in each. Then run the test you identified in question 3._
+
+```{r question 4}
+#Code goes here
+```
+
+**Question 5 (2 points)** _Interpret the results of the analysis you did in question 4. Do you reject the null hypothesis? Why or why not? What can we say about household incomes in these two states?_
+
+Your response here
+
+###Part 3
+
+**Question 6 (2 points)** _Go back to the original CPS dataset and filter for records with valid responses for the weekly earnings variable that are in the Midwest region (see the "Region" variable). Using group_by and summarise, calculate the mean and median income for each state._
+
+```{r question 6}
+#Code goes here
+```
+
+**Question 7 (3 points)** _Conduct your ANOVA test and summarise the results. Then use pairwise.t.test for post hoc testing using the Bonferroni correction._
+
+```{r question 7}
+#Code goes here
+```
+
+**Question 8 (3 points)** _Using your responses from question 6 through 8, summarise the results of this analysis. What was your null hypothesis, and can you reject it? Why or why not? What else can you say about differences between states in this region?_
+
+Your response here
+
+###Part 4
+
+**Question 9 (2 points)** _Go back to the original CPS dataset and filter for records with valid responses to FSFDBNK (<6 on the scale) that are in the Northeast region (see the "Region" variable)._
+
+```{r question 9}
+#Code goes here
+```
+
+**Question 10 (2 points)** _Create a table of responses to the FSFDBNK variable against the state given for each response. Conduct a chi square test on this table._
+
+```{r question 10}
+#Code goes here
+```
+
+**Question 11 (3 points)** _Using a procedure similar to Lab 3, convert the table from question 7 to a data frame, and spread it out based on the household response (e.g., separate columns for 1, 2, 3, 4, and 5). Create new columns for total responses and the percentage of all responses showing some use of emergency food assistance (categories 2-5). Call the data frame when done._
+
+```{r question 11}
+#Code goes here
+```
+
+**Question 12 (2 points)** _Looking at your results from questions 7 and 8, what conclusions can you make? What were your null and alternative hypotheses for this study? Did you reject or confirm the null hypothesis and why? What else can you say about the differences between these states?_
+
+Your response here.
