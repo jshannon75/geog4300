@@ -39,7 +39,7 @@ spokane_crimes_sf<-st_as_sf(spokane_crimes_all,coords=c("Long","Lat"),crs=4326)
 spokaneprecincts_data<-st_read("https://github.com/jshannon75/geog4300/raw/master/Labs/Lab%202_%20Point%20patterns%20and%20quadrat%20analysis/SpokanePrecincts_data.geojson")
 ```
 
-**Question 1 (3 points):** _Using the Offense variable and working with the spokane_crimes_all data, select just murder as the offense type. Using tmap, create a map that shows the location of all reports in the this data frame and the precinct boundaries. See script 6-2 for a model to work from or the example for below._
+**Question 1 (3 points):** _Using the Offense variable and working with the spokane_crimes_all data, select just murder as the offense type. Using tmap, create a map that shows the location of all reports in the this data frame and the precinct boundaries. See script 6-2 for a model to work from._
 
 ```{r q1 example, message=FALSE}
 library(tmap)
@@ -52,9 +52,9 @@ tm_shape(sample_crimes) +
   tm_dots("Offense",palette=c("red","blue"))
 ```
 
-**Question 2 (2 points):** _Create a new data frame with the mean centers for each type of crime listed in the spokane_crime_sf data frame._ 
+**Question 2 (4 points):** _Create a new data frame with the mean centers for each type of crime listed in the spokane_crime_sf data frame. Then map the mean centers you created using tmap. To do so, you'll need to use st_as_sf to convert your new data frame to sf format. Use tm_dots to show the points in different colors, as in the example above (though here you're showing only the mean centers). Also use tm_legend to make sure your legend is outside the bounding box as shown in class._
 
-**Question 3 (3 points):** _Map the mean centers you created in question 2 using tmap. To do so, you'll need to use st_as_sf to convert your new data frame to sf format. Use tm_dots to show the points in different colors, as in the example above (though here you're showing only the mean centers)._
+**Question 3 (2 points):** _Explain the code you used in question 2 to calculate your mean centers. What does each line of the code do to the data?_
 
 **Question 4 (2 points)** _Interpret how geographic differences between the mean centers you calculated are meaningful. What do they tell you about the locations of these crimes?_
 
@@ -67,9 +67,9 @@ The precinct data frame has the number of crimes in each precinct. Crimes are co
 
 Use the mutate command from the tidyverse to create this variable.
 
-**Question 6 (5 points)** _Select just the precinct number and burglary rate from the precincts data frame. Then create a new variable for this rate using the formula above. Then do the following: 1) Call your dataset once you've created it to show your results. 2) Create a histogram using ggplot showing the distribution of these data. 3) Map the rates using tmap._
+**Question 6 (4 points)** _Select just the precinct number and burglary rate from the precincts data frame. Then create a new variable for this rate using the formula above. Then do the following: 1) Call your dataset once you've created it to show your results. 2) Create a histogram using ggplot showing the distribution of these data. 3) Map the rates using tmap._
 
-**Question 7 (2 points)** _The burglary rate for the city of Spokane in this dataset is 10,639 per 100,000 residents. Using this figure, calculate the location quotient for burglary in each precinct within the city._
+**Question 7 (3 points)** _The burglary rate for the city of Spokane in this dataset is 10,639 per 100,000 residents. Using this figure, calculate the location quotient for burglary in each precinct within the city. Use the min and max functions to identify the minimum and maximum values for the location quotient. Then explain what each of these values tell you about the pattern of burglary in those two precincts compared to the city as a whole._
 
 ###Part 3: Quadrat analysis###
 You can also use the spatstat package to create a ppp object for your robbery data.

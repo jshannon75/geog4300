@@ -28,7 +28,7 @@ cps_data<-read_csv("https://github.com/jshannon75/geog4300/raw/master/Labs/Lab%2
 #Calculate the national food insecurity rate following the steps above.
 ```
 
-**Question 2 (3 points)** _Using the formula for confidence intervals for proportions shown in class, calculate a confidence interval for the rate you identified in question 3. Interpret what that confidence interval tells you._
+**Question 2 (3 points)** _Using the formula for confidence intervals for proportions shown in class, calculate a confidence interval for the rate you identified in question 1. Interpret what that confidence interval tells you._
 
 ```{r question2}
 #Calculate the margin of error

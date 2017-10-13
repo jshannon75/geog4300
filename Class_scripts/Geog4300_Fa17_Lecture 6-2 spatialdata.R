@@ -77,14 +77,15 @@ tm_shape(GA_cities)+
   tm_bubbles(size=0.5)+
   tm_text("Name",ymod=1) #Adds a text label above the dot
   
-#Add scale bar and north arrow
+#Add scale bar and north arrow. Make sure legend is outside the box
 tm_shape(ACSctydata_ga)+
   tm_polygons("POV_POP_PC", title="% in poverty")+
 tm_shape(GA_cities)+
   tm_bubbles(size=0.5)+
   tm_text("Name",ymod=1)+
 tm_compass()+
-tm_scale_bar(position="left")
+tm_scale_bar(position="left")+
+tm_legend(legend.outside=TRUE)
 
 #Create a small multiples map for our race variables. There's several ways to do this.
 #The easiest is simply to list multiple variables

@@ -48,7 +48,7 @@ For this response, look at the FSSTATUS variable, which describes the food secur
 
 **Question 1 (4 points)** *Using the information on this variable in the codebook (p. 12), create a subset of records without the NIU or missing response records. Then use group\_by and summarise to calculate the number of individuals grouped in each status as shown above. Use the resulting data frame to calculate an estimate of the national food insecurity rate.*
 
-**Question 2 (3 points)** *Using the formula for confidence intervals for proportions shown in class, calculate a confidence interval for the rate you identified in question 3. Interpret what that confidence interval tells you.*
+**Question 2 (3 points)** *Using the formula for confidence intervals for proportions shown in class, calculate a confidence interval for the rate you identified in question 1. Interpret what that confidence interval tells you.*
 
 ### Part 2: Analyzing state food insecurity data
 
