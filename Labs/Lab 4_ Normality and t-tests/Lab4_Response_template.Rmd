@@ -17,9 +17,9 @@ When you are done, click on the arrow next to "knit" and choose "Knit as PDF" to
 
 Load the data and the tidyverse package in the code chunk below
 
-```{r data andlibrary}
+```{r message=FALSE }
 library(tidyverse)
-cps_data<-read_csv("https://github.com/jshannon75/geog4300/raw/master/Labs/Lab%204-Normality%20and%20t-tests/IPUMS_CPS_FoodSec.csv")
+cps_data<-read_csv("https://github.com/jshannon75/geog4300/raw/master/Labs/Lab%204_%20Normality%20and%20t-tests/IPUMS_CPS_FoodSec.csv")
 ```
 
 ###Part 1

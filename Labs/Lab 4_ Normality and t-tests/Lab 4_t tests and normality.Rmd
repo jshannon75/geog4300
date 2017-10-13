@@ -25,7 +25,7 @@ First, load the CPS data:
 
 ```{r message=FALSE}
 library(tidyverse)
-cps_data<-read_csv("https://github.com/jshannon75/geog4300/raw/master/Labs/Lab%204-Normality%20and%20t-tests/IPUMS_CPS_FoodSec.csv")
+cps_data<-read_csv("https://github.com/jshannon75/geog4300/raw/master/Labs/Lab%204_%20Normality%20and%20t-tests/IPUMS_CPS_FoodSec.csv")
 ```
 
 We're going to look at the variable for average weekly income: EARNWEEK. Filter these data so you have only valid responses, removing any observations with a value of 9999.99. Then filter for only those responses from the states of New York and New Jersey. Now let's test the normality of this variable.
@@ -46,7 +46,7 @@ Based on the results of question one, test whether the incomes of survey respond
 
 ###Part 3: Testing income across multiple states using ANOVA###
 
-Go back to the CPS data and select data for just the states in the **Midwest** Region (the "Region" variable). Using ANOVA test, we can test for differences across these states. For the purposes of this section, we will assume these data are normally distributed.
+Go back to the CPS data and select data for just the states in the _**Midwest**_ Region (the "Region" variable). Using ANOVA test, we can test for differences across these states. For the purposes of this section, we will assume these data are normally distributed.
 
 **Question 6 (2 points)** _Go back to the original CPS dataset and filter for records with valid responses for the weekly earnings variable that are in the Midwest region (see the "Region" variable). Using group_by and summarise, calculate the mean and median income for each state._
 
@@ -56,7 +56,7 @@ Go back to the CPS data and select data for just the states in the **Midwest** R
 
 ###Part 4: Analyzing different in accessing food assistance###
 
-While the U.S. Census regularly provides data on use of SNAP/Food stamp benefits, the CPS provides data on other emergency food sources. Here, you will look at use of emergency food from a church, food pantry, or food bank over the last year (FSFDBNK) in the **Northeast** Region.
+While the U.S. Census regularly provides data on use of SNAP/Food stamp benefits, the CPS provides data on other emergency food sources. Here, you will look at use of emergency food from a church, food pantry, or food bank over the last year (FSFDBNK) in the _**Northeast**_ Region.
 
 **Question 9 (2 points)** _Go back to the original CPS dataset and filter for records with valid responses to FSFDBNK (<6 on the scale) that are in the Northeast region (see the "Region" variable)._
 
