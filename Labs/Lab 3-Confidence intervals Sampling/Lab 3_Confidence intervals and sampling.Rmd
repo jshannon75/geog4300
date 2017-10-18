@@ -81,7 +81,7 @@ cps_data_2000_wide
 
 **Question 3 (5 points)** _Adapting the above function, create an estimated food insecurity rate for each state from these data. To do so, you'll need to create counts for each response (food secure, low food security, very low food insecurity), sum the latter two, and divide by the total responses within each state._
 
-**Question 4 (3 points)** _Create a command that estimates the margin of error for each state based on the national rate you calculated in question 1 and the total responses for each state._
+**Question 4 (3 points)** _Create a command that estimates the margin of error for each state based on the national rate you calculated in question 1 and the total responses for each state. Then write a short explanation of your code, the purpose of each function you used._
 
 **Question 5 (3 points)** _Compare the margin of error you calculated for Georgia to the national margin of error. How do they differ? Mathematically, why are they different?_
 
