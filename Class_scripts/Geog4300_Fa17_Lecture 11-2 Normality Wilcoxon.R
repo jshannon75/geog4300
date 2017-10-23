@@ -21,6 +21,8 @@ qqnorm(test2); qqline(test2)
 acsdata<-read_csv("https://github.com/jshannon75/geog4300/raw/master/Data/ACSCtyData_2014ACS.csv") %>%
   select(c(cty_name,St_name,wht_pop_pct:nat_ins_pct))
 
+
+###Wilcoxon tests
 #The wilcox.test command does both Wilcoxon tests.
 #Here's the rank sum example using lecture data
 el.nino<-c(0, 5,1,3, 4, 1, 2, 2, 0, 2, 4)
