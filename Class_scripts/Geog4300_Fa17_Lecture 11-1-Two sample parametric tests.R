@@ -46,3 +46,17 @@ t.test(stream.1990, stream.2010, paired=TRUE)
 #How does this compare to a regular t.test?
 t.test(stream.1990, stream.2010)
 
+
+##Let's try it!
+
+#Let's compare liters of coffee sold on campus per 100 students each day.
+#Assume the data is normal. Is there a difference?
+
+uga<-c(12.4, 13.9, 14.6, 11.3, 18.1, 15.2, 13.9)
+tech<-c(10.7, 11.1, 16.2, 12.5, 10.8, 16.7, 12.7)
+
+#Pollution levels in multiple California towns were measured before and after new guidlines. 
+#These levels are normally distributed at the state level. #Did pollution go down?
+
+prepolicy<-c(398,413,521,645,513,310)
+postpolicy<-c(375,403,410,552,406,308)
