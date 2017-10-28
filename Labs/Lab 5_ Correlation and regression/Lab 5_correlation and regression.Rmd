@@ -22,14 +22,14 @@ This lab introduces you to NHGIS and the type of analysis you'll be doing in you
 ###Part 1: Importing data and descriptive statistics###
 For this lab, we'll be looking at American Community Survey data for congressional precincts from the 2011-2015 pooled sample. You can access this and pretty much all census data through the IPUMS NHGIS website: https://www.nhgis.org. For this lab, the data's already been downloaded for you. The boundary file has also been simplified to speed plotting of the data.
 
-There's three file for you to use in this analysis: [a codebook with metadata](), a csv file, and a GIS boundary file in geojson format. You can load the two files using the following commands. You'll also need to load the development version of ggplot for plotting spatial data.
+There's three file for you to use in this analysis: [a codebook with metadata](https://github.com/jshannon75/geog4300/raw/master/Labs/Lab%205_%20Correlation%20and%20regression/nhgis0052_ds215_20155_2015_cd113th-114th_codebook.txt), a csv file, and a GIS boundary file in geojson format. You can load the two files using the following commands. You'll also need to load the development version of ggplot for plotting spatial data, so uncomment that line if you haven't done it already.
 
-```{r sf_data}
-devtools::install_github("tidyverse/ggplot2") #Allows mapping of sf objects
+```{r message=FALSE}
+#devtools::install_github("tidyverse/ggplot2") #Allows mapping of sf objects
 library(sf)
 library(tidyverse)
-census_data<-read_csv("nhgis0052_ds215_20155_2015_cd113th-114th.csv")
-census_shape<-st_read("districts_2012.geojson")
+census_data<-read_csv("https://github.com/jshannon75/geog4300/raw/master/Labs/Lab%205_%20Correlation%20and%20regression/nhgis0052_ds215_20155_2015_cd113th-114th.csv")
+census_shape<-st_read("https://github.com/jshannon75/geog4300/raw/master/Labs/Lab%205_%20Correlation%20and%20regression/districts_2012.geojson")
 ```
 
 The development version of ggplot allows you to map sf data. See how it works in this example. Notice that coord_sf allows you to set a projection for the data (Albers equal area conic in this example, which has a crs number of 5070).
@@ -80,7 +80,7 @@ ggplot(census_shape)+
   scale_fill_viridis()
 ```
 
-**Question 2 (4 points)** _Use left_join to connect your district table from question 1 with the geographic boundaries you imported in question 1. Use select to choose the four census rate variables and the polsby variable. Scale the census variables to create z scores. Then use gather to transform the four scaled census variables to long format so you can plot them._
+**Question 2 (4 points)** _Use left_join to connect your district table from question 1 with the geographic boundaries you imported in question 1. Use select to choose the four census rate variables and the polsby variable. Scale the census variables to create z scores. Then use gather to transform the four scaled census variables to long format so you can plot them. Call the table when done._
 
 **Question 3 (2 points)** _Using facet_wrap with ggplot, plot the distribution of each of the four scaled census variables on a single small multiples map using the Albers conic projection._
 

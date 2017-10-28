@@ -14,74 +14,17 @@ Correlation and regression
 
 For this lab, we'll be looking at American Community Survey data for congressional precincts from the 2011-2015 pooled sample. You can access this and pretty much all census data through the IPUMS NHGIS website: <https://www.nhgis.org>. For this lab, the data's already been downloaded for you. The boundary file has also been simplified to speed plotting of the data.
 
-There's three file for you to use in this analysis: [a codebook with metadata](), a csv file, and a GIS boundary file in geojson format. You can load the two files using the following commands. You'll also need to load the development version of ggplot for plotting spatial data.
+There's three file for you to use in this analysis: [a codebook with metadata](https://github.com/jshannon75/geog4300/raw/master/Labs/Lab%205_%20Correlation%20and%20regression/nhgis0052_ds215_20155_2015_cd113th-114th_codebook.txt), a csv file, and a GIS boundary file in geojson format. You can load the two files using the following commands. You'll also need to load the development version of ggplot for plotting spatial data, so uncomment that line if you haven't done it already.
 
 ``` r
-devtools::install_github("tidyverse/ggplot2") #Allows mapping of sf objects
-```
-
-    ## Skipping install of 'ggplot2' from a github remote, the SHA1 (ffb40f3f) has not changed since last install.
-    ##   Use `force = TRUE` to force installation
-
-``` r
+#devtools::install_github("tidyverse/ggplot2") #Allows mapping of sf objects
 library(sf)
-```
-
-    ## Linking to GEOS 3.6.1, GDAL 2.2.0, proj.4 4.9.3
-
-``` r
 library(tidyverse)
+census_data<-read_csv("https://github.com/jshannon75/geog4300/raw/master/Labs/Lab%205_%20Correlation%20and%20regression/nhgis0052_ds215_20155_2015_cd113th-114th.csv")
+census_shape<-st_read("https://github.com/jshannon75/geog4300/raw/master/Labs/Lab%205_%20Correlation%20and%20regression/districts_2012.geojson")
 ```
 
-    ## Loading tidyverse: ggplot2
-    ## Loading tidyverse: tibble
-    ## Loading tidyverse: tidyr
-    ## Loading tidyverse: readr
-    ## Loading tidyverse: purrr
-    ## Loading tidyverse: dplyr
-
-    ## Conflicts with tidy packages ----------------------------------------------
-
-    ## filter(): dplyr, stats
-    ## lag():    dplyr, stats
-
-``` r
-census_data<-read_csv("nhgis0052_ds215_20155_2015_cd113th-114th.csv")
-```
-
-    ## Parsed with column specification:
-    ## cols(
-    ##   .default = col_integer(),
-    ##   GISJOIN = col_character(),
-    ##   YEAR = col_character(),
-    ##   REGIONA = col_character(),
-    ##   DIVISIONA = col_character(),
-    ##   STATE = col_character(),
-    ##   STATEA = col_character(),
-    ##   COUNTYA = col_character(),
-    ##   COUSUBA = col_character(),
-    ##   PLACEA = col_character(),
-    ##   TRACTA = col_character(),
-    ##   BLKGRPA = col_character(),
-    ##   CONCITA = col_character(),
-    ##   AIANHHA = col_character(),
-    ##   RES_ONLYA = col_character(),
-    ##   TRUSTA = col_character(),
-    ##   AITSCEA = col_character(),
-    ##   ANRCA = col_character(),
-    ##   CBSAA = col_character(),
-    ##   CSAA = col_character(),
-    ##   METDIVA = col_character()
-    ##   # ... with 17 more columns
-    ## )
-
-    ## See spec(...) for full column specifications.
-
-``` r
-census_shape<-st_read("districts_2012.geojson")
-```
-
-    ## Reading layer `districts2012' from data source `C:\Users\jshannon\Dropbox\Jschool\Teaching\Courses\Geog4300_6300 Fall 17\Labs_old\Lab 5_ Correlation and regression\districts_2012.geojson' using driver `GeoJSON'
+    ## Reading layer `districts2012' from data source `https://github.com/jshannon75/geog4300/raw/master/Labs/Lab%205_%20Correlation%20and%20regression/districts_2012.geojson' using driver `GeoJSON'
     ## Simple feature collection with 433 features and 20 fields
     ## geometry type:  MULTIPOLYGON
     ## dimension:      XY
@@ -130,7 +73,7 @@ ggplot(census_shape)+
   scale_fill_viridis()
 ```
 
-![](Lab_5_correlation_and_regression_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-1-1.png)
+![](Lab_5_correlation_and_regression_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-2-1.png)
 
 Note that here, we're using scale\_fill\_viridis from the viridis library, which imports the color schemes of Matlab. You can use that as well if you'd like.
 
@@ -146,9 +89,9 @@ ggplot(census_shape)+
   scale_fill_viridis()
 ```
 
-![](Lab_5_correlation_and_regression_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-2-1.png)
+![](Lab_5_correlation_and_regression_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-3-1.png)
 
-**Question 2 (4 points)** *Use left\_join to connect your district table from question 1 with the geographic boundaries you imported in question 1. Use select to choose the four census rate variables and the polsby variable. Scale the census variables to create z scores. Then use gather to transform the four scaled census variables to long format so you can plot them.*
+**Question 2 (4 points)** *Use left\_join to connect your district table from question 1 with the geographic boundaries you imported in question 1. Use select to choose the four census rate variables and the polsby variable. Scale the census variables to create z scores. Then use gather to transform the four scaled census variables to long format so you can plot them. Call the table when done.*
 
 **Question 3 (2 points)** *Using facet\_wrap with ggplot, plot the distribution of each of the four scaled census variables on a single small multiples map using the Albers conic projection.*
 
