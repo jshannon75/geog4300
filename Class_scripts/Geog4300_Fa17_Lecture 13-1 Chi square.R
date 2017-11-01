@@ -16,6 +16,10 @@ survey<-cbind(car, transit, walk)
 chisq.test(survey)
 
 #In class challenge: Look at the "tornado_points" data from earlier in the semester
+
+library(tidyverse)
+tornado.points<-read_csv("https://github.com/jshannon75/geog4300/raw/master/Data/tornado_points.csv")
+
 #Is there a difference in the severity of tornados (MAG) across states (ST)?
-#You will have to create a table of counts for each MAG category
+#You will have to create a table of counts for each MAG category using the table function or group_by/summarise.
 #Then run the chi-squared test
