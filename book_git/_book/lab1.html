@@ -33,7 +33,7 @@
   
   
 <link rel="prev" href="index.html">
-<link rel="next" href="j-note-next-time-separate-into-separate-questions.html">
+<link rel="next" href="lab2.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -101,12 +101,17 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <ul class="summary">
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Prerequisites</a></li>
 <li class="chapter" data-level="2" data-path="lab1.html"><a href="lab1.html"><i class="fa fa-check"></i><b>2</b> Loading data into R, data transformation, and summary statistics</a><ul>
-<li class="chapter" data-level="2.0.1" data-path="lab1.html"><a href="lab1.html#procedure"><i class="fa fa-check"></i><b>2.0.1</b> Procedure:</a></li>
-<li class="chapter" data-level="2.0.2" data-path="lab1.html"><a href="lab1.html#question-2"><i class="fa fa-check"></i><b>2.0.2</b> Question 2</a></li>
-<li class="chapter" data-level="2.0.3" data-path="lab1.html"><a href="lab1.html#question-3"><i class="fa fa-check"></i><b>2.0.3</b> Question 3</a></li>
-<li class="chapter" data-level="2.0.4" data-path="lab1.html"><a href="lab1.html#questions-4-6"><i class="fa fa-check"></i><b>2.0.4</b> Questions 4-6</a></li>
+<li class="chapter" data-level="2.1" data-path="lab1.html"><a href="lab1.html#procedure"><i class="fa fa-check"></i><b>2.1</b> Procedure:</a></li>
+<li class="chapter" data-level="2.2" data-path="lab1.html"><a href="lab1.html#question-2"><i class="fa fa-check"></i><b>2.2</b> Question 2</a></li>
+<li class="chapter" data-level="2.3" data-path="lab1.html"><a href="lab1.html#question-3"><i class="fa fa-check"></i><b>2.3</b> Question 3</a></li>
+<li class="chapter" data-level="2.4" data-path="lab1.html"><a href="lab1.html#questions-4-6"><i class="fa fa-check"></i><b>2.4</b> Questions 4-6</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="j-note-next-time-separate-into-separate-questions.html"><a href="j-note-next-time-separate-into-separate-questions.html"><i class="fa fa-check"></i><b>3</b> J note: next time separate into separate questions</a></li>
+<li class="chapter" data-level="3" data-path="lab2.html"><a href="lab2.html"><i class="fa fa-check"></i><b>3</b> Spatial statistics and probability distributions</a><ul>
+<li class="chapter" data-level="3.1" data-path="lab2.html"><a href="lab2.html#part-1-mapping-the-data-and-its-distribution"><i class="fa fa-check"></i><b>3.1</b> Part 1: mapping the data and its distribution</a></li>
+<li class="chapter" data-level="3.2" data-path="lab2.html"><a href="lab2.html#part-2-crime-rates"><i class="fa fa-check"></i><b>3.2</b> Part 2: Crime rates</a></li>
+<li class="chapter" data-level="3.3" data-path="lab2.html"><a href="lab2.html#part-3-quadrat-analysis"><i class="fa fa-check"></i><b>3.3</b> Part 3: Quadrat analysis</a></li>
+<li class="chapter" data-level="3.4" data-path="lab2.html"><a href="lab2.html#part-4-probability"><i class="fa fa-check"></i><b>3.4</b> Part 4: Probability</a></li>
+</ul></li>
 </ul>
 
       </nav>
@@ -148,23 +153,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li>lat: Latitude of the point</li>
 </ul>
 <p>These labs are meant to be done collaboratively, but your final submission should demonstrate your own original thought (don’t just copy your classmate’s work or turn in identical assignments). Your answers to the lab questions should be typed in the provided RMarkdown template and turned in using the Assignment Dropbox on the ELC site.</p>
-<div id="procedure" class="section level3">
-<h3><span class="header-section-number">2.0.1</span> Procedure:</h3>
+<div id="procedure" class="section level2">
+<h2><span class="header-section-number">2.1</span> Procedure:</h2>
 <p>Load the tidyverse package and import the data from GitHub:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidyverse)</code></pre></div>
-<pre><code>## Loading tidyverse: ggplot2
-## Loading tidyverse: tibble
-## Loading tidyverse: tidyr
-## Loading tidyverse: readr
-## Loading tidyverse: purrr
-## Loading tidyverse: dplyr</code></pre>
-<pre><code>## Warning: package &#39;tidyr&#39; was built under R version 3.4.2</code></pre>
-<pre><code>## Warning: package &#39;purrr&#39; was built under R version 3.4.2</code></pre>
-<pre><code>## Warning: package &#39;dplyr&#39; was built under R version 3.4.2</code></pre>
-<pre><code>## Conflicts with tidy packages ----------------------------------------------</code></pre>
-<pre><code>## filter(): dplyr, stats
-## lag():    dplyr, stats</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Daymet_Cty_Summary_2005_2015 &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;https://github.com/jshannon75/geog4300/raw/master/Labs/Lab%201_%20Descriptive%20stats/Daymet_Cty_Summary_2005_2015.csv&quot;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidyverse)
+Daymet_Cty_Summary_2005_2015 &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;https://github.com/jshannon75/geog4300/raw/master/Labs/Lab%201_%20Descriptive%20stats/Daymet_Cty_Summary_2005_2015.csv&quot;</span>)</code></pre></div>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   gisjn_cty = col_character(),
@@ -186,8 +179,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>After loading the file into R, closely examine each variable.</p>
 <p><em><strong>Question 1 task (4 points):</strong> Provide an example of nominal, ordinal, interval, and ratio data within this dataset. Explain why each fits in the level of measurement you chose in a sentence or two . If you cannot find an example for one of these four data types (no nominal variables, for example), given an example of climate data that would fit this type.</em></p>
 </div>
-<div id="question-2" class="section level3">
-<h3><span class="header-section-number">2.0.2</span> Question 2</h3>
+<div id="question-2" class="section level2">
+<h2><span class="header-section-number">2.2</span> Question 2</h2>
 <p>There are a lot of observations here, 413,820 to be exact. To get a better grasp on it, we can use group_by and summarise in the tidyverse package. Here’s an example.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Daymet_Cty_Summary_2005_2015 %&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="kw">group_by</span>(Region) %&gt;%<span class="st"> </span>
@@ -221,8 +214,8 @@ daymet_climatechg</code></pre></div>
 ## # ... with 413,810 more rows</code></pre>
 <p>*<strong>Question 2 task (3 points):</strong> Calculate the mean and standard deviation for the original minimum temperature variable and a new one two degrees higher, grouping these by each census region as shown above. How do these compare? Explain any similarities or differences you find.</p>
 </div>
-<div id="question-3" class="section level3">
-<h3><span class="header-section-number">2.0.3</span> Question 3</h3>
+<div id="question-3" class="section level2">
+<h2><span class="header-section-number">2.3</span> Question 3</h2>
 <p>You can also create a table showing summary statistics for each variable. For example, if you wanted to know the mean, median, standard deviation coefficient of variation (CV), and IQR for the tmax variable, you can use group_by and summarise:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">daymet_summarystats&lt;-Daymet_Cty_Summary_2005_2015 %&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="kw">group_by</span>(Region) %&gt;%
@@ -241,8 +234,8 @@ daymet_summarystats</code></pre></div>
 ## 4      West Region  16.11225 16.12500 10.504552 0.6519604 16.38602</code></pre>
 <p><em><strong>Question 3 task (6 points):</strong> Adapting the script above, create a data frame that shows the mean, median, standard deviation, CV, and IQR for the <em><strong>prcp</strong></em> variable. Based on these data, are these data skewed or roughly normal in distribution? Which measures of central tendency and dispersion should you use as a result?</em></p>
 </div>
-<div id="questions-4-6" class="section level3">
-<h3><span class="header-section-number">2.0.4</span> Questions 4-6</h3>
+<div id="questions-4-6" class="section level2">
+<h2><span class="header-section-number">2.4</span> Questions 4-6</h2>
 <p>We can also look at variables over time. For instance, we can use facet_wrap with boxplot to see how the distribution of maximum temperatures varies by region:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(Daymet_Cty_Summary_2005_2015, <span class="kw">aes</span>(<span class="dt">x=</span>year,<span class="dt">y=</span>tmax,<span class="dt">group=</span>year))+
 <span class="st">  </span><span class="kw">geom_boxplot</span>()+
@@ -316,6 +309,15 @@ daymet_july</code></pre></div>
 ## #   CTY_NAME &lt;chr&gt;, State &lt;chr&gt;, Region &lt;chr&gt;, Division &lt;chr&gt;, Lon &lt;dbl&gt;,
 ## #   Lat &lt;dbl&gt;</code></pre>
 <p><em><strong>Question 4 task (3 points):</strong> Adapt the above command to create a new data frame, changing “July” to a month of your choosing and using tmin (rather than tmax) as your variable of interest. You should also be sure to keep the region and year variables for use in question 5. You’ll need two commands–one to create the data frame and another to “call” it, just like you see above.</em></p>
+<p><em><strong>Question 5 task (9 points):</strong> With your subsetted data, create the three graphs below using the graphs listed earlier as a guide. You may need to further transform the data in order to make each graph.</em></p>
+<ul>
+<li><em>Create a box plot showing the value distribution for tmin in each of the four regions over all 10 years.</em></li>
+<li><em>Create a line chart showing the median value of tmin for each region over all 10 years.</em></li>
+<li><em>Create a faceted density plot like the one above showing the distribution of median minimum temperatures for all regions.</em></li>
+</ul>
+<p>Don’t worry about things like column names or customization for now—these will be addressed in lab 2.</p>
+<p><em><strong>Question 6 task (5 points):</strong> Each of the three graphics you created above tells a particular story about the data. What does each of these graphics tell us about the data? How do they differ from one another in what they communicate? Use details to illustrate your points.</em></p>
+
 </div>
 </div>
             </section>
@@ -324,7 +326,7 @@ daymet_july</code></pre></div>
         </div>
       </div>
 <a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="j-note-next-time-separate-into-separate-questions.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="lab2.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

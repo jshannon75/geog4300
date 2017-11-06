@@ -26,7 +26,7 @@ This lab is intended to assess your ability to use R to load data and to generat
 
 These labs are meant to be done collaboratively, but your final submission should demonstrate your own original thought (don’t just copy your classmate’s work or turn in identical assignments). Your answers to the lab questions should be typed in the provided RMarkdown template and turned in using the Assignment Dropbox on the ELC site. 
 
-###Procedure:
+##Procedure:
 
 Load the tidyverse package and import the data from GitHub: 
 
@@ -39,7 +39,7 @@ After loading the file into R, closely examine each variable.
 
 ***Question 1 task (4 points):** Provide an example of nominal, ordinal, interval, and ratio data within this dataset. Explain why each fits in the level of measurement you chose in a sentence or two . If you cannot find an example for one of these four data types (no nominal variables, for example), given an example of climate data that would fit this type.*
 
-###Question 2
+##Question 2
 
 There are a lot of observations here, 413,820 to be exact. To get a better grasp on it, we can use group_by and summarise in the tidyverse package. Here's an example.
 
@@ -63,7 +63,7 @@ daymet_climatechg
 
 ***Question 2 task (3 points):** Calculate the mean and standard deviation for the original minimum temperature variable and a new one two degrees higher, grouping these by each census region as shown above. How do these compare? Explain any similarities or differences you find.
 
-###Question 3
+##Question 3
 
 You can also create a table showing summary statistics for each variable. For example, if you wanted to know the mean, median, standard deviation coefficient of variation (CV), and IQR for the tmax variable, you can use group_by and summarise:
 
@@ -80,7 +80,7 @@ daymet_summarystats
 
 ***Question 3 task (6 points):** Adapting the script above, create a data frame that shows the mean, median, standard deviation, CV, and IQR for the _**prcp**_ variable. Based on these data, are these data skewed or roughly normal in distribution? Which measures of central tendency and dispersion should you use as a result?*
 
-###Questions 4-6
+##Questions 4-6
 
 We can also look at variables over time. For instance, we can use facet_wrap with boxplot to see how the distribution of maximum temperatures varies by region:
 
@@ -130,7 +130,6 @@ daymet_july
 
 ***Question 4 task (3 points):** Adapt the above command to create a new data frame, changing “July” to a month of your choosing and using tmin (rather than tmax) as your variable of interest. You should also be sure to keep the region and year variables for use in question 5. You'll need two commands--one to create the data frame and another to "call" it, just like you see above.*
 
-#J note: next time separate into separate questions#
 ***Question 5 task (9 points):** With your subsetted data, create the three graphs below using the graphs listed earlier as a guide. You may need to further transform the data in order to make each graph.*
 
 * *Create a box plot showing the value distribution for tmin in each of the four regions over all 10 years.* 

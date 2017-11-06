@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Labs</title>
+  <meta name="description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook.">
+  <meta name="generator" content="bookdown 0.5.4 and GitBook 2.6.7">
+
+  <meta property="og:title" content="Labs" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Labs" />
+  
+  <meta name="twitter:description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
+  
+
+<meta name="author" content="Jerry Shannon">
+
+
+<meta name="date" content="2017-11-06">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="lab1.html">
+
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Prerequisites</a></li>
+<li class="chapter" data-level="2" data-path="lab1.html"><a href="lab1.html"><i class="fa fa-check"></i><b>2</b> Loading data into R, data transformation, and summary statistics</a><ul>
+<li class="chapter" data-level="2.1" data-path="lab1.html"><a href="lab1.html#procedure"><i class="fa fa-check"></i><b>2.1</b> Procedure:</a></li>
+<li class="chapter" data-level="2.2" data-path="lab1.html"><a href="lab1.html#question-2"><i class="fa fa-check"></i><b>2.2</b> Question 2</a></li>
+<li class="chapter" data-level="2.3" data-path="lab1.html"><a href="lab1.html#question-3"><i class="fa fa-check"></i><b>2.3</b> Question 3</a></li>
+<li class="chapter" data-level="2.4" data-path="lab1.html"><a href="lab1.html#questions-4-6"><i class="fa fa-check"></i><b>2.4</b> Questions 4-6</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="lab2.html"><a href="lab2.html"><i class="fa fa-check"></i><b>3</b> Spatial statistics and probability distributions</a><ul>
+<li class="chapter" data-level="3.1" data-path="lab2.html"><a href="lab2.html#part-1-mapping-the-data-and-its-distribution"><i class="fa fa-check"></i><b>3.1</b> Part 1: mapping the data and its distribution</a></li>
+<li class="chapter" data-level="3.2" data-path="lab2.html"><a href="lab2.html#part-2-crime-rates"><i class="fa fa-check"></i><b>3.2</b> Part 2: Crime rates</a></li>
+<li class="chapter" data-level="3.3" data-path="lab2.html"><a href="lab2.html#part-3-quadrat-analysis"><i class="fa fa-check"></i><b>3.3</b> Part 3: Quadrat analysis</a></li>
+<li class="chapter" data-level="3.4" data-path="lab2.html"><a href="lab2.html#part-4-probability"><i class="fa fa-check"></i><b>3.4</b> Part 4: Probability</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Labs</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="lab2" class="section level1">
+<h1><span class="header-section-number">3</span> Spatial statistics and probability distributions</h1>
+<p><strong>Due:</strong> Wednesday, Oct. 4</p>
+<p><strong>Value:</strong> 30 points</p>
+<p><strong>Overview:</strong> This lab has four main sections: mapping point patterns, calculating rates and location quotients, quadrat analysis, and probability distributions. Your answers to the lab questions should be typed in the response template and turned in using the Assignment Dropbox on the ELC site.</p>
+<div id="part-1-mapping-the-data-and-its-distribution" class="section level2">
+<h2><span class="header-section-number">3.1</span> Part 1: mapping the data and its distribution</h2>
+<p>The lab folder on Google Drive has three files related to crime data for Spokane, Washington.</p>
+<ul>
+<li><p>“Spokane_crimes_all” has data for every crime committed in from 2000-2015.</p></li>
+<li><p>“SpokanePrecincts_data” has precinct boundaries, crime counts, the 2010 population of blocks in those precincts. Note: this is saved as a geojson file, which similar to a shapefile but more compact.</p></li>
+</ul>
+<p>You can load each file using the commands below, using st_as_sf to convert the crimes to spatial data</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidyverse)
+<span class="kw">library</span>(sf)
+spokane_crimes_all&lt;-<span class="kw">read_csv</span>(<span class="st">&quot;https://github.com/jshannon75/geog4300/raw/master/Labs/Lab%202_%20Point%20patterns%20and%20quadrat%20analysis/Spokane_crimes_all.csv&quot;</span>)
+
+spokane_crimes_sf&lt;-<span class="kw">st_as_sf</span>(spokane_crimes_all,<span class="dt">coords=</span><span class="kw">c</span>(<span class="st">&quot;Long&quot;</span>,<span class="st">&quot;Lat&quot;</span>),<span class="dt">crs=</span><span class="dv">4326</span>)
+
+spokaneprecincts_data&lt;-<span class="kw">st_read</span>(<span class="st">&quot;https://github.com/jshannon75/geog4300/raw/master/Labs/Lab%202_%20Point%20patterns%20and%20quadrat%20analysis/SpokanePrecincts_data.geojson&quot;</span>)</code></pre></div>
+<pre><code>## Reading layer `SpokanePrecincts_data&#39; from data source `https://github.com/jshannon75/geog4300/raw/master/Labs/Lab%202_%20Point%20patterns%20and%20quadrat%20analysis/SpokanePrecincts_data.geojson&#39; using driver `GeoJSON&#39;
+## Simple feature collection with 117 features and 14 fields
+## geometry type:  MULTIPOLYGON
+## dimension:      XY
+## bbox:           xmin: -117.5215 ymin: 47.5871 xmax: -117.3039 ymax: 47.7588
+## epsg (SRID):    4326
+## proj4string:    +proj=longlat +datum=WGS84 +no_defs</code></pre>
+<p><strong>Question 1 (3 points):</strong> <em>Using the Offense variable and working with the spokane_crimes_all data, select just murder as the offense type. Using tmap, create a map that shows the location of all reports in the this data frame and the precinct boundaries. See script 6-2 for a model to work from.</em></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tmap)
+<span class="kw">tmap_mode</span>(<span class="st">&quot;plot&quot;</span>)
+sample_crimes&lt;-spokane_crimes_sf %&gt;%<span class="st"> </span><span class="kw">filter</span>(Offense==<span class="st">&quot;Drugs&quot;</span> |<span class="st"> </span>Offense==<span class="st">&quot;Robbery&quot;</span>)
+
+<span class="kw">tm_shape</span>(spokaneprecincts_data)+
+<span class="st">  </span><span class="kw">tm_polygons</span>()+
+<span class="kw">tm_shape</span>(sample_crimes) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">tm_dots</span>(<span class="st">&quot;Offense&quot;</span>,<span class="dt">palette=</span><span class="kw">c</span>(<span class="st">&quot;red&quot;</span>,<span class="st">&quot;blue&quot;</span>))</code></pre></div>
+<p><img src="_main_files/figure-html/q1%20example-1.png" width="672" /></p>
+<p><strong>Question 2 (4 points):</strong> <em>Create a new data frame with the mean centers for each type of crime listed in the spokane_crime_sf data frame. Then map the mean centers you created using tmap. To do so, you’ll need to use st_as_sf to convert your new data frame to sf format. Use tm_dots to show the points in different colors, as in the example above (though here you’re showing only the mean centers). Also use tm_legend to make sure your legend is outside the bounding box as shown in class.</em></p>
+<p><strong>Question 3 (2 points):</strong> <em>Explain the code you used in question 2 to calculate your mean centers. What does each line of the code do to the data?</em></p>
+<p><strong>Question 4 (2 points)</strong> <em>Interpret how geographic differences between the mean centers you calculated are meaningful. What do they tell you about the locations of these crimes?</em></p>
+<p><strong>Question 5 (2 points):</strong> <em>The nearest neighbor index for vehicle thefts in this dataset is 0.44 compared to 1.51 for murders. Explain what these two numbers tell you about the distribution of these two point datasets.</em></p>
+</div>
+<div id="part-2-crime-rates" class="section level2">
+<h2><span class="header-section-number">3.2</span> Part 2: Crime rates</h2>
+<p>The precinct data frame has the number of crimes in each precinct. Crimes are commonly reported as crimes/100,000, so you should calculate the rate of any of these crimes rather than showing the raw counts. For this lab, we will focus on reported <em>burglary</em>. Calculate the assault rate by creating a new variable in the data, dividing the reported crimes by population and then multiplying by 100,000:</p>
+<p>[new variable] &lt;- [Burglary variable] / [population variable] * 100000</p>
+<p>Use the mutate command from the tidyverse to create this variable.</p>
+<p><strong>Question 6 (4 points)</strong> <em>Select just the precinct number and burglary rate from the precincts data frame. Then create a new variable for this rate using the formula above. Then do the following: 1) Call your dataset once you’ve created it to show your results. 2) Create a histogram using ggplot showing the distribution of these data. 3) Map the rates using tmap.</em></p>
+<p><strong>Question 7 (3 points)</strong> <em>The burglary rate for the city of Spokane in this dataset is 10,639 per 100,000 residents. Using this figure, calculate the location quotient for burglary in each precinct within the city. Use the min and max functions to identify the minimum and maximum values for the location quotient. Then explain what each of these values tell you about the pattern of burglary in those two precincts compared to the city as a whole.</em></p>
+</div>
+<div id="part-3-quadrat-analysis" class="section level2">
+<h2><span class="header-section-number">3.3</span> Part 3: Quadrat analysis</h2>
+<p>You can also use the spatstat package to create a ppp object for your robbery data.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(spatstat)
+robberies&lt;-spokane_crimes_all %&gt;%<span class="st"> </span><span class="kw">filter</span>(Offense==<span class="st">&quot;Robbery&quot;</span>)
+
+long_bounds&lt;-<span class="kw">c</span>(<span class="kw">min</span>(robberies$Long),<span class="kw">max</span>(robberies$Long))
+lat_bounds&lt;-<span class="kw">c</span>(<span class="kw">min</span>(robberies$Lat),<span class="kw">max</span>(robberies$Lat))
+
+robberypoints&lt;-<span class="kw">ppp</span>(robberies$Long,robberies$Lat,long_bounds,lat_bounds)</code></pre></div>
+<pre><code>## Warning: data contain duplicated points</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(robberypoints)</code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p><strong>Question 8 (2 points)</strong> <em>Using the script from week 7 in class as a guide, combine the kernel density map and appropriately sized quadrat grid for robberies in Spokane during the study period. You’ll need to include “add=TRUE” for the quadratcount function to layer it and change the text color to white as we did in class.</em></p>
+<p><strong>Question 9 (3 points)</strong> <em>Based on your analysis in the questions 6 through 8, describe two notable patterns you see in the statistical and geographic distribution of burglary in the city of Spokane.</em></p>
+<p><strong>Question 10 (2 points)</strong> <em>In this lab, you have used mean center, calculated rates, location quotients, kernel density mapping, and quadrat analysis to analyze the distribution of crime in Spokane. Pick <strong>two</strong> of these and compare what they tell you about this dataset. How are they similar and/or different?</em></p>
+</div>
+<div id="part-4-probability" class="section level2">
+<h2><span class="header-section-number">3.4</span> Part 4: Probability</h2>
+<p>The number of persons in each camping party that reserves a campsite at Dawgsville National Park is assumed to be distributed as a Poisson distribution. The maximum number of persons in a camping party is 6. The mean number of persons in a camping party is 2.43.</p>
+<p><strong>Question 11 (2 points):</strong> <em>Calculate the probability of observing each possible count of persons in a camping party for each reservation (including no shows).</em></p>
+<p>For the past 100 years, a stream close to Athens has been measured at a gauging station. The station measures the volume passing a point in a minute, so the values obtained are in units of cubic feet per minute (or CFM). A USGS scientist has crunched these numbers and determined that the results are normally distributed, with a mean of 35.26 CFM and a standard deviation of 4.61 CFM</p>
+<p><strong>Question 12 (2 points):</strong> <em>Calculate the probabilities the stream flow in a given year will exceed 42 and 48 CFM.</em></p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="lab1.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
