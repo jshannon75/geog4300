@@ -16,6 +16,15 @@ First, load the CPS data:
 
 ``` r
 library(tidyverse)
+```
+
+    ## Warning: package 'tidyr' was built under R version 3.4.2
+
+    ## Warning: package 'purrr' was built under R version 3.4.2
+
+    ## Warning: package 'dplyr' was built under R version 3.4.2
+
+``` r
 cps_data<-read_csv("https://github.com/jshannon75/geog4300/raw/master/Labs/Lab%204_%20Normality%20and%20t-tests/IPUMS_CPS_FoodSec.csv")
 ```
 
@@ -53,6 +62,6 @@ While the U.S. Census regularly provides data on use of SNAP/Food stamp benefits
 
 **Question 10 (2 points)** *Create a table of responses to the FSFDBNK variable against the state given for each response. Conduct a chi square test on this table.*
 
-**Question 11 (3 points)** *Using a procedure similar to Lab 3, convert the table from question 7 to a data frame, and spread it out based on the household response (e.g., separate columns for 1, 2, 3, 4, and 5). Create new columns for total responses and the percentage of all responses showing some use of emergency food assistance (categories 2-5). Call the data frame when done.*
+**Question 11 (3 points)** *Using a procedure similar to Lab 3, convert the table from question 10 to a data frame, and spread it out based on the household response (e.g., separate columns for 1, 2, 3, 4, and 5). Create new columns for total responses and the percentage of all responses showing some use of emergency food assistance (categories 2-5). Call the data frame when done.*
 
-**Question 12 (2 points)** *Looking at your results from questions 7 and 8, what conclusions can you make? What were your null and alternative hypotheses for this study? Did you reject or confirm the null hypothesis and why? What else can you say about the differences between these states?*
+**Question 12 (2 points)** *Looking at your results from questions 10 and 11, what conclusions can you make? What were your null and alternative hypotheses for this study? Did you reject or confirm the null hypothesis and why? What else can you say about the differences between these states?*
