@@ -123,7 +123,8 @@ Lastly, we can join our count data to a state shapefile.
 
 ``` r
 states<-st_read("https://github.com/jshannon75/geog4300/raw/master/Data/USstates.geojson") %>%
-  rename("State"=STATE_NAME)
+  rename("State"=STATE_NAME) %>%
+  st_transform(5070)
 ```
 
     ## Reading layer `USstates' from data source `https://github.com/jshannon75/geog4300/raw/master/Data/USstates.geojson' using driver `GeoJSON'
