@@ -1,7 +1,7 @@
 ##Multivariate regression
 #It uses the same command as simple regression. Just add more variables.
 #Install required packages for this script
-install.packages(c("car","lmtest","stargazer"))
+#install.packages(c("car","lmtest","stargazer"))
 library(car)
 library(tidyverse)
 library(stargazer)
@@ -10,8 +10,17 @@ library(lmtest)
 library(sf)
 library(Hmisc)
 
+#Data
+dlsf<-st_read("https://raw.githubusercontent.com/jshannon75/geog4300/master/Data/DLSF_data.geojson")
+
 #Regression
+model_lat<-lm(AvgDLSpF~Latitude,data=dlsf)
+model_elev<-lm(AvgDLSpF~Elevation,data=dlsf)
+model_dist<-lm(AvgDLSpF~DisttoCoas,data=dlsf)
 model_all<-lm(AvgDLSpF~Latitude+Elevation+DisttoCoas,data=dlsf)
+summary(model_lat)
+summary(model_elev)
+summary(model_dist)
 summary(model_all)
 
 #You can check for multicollinearity using the vif test (variance inflation factor)
