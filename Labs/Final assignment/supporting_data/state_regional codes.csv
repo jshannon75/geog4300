@@ -1,0 +1,52 @@
+State,Region,Division,st_fips,gisjn_st,st_abbr
+Alabama,South Region,East South Central Division,01,G01,AL
+Alaska,West Region,Pacific Division,02,G02,AK
+Arizona,West Region,Mountain Division,04,G04,AZ
+Arkansas,South Region,West South Central Division,05,G05,AR
+California,West Region,Pacific Division,06,G06,CA
+Colorado,West Region,Mountain Division,08,G08,CO
+Connecticut,Northeast Region,New England Division,09,G09,CT
+Delaware,South Region,South Atlantic Division,10,G10,DE
+District of Columbia,South Region,South Atlantic Division,11,G11,DC
+Florida,South Region,South Atlantic Division,12,G12,FL
+Georgia,South Region,South Atlantic Division,13,G13,GA
+Hawaii,West Region,Pacific Division,15,G15,HI
+Idaho,West Region,Mountain Division,16,G16,ID
+Illinois,Midwest Region,East North Central Division,17,G17,IL
+Indiana,Midwest Region,East North Central Division,18,G18,IN
+Iowa,Midwest Region,West North Central Division,19,G19,IA
+Kansas,Midwest Region,West North Central Division,20,G20,KS
+Kentucky,South Region,East South Central Division,21,G21,KY
+Louisiana,South Region,West South Central Division,22,G22,LA
+Maine,Northeast Region,New England Division,23,G23,ME
+Maryland,South Region,South Atlantic Division,24,G24,MD
+Massachusetts,Northeast Region,New England Division,25,G25,MA
+Michigan,Midwest Region,East North Central Division,26,G26,MI
+Minnesota,Midwest Region,West North Central Division,27,G27,MN
+Mississippi,South Region,East South Central Division,28,G28,MS
+Missouri,Midwest Region,West North Central Division,29,G29,MO
+Montana,West Region,Mountain Division,30,G30,MT
+Nebraska,Midwest Region,West North Central Division,31,G31,NE
+Nevada,West Region,Mountain Division,32,G32,NV
+New Hampshire,Northeast Region,New England Division,33,G33,NH
+New Jersey,Northeast Region,Middle Atlantic Division,34,G34,NJ
+New Mexico,West Region,Mountain Division,35,G35,NM
+New York,Northeast Region,Middle Atlantic Division,36,G36,NY
+North Carolina,South Region,South Atlantic Division,37,G37,NC
+North Dakota,Midwest Region,West North Central Division,38,G38,ND
+Ohio,Midwest Region,East North Central Division,39,G39,OH
+Oklahoma,South Region,West South Central Division,40,G40,OK
+Oregon,West Region,Pacific Division,41,G41,OR
+Pennsylvania,Northeast Region,Middle Atlantic Division,42,G42,PA
+Rhode Island,Northeast Region,New England Division,44,G44,RI
+South Carolina,South Region,South Atlantic Division,45,G45,SC
+South Dakota,Midwest Region,West North Central Division,46,G46,SD
+Tennessee,South Region,East South Central Division,47,G47,TN
+Texas,South Region,West South Central Division,48,G48,TX
+Utah,West Region,Mountain Division,49,G49,UT
+Vermont,Northeast Region,New England Division,50,G50,VT
+Virginia,South Region,South Atlantic Division,51,G51,VA
+Washington,West Region,Pacific Division,53,G53,WA
+West Virginia,South Region,South Atlantic Division,54,G54,WV
+Wisconsin,Midwest Region,East North Central Division,55,G55,WI
+Wyoming,West Region,Mountain Division,56,G56,WY

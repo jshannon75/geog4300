@@ -1,0 +1,170 @@
+---
+title: "Final project"
+output:
+  github_document: default
+  html_document:
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Overview
+
+In this final project, your team will analyze the relationship between three demographic variables and the congressional vote in the 1992 and 2016 elections in one of the four major census regions. Those three variables will be percentage of the population NOT classified as white, non-Hispanic, percentage with a bachelor's degree or higher, and median household income. In each time period, the district value for these variables is the median tract value from the 1990 decennial census and 2011-15 ACS.
+
+Within your group, each person will choose one variable to analyze. You'll look at the statistical and spatial distribution of this variable by state and use regression to analyze the association between it and the House election in each year.
+
+Together, your group will also create a "first difference" model for states in your region, understanding how changes in the district demographics were associated with changes in the states efficiency gap.
+
+The data for this project are all available on a project Github repository: [https://github.com/jshannon75/district_change]. We'll load data directly from there. The final project will also be hosted on this site.
+
+```{r, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(sf)
+
+proj_region="Midwest Region" #Adjust to fit your group
+
+district_data<-read_csv("https://github.com/jshannon75/geog4300/raw/master/districts_data_all.csv") %>%
+  mutate(year=as.character(year))
+```
+
+This file includes political districts in both 1992 and 2016 (1990 and 2015 in the year field), a variety of demographic variables, and results for the U.S. House elections in both years. There's also some dummy variables for elections that were uncontested (uncon_r and uncon_d), elections with no vote totals (missing), and states with 2 or less districts (dist_omit).
+
+The three demographic variables you're interested in are % not classifed as white, non-hispanic (nonwht_pct), median household income (medhhinc), and % with a BA degree or higher (badeg_pct). 
+
+###Descriptive analysis
+First, you should look at the statistical and spatial distribution of your specific variable. As an example, plotting the percent voting for the democratic candidate in the South Region on a ridge plot would look like this. (Note that you'll first need to install the ggridges package. Find more about it (https://cran.r-project.org/web/packages/ggridges/vignettes/introduction.html)[in this vignette]). We'll also add a line showing the median value across the region.
+
+Before plotting these data, we will remove all districts with missing data, which have -99 as the vote total. We will also top and bottom code uncontested races, using the figure from Stephanopoulis and McGhee (2015) of 66% of the vote being Democractic in uncontested Democratic races and 36% of the vote being Democratic in uncontested Republican races.
+
+```{r, warning=FALSE, message=FALSE}
+library(ggridges)
+districts_select<-district_data %>%
+  filter(Region==proj_region) %>%
+  group_by(year) %>%
+  mutate(median_dem=mean(pct_dem),
+         pct_dem_adj=ifelse(uncontest_r==1,66,ifelse(uncontest_d==1,36,pct_dem))) %>%
+  filter(total_vote!=-99)
+
+ggplot(districts_select,aes(x=pct_dem_adj,y=st_abbr))+
+  geom_density_ridges(scale=3)+
+  theme_ridges()+
+  geom_vline(aes(xintercept = median_dem),col="red")+
+  facet_wrap(~year)+
+  xlab("Pct. voting Democractic")+
+  ylab("")
+```
+
+You can also map the data by year using tmap, also filtering out districts with missing data. We will add in state boundaries as well from the shapes statefile, removing the border lines for individual districts.
+
+```{r, warning=FALSE, message=FALSE}
+library(tmap)
+
+districts<-st_read("https://github.com/jshannon75/geog4300/raw/master/districts_all.geojson",stringsAsFactors=FALSE) 
+districts_join<-left_join(districts,districts_select) %>%
+  filter(st_abbr!="AK" & st_abbr!="HI")
+
+states<-st_read("https://github.com/jshannon75/geog4300/raw/master/USstates_48.geojson") %>% filter(Region==proj_region)
+
+districts_1990<-districts_join %>% filter(year=="1990" & Region==proj_region)
+districts_2015<-districts_join %>% filter(year=="2015" & Region==proj_region)
+
+map1<-tm_shape(districts_1990,projection="2163") +
+  tm_polygons("pct_dem_adj", breaks=c(0,40,45,50,55,70,100),border.alpha=0)+
+  tm_shape(states) + tm_borders()
+
+map2<-tm_shape(districts_2015,projection="2163") +
+  tm_polygons("pct_dem_adj", breaks=c(0,40,45,50,55,70,100),border.alpha=0)+
+  tm_shape(states) + tm_borders()
+
+tmap_arrange(map1,map2)
+```
+
+###Modeling
+Now that we've done some descriptive analysis, let's model the relationship between our variable and the democratic vote, adjusted to account for uncontested races.
+
+```{r, warning=FALSE, message=FALSE}
+model1990<-lm(pct_dem_adj~hisp_pct,data=districts_1990)
+summary(model1990)
+
+model2015<-lm(pct_dem_adj~hisp_pct,data=districts_2015)
+summary(model2015)
+```
+
+We can also plot each model with ggplot.
+
+```{r, warning=FALSE, message=FALSE}
+ggplot(districts_select,aes(x=pct_dem_adj,y=hisp_pct)) + 
+  geom_point()+
+  geom_smooth(method = "lm", se = FALSE)+
+  facet_wrap(~year)
+```
+
+We can map out the location of residuals to better understand the model results. To help interpret the residual values, we will use the scale function to convert them to a z score.
+
+```{r, warning=FALSE, message=FALSE}
+districts_1990$residuals<-as.numeric(scale(residuals(model1990)))
+districts_2015$residuals<-as.numeric(scale(residuals(model2015)))
+districts_combine<-rbind(districts_1990,districts_2015)
+
+ggplot(districts_combine,aes(x=residuals))+
+  geom_density(fill="grey")+
+  facet_wrap(~year)
+
+map3<-tm_shape(districts_1990,projection="2163") +
+  tm_polygons("residuals", breaks=c(-2,-1,-0.5,0.5,1,2),border.alpha=0)+
+  tm_shape(states) + tm_borders()
+
+map4<-tm_shape(districts_2015,projection="2163") +
+  tm_polygons("residuals", breaks=c(-2,-1,-0.5,0.5,1,2),border.alpha=0)+
+  tm_shape(states) + tm_borders()
+
+tmap_arrange(map3,map4)
+```
+
+###List of requirements for the individual document (30 points total)
+
+1. **Descriptive analysis:** Ridge plots and maps of your variable, along with your interpretation. You are free to calculate additional analysis (e.g., state median values) as needed. (10 points)
+3. **Models:** Linear regression models with a scatterplot and fit line as shown above. Interpret the strength of your models based on the regression output, the scatterplot, and any needed additional information you can get from the data frame itself. Focus on the magnitude, direction, and significance of your model output. (10 points)
+4. **Diagnostics:** Density plots and maps of model residuals as shown above, along with your interpretation of the output (10 points).
+
+###Group chapter: combined variables
+
+In addition to your individual chapter, you should also write a final chapter as a group. That chapter should do two things. 
+
+First, you should combine your individuals models and create one final model with all your variables included, also using the stargazer package. Your final table should have eight models--the three indivdual models for each year and an additional model in each year with all three variables. You should interpret the result of each combined model, noting changes in the model coefficients compared to the original model and changes in measures showing overall model strength.
+
+Second, you will create a *first differences model* at the state level with the efficency gap as your dependent variable. To do so, you'll need to calculate the mean values for each variable in each year and then calculate change from each year. Load this file with the state efficiency gaps based on our house data. A negative value shows an efficiency gap in favor of Democrats. A positive value favors Republicans.
+
+```{r}
+states_effgap<-st_read("https://github.com/jshannon75/geog4300/raw/master/USstates_48_effgap.geojson")
+```
+
+Then calculate mean values for your variables in each year at state level. Here's an example with the hisp_pct variable, then join to the states dataset. This creates new variables showing the change between the 1992 and 2016 elections
+
+```{r}
+district_data_mean<-district_data %>%
+  group_by(year,st_abbr) %>%
+  summarise(hisp_mean=mean(hisp_pct))
+
+states_effgap_data<-left_join(states_effgap,district_data_mean) %>%
+  select(st_abbr,year,hisp_mean,eff_gap) %>%
+  gather(hisp_mean,eff_gap,key="var",value="value") %>%
+  spread(year,value) %>%
+  mutate(chg=`2015`-`1990`) %>%
+  select(-`2015`,-`1990`) %>%
+  spread(var,chg)
+```
+
+You can then run a model with these variables.
+
+```{r}
+fd_model<-lm(eff_gap~hisp_mean,data=states_effgap_data)
+summary(fd_model)
+```
+
+Create a first difference model with your three variables as independent variables and efficency gap as the dependent variable. Interpret the results.
+
+This final chapter will be graded out of 10 points, and this will be added to each individuals' grade assuming equal participation.

@@ -1,0 +1,188 @@
+---
+title: "Test code"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Let's load our data. We're going to look at three variables:
+
+* Percent non-white
+* Median household income
+* Percent of households in poverty
+
+```{r load_packages_data, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(sf)
+library(knitr)
+library(tmap)
+library(ggridges)
+library(googlesheets)
+library(kableExtra)
+tracts<-st_read("Tract data/US_tracts_all.shp")
+#tracts_2015<-st_read("Tract data/US_tract_2015_data.shp")
+tracts_select<-tracts %>%
+  filter(STATEFP==13 & whtnh_pct>-1)
+tracts_long <- tracts_select %>%
+  gather(whtnh_pct:nonwht_pct,key="var",value="value")
+districts<-st_read("districts_voting.shp")
+districts_select<-districts %>%
+  filter(STATEFP==13)
+```
+
+We can use the factor command to order the variables for plotting/tables
+
+```{r order_variables, warning=FALSE, message=FALSE}
+tracts_long$var<-factor(tracts_long$var,
+                             levels=c("whtnh_pct","blknh_pct","hisp_pct","asnnh_pct",
+                                      "medhhinc","pov100_pct","nonwht_pct"))
+
+tracts_long$CD<-factor(tracts_long$CD,levels=c("01","02","03","04","05","06","07","08",
+                                               "10","09","11","12","13","14"))
+```
+
+Let's look at just the districts for the 1992 and 2016 elections:
+
+```{r, warning=FALSE, message=FALSE}
+districts1990<-districts_select %>% filter(year=="1990")
+
+districts2015<-districts_select %>% filter(year=="2015")
+
+map1<-tm_shape(districts1990) + 
+  tm_polygons(col="white",lwd=1,border.col="grey")+
+  tm_text("CD",shadow=TRUE,scale=1,auto.placement=TRUE)
+
+map2<-tm_shape(districts2015) + 
+  tm_polygons(col="white",lwd=1,border.col="grey")+
+  tm_text("CD",shadow=TRUE,scale=1,auto.placement=TRUE)
+
+tmap_arrange(map1,map2)
+```
+
+## Distribution
+###Pct. non-white
+
+We can use ridge plots to look at our variables. We start by removing geometry from our data. Then we plot.
+
+```{r, warning=FALSE, message=FALSE}
+tracts_long_df<-tracts_long
+st_geometry(tracts_long_df)<-NULL
+
+ggplot(tracts_select,aes(x=nonwht_pct,y=CD))+
+  geom_density_ridges(scale=3)+
+  theme_ridges() +
+  facet_grid(.~year)
+```
+
+Map the data
+```{r, warning=FALSE, message=FALSE}
+tracts_select90<-tracts_select %>% filter(year=="1990")
+
+tracts_select15<-tracts_select %>% filter(year=="2015")
+
+map1<-tm_shape(tracts_select90) + 
+  tm_polygons("nonwht_pct",border.alpha=0,breaks=c(0,10,20,40,60,100),
+              title="% non-White, 1990")+
+ tm_shape(districts1990) + 
+  tm_borders(lwd=2,col="black") 
+
+map2<-tm_shape(tracts_select15) + 
+  tm_polygons("nonwht_pct",border.alpha=0,breaks=c(0,10,20,40,60,100),
+              title="% non-White, 2015") +
+ tm_shape(districts2015) + 
+  tm_borders(lwd=2,col="black") 
+
+tmap_arrange(map1,map2)
+```
+
+Create a table
+
+```{r, warning=FALSE, message=FALSE}
+tracts_table<-tracts_long_df %>%
+  filter(var=="nonwht_pct") %>%
+  group_by(year,CD) %>%
+  summarise(median=median(value),
+            iqr=IQR(value))
+kable(tracts_table,"html") %>%
+  kable_styling(bootstrap_options = c("striped", "hover"),full_width=F)
+```
+
+###Median household income
+
+```{r, warning=FALSE, message=FALSE}
+ggplot(tracts_select,aes(x=medhhinc,y=CD))+
+  geom_density_ridges(scale=3)+
+  theme_ridges() +
+  facet_grid(.~year)
+
+map3<-tm_shape(tracts_select90) + 
+  tm_polygons("medhhinc",border.alpha=0,breaks=c(0,20000,40000,60000,200000),
+              title="Median hh income, 1990")+
+ tm_shape(districts1990) + 
+  tm_borders(lwd=2,col="black") 
+
+map4<-tm_shape(tracts_select15) + 
+  tm_polygons("medhhinc",border.alpha=0,breaks=c(0,20000,40000,60000,400000),
+              title="Median hh income, 2015") +
+ tm_shape(districts2015) + 
+  tm_borders(lwd=2,col="black") 
+
+tmap_arrange(map3,map4)
+```
+
+###Pct. households in poverty
+```{r, warning=FALSE, message=FALSE}
+ggplot(tracts_select,aes(x=pov100_pct,y=CD))+
+  geom_density_ridges(scale=3)+
+  theme_ridges() +
+  facet_grid(.~year)
+
+map5<-tm_shape(tracts_select90) + 
+  tm_polygons("pov100_pct",border.alpha=0,breaks=c(0,10,20,40,100),
+              title="% in poverty, 1990")+
+ tm_shape(districts1990) + 
+  tm_borders(lwd=2,col="black") 
+
+map6<-tm_shape(tracts_select15) + 
+  tm_polygons("pov100_pct",border.alpha=0,breaks=c(0,10,20,40,100),
+              title="% in poverty, 2015") +
+ tm_shape(districts2015) + 
+  tm_borders(lwd=2,col="black") 
+
+tmap_arrange(map5,map6)
+```
+
+## Election results
+
+Let's look at the percent voting democratic in both years.
+
+```{r, warning=FALSE, message=FALSE}
+map1<-tm_shape(districts1990) + 
+  tm_polygons("pct_dem",lwd=1,border.col="grey")
+
+map2<-tm_shape(districts2015) + 
+  tm_polygons("pct_dem",lwd=1,border.col="grey")
+
+tmap_arrange(map1,map2)
+```
+
+Let's look at the association between each variable and voting result in each year.
+
+```{r, warning=FALSE, message=FALSE}
+tracts_table1<-tracts_long_df %>%
+  group_by(year,CD,var) %>%
+  summarise(median=median(value)) %>%
+  left_join(districts_select) %>%
+  filter(var=="nonwht_pct"|var=="medhhinc"|var=="pov100_pct")
+
+ggplot(tracts_table1,aes(y=pct_dem,x=median)) +
+  geom_point()+
+  geom_smooth(se=FALSE)+
+  #scale_x_continuous(limits = c(25, 75))+
+  facet_grid(year~var,scales="free_x")
+```
+
+We can also look at the efficiency gap in both years. 
+(Walk through this? Could map number of "wasted votes" and then show the number.)

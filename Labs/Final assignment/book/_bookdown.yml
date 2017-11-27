@@ -1,0 +1,5 @@
+book_filename: "sample_book"
+language:
+  ui:
+    chapter_name: "Chapter "
+output_dir: "docs"
