@@ -10,19 +10,19 @@ Within your group, each person will choose one variable to analyze. You'll look 
 
 Together, your group will also create a "first difference" model for states in your region, understanding how changes in the district demographics were associated with changes in the states efficiency gap.
 
-The data for this project includes two shapefiles and a csv file. You'll need to download the shapefiles to your computer and unzip: *insert link*. Create a new project in R and unzip this file to that new project folder. The csv can be loaded using the link below.
+The data for this project are all available on a project Github repository: \[<https://github.com/jshannon75/district_change>\]. We'll load data directly from there. The final project will also be hosted on this site.
 
 ``` r
 library(tidyverse)
 library(sf)
 
-proj_region="Midwest Region"
+proj_region="Midwest Region" #Adjust to fit your group
 
-district_data<-read_csv("https://github.com/jshannon75/district_change/raw/master/districts_data_all.csv") %>%
+district_data<-read_csv("https://github.com/jshannon75/geog4300/raw/master/Labs/Final_assignment/districts_data_all.csv") %>%
   mutate(year=as.character(year))
 ```
 
-This shape file includes political districts in both 1992 and 2016 (1990 and 2015 in the year field), a variety of demographic variables, and results for the U.S. House elections in both years. There's also some dummy variables for elections that were uncontested (uncon\_r and uncon\_d), elections with no vote totals (missing), and states with 2 or less districts (dist\_omit).
+This file includes political districts in both 1992 and 2016 (1990 and 2015 in the year field), a variety of demographic variables, and results for the U.S. House elections in both years. There's also some dummy variables for elections that were uncontested (uncon\_r and uncon\_d), elections with no vote totals (missing), and states with 2 or less districts (dist\_omit).
 
 The three demographic variables you're interested in are % not classifed as white, non-hispanic (nonwht\_pct), median household income (medhhinc), and % with a BA degree or higher (badeg\_pct).
 
@@ -57,10 +57,10 @@ You can also map the data by year using tmap, also filtering out districts with 
 ``` r
 library(tmap)
 
-districts<-st_read("https://github.com/jshannon75/district_change/raw/master/districts_all.geojson",stringsAsFactors=FALSE) 
+districts<-st_read("https://github.com/jshannon75/geog4300/raw/master/Labs/Final_assignment/districts_all.geojson",stringsAsFactors=FALSE) 
 ```
 
-    ## Reading layer `districts_all' from data source `https://github.com/jshannon75/district_change/raw/master/districts_all.geojson' using driver `GeoJSON'
+    ## Reading layer `districts_all' from data source `https://github.com/jshannon75/geog4300/raw/master/Labs/Final_assignment/districts_all.geojson' using driver `GeoJSON'
     ## Simple feature collection with 877 features and 2 fields
     ## geometry type:  MULTIPOLYGON
     ## dimension:      XY
@@ -72,10 +72,10 @@ districts<-st_read("https://github.com/jshannon75/district_change/raw/master/dis
 districts_join<-left_join(districts,districts_select) %>%
   filter(st_abbr!="AK" & st_abbr!="HI")
 
-states<-st_read("https://github.com/jshannon75/district_change/raw/master/USstates_48.geojson") %>% filter(Region==proj_region)
+states<-st_read("https://github.com/jshannon75/geog4300/raw/master/Labs/Final_assignment/USstates_48.geojson") %>% filter(Region==proj_region)
 ```
 
-    ## Reading layer `USstates_48' from data source `https://github.com/jshannon75/district_change/raw/master/USstates_48.geojson' using driver `GeoJSON'
+    ## Reading layer `USstates_48' from data source `https://github.com/jshannon75/geog4300/raw/master/Labs/Final_assignment/USstates_48.geojson' using driver `GeoJSON'
     ## Simple feature collection with 48 features and 8 fields
     ## geometry type:  MULTIPOLYGON
     ## dimension:      XY
@@ -206,10 +206,10 @@ First, you should combine your individuals models and create one final model wit
 Second, you will create a *first differences model* at the state level with the efficency gap as your dependent variable. To do so, you'll need to calculate the mean values for each variable in each year and then calculate change from each year. Load this file with the state efficiency gaps based on our house data. A negative value shows an efficiency gap in favor of Democrats. A positive value favors Republicans.
 
 ``` r
-states_effgap<-st_read("https://github.com/jshannon75/district_change/raw/master/USstates_48_effgap.geojson")
+states_effgap<-st_read("https://github.com/jshannon75/geog4300/raw/master/Labs/Final_assignment/USstates_48_effgap.geojson")
 ```
 
-    ## Reading layer `USstates_48_effgap' from data source `https://github.com/jshannon75/district_change/raw/master/USstates_48_effgap.geojson' using driver `GeoJSON'
+    ## Reading layer `USstates_48_effgap' from data source `https://github.com/jshannon75/geog4300/raw/master/Labs/Final_assignment/USstates_48_effgap.geojson' using driver `GeoJSON'
     ## Simple feature collection with 76 features and 12 fields
     ## geometry type:  MULTIPOLYGON
     ## dimension:      XY

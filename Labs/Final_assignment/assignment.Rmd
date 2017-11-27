@@ -26,7 +26,7 @@ library(sf)
 
 proj_region="Midwest Region" #Adjust to fit your group
 
-district_data<-read_csv("https://github.com/jshannon75/geog4300/raw/master/districts_data_all.csv") %>%
+district_data<-read_csv("https://github.com/jshannon75/geog4300/raw/master/Labs/Final_assignment/districts_data_all.csv") %>%
   mutate(year=as.character(year))
 ```
 
@@ -62,11 +62,11 @@ You can also map the data by year using tmap, also filtering out districts with 
 ```{r, warning=FALSE, message=FALSE}
 library(tmap)
 
-districts<-st_read("https://github.com/jshannon75/geog4300/raw/master/districts_all.geojson",stringsAsFactors=FALSE) 
+districts<-st_read("https://github.com/jshannon75/geog4300/raw/master/Labs/Final_assignment/districts_all.geojson",stringsAsFactors=FALSE) 
 districts_join<-left_join(districts,districts_select) %>%
   filter(st_abbr!="AK" & st_abbr!="HI")
 
-states<-st_read("https://github.com/jshannon75/geog4300/raw/master/USstates_48.geojson") %>% filter(Region==proj_region)
+states<-st_read("https://github.com/jshannon75/geog4300/raw/master/Labs/Final_assignment/USstates_48.geojson") %>% filter(Region==proj_region)
 
 districts_1990<-districts_join %>% filter(year=="1990" & Region==proj_region)
 districts_2015<-districts_join %>% filter(year=="2015" & Region==proj_region)
@@ -139,7 +139,7 @@ First, you should combine your individuals models and create one final model wit
 Second, you will create a *first differences model* at the state level with the efficency gap as your dependent variable. To do so, you'll need to calculate the mean values for each variable in each year and then calculate change from each year. Load this file with the state efficiency gaps based on our house data. A negative value shows an efficiency gap in favor of Democrats. A positive value favors Republicans.
 
 ```{r}
-states_effgap<-st_read("https://github.com/jshannon75/geog4300/raw/master/USstates_48_effgap.geojson")
+states_effgap<-st_read("https://github.com/jshannon75/geog4300/raw/master/Labs/Final_assignment/USstates_48_effgap.geojson")
 ```
 
 Then calculate mean values for your variables in each year at state level. Here's an example with the hisp_pct variable, then join to the states dataset. This creates new variables showing the change between the 1992 and 2016 elections
