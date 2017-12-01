@@ -8,9 +8,9 @@ In this final project, your team will analyze the relationship between three dem
 
 Within your group, each person will choose one variable to analyze. You'll look at the statistical and spatial distribution of this variable by state and use regression to analyze the association between it and the House election in each year.
 
-Together, your group will also create a "first difference" model for states in your region, understanding how changes in the district demographics were associated with changes in the states efficiency gap.
+Together, your group will also create models using all your variables to analyze their association with elections results. At the state level, you'll look at the association between demographics and the efficiency gap.
 
-The data for this project are all available on a project Github repository: \[<https://github.com/jshannon75/district_change>\]. We'll load data directly from there. The final project will also be hosted on this site.
+The data for this project are all available on a project Github repository: <https://github.com/jshannon75/district_change>. We'll load data directly from there.
 
 ``` r
 library(tidyverse)
@@ -25,6 +25,8 @@ district_data<-read_csv("https://github.com/jshannon75/geog4300/raw/master/Labs/
 This file includes political districts in both 1992 and 2016 (1990 and 2015 in the year field), a variety of demographic variables, and results for the U.S. House elections in both years. There's also some dummy variables for elections that were uncontested (uncon\_r and uncon\_d), elections with no vote totals (missing), and states with 2 or less districts (dist\_omit).
 
 The three demographic variables you're interested in are % not classifed as white, non-hispanic (nonwht\_pct), median household income (medhhinc), and % with a BA degree or higher (badeg\_pct).
+
+You'll be completing a single document as a group, but each of you will be responsible for individual sections: descriptive analysis and modeling for your independent variables. You should collarboate on the overview, multivariate model, and summary sections. Directions for the individual sections are below.
 
 ### Descriptive analysis
 
@@ -106,52 +108,190 @@ Now that we've done some descriptive analysis, let's model the relationship betw
 
 ``` r
 model1990<-lm(pct_dem_adj~hisp_pct,data=districts_1990)
-summary(model1990)
-```
-
-    ## 
-    ## Call:
-    ## lm(formula = pct_dem_adj ~ hisp_pct, data = districts_1990)
-    ## 
-    ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -24.928 -13.298   0.181  11.089  32.969 
-    ## 
-    ## Coefficients:
-    ##             Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)  50.6757     1.5862  31.948   <2e-16 ***
-    ## hisp_pct      0.6480     0.3469   1.868   0.0646 .  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 15.09 on 103 degrees of freedom
-    ## Multiple R-squared:  0.03278,    Adjusted R-squared:  0.02339 
-    ## F-statistic:  3.49 on 1 and 103 DF,  p-value: 0.06457
-
-``` r
 model2015<-lm(pct_dem_adj~hisp_pct,data=districts_2015)
-summary(model2015)
 ```
 
-    ## 
-    ## Call:
-    ## lm(formula = pct_dem_adj ~ hisp_pct, data = districts_2015)
-    ## 
-    ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -21.238 -11.800  -6.015  13.040  37.477 
-    ## 
-    ## Coefficients:
-    ##             Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)  42.5517     1.9109  22.268  < 2e-16 ***
-    ## hisp_pct      0.5324     0.1997   2.666  0.00907 ** 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 15.85 on 92 degrees of freedom
-    ## Multiple R-squared:  0.07171,    Adjusted R-squared:  0.06162 
-    ## F-statistic: 7.107 on 1 and 92 DF,  p-value: 0.009068
+The model results can be summarized with stargazer:
 
+<table style="text-align:center">
+<tr>
+<td colspan="3" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td colspan="2">
+Model results
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td colspan="2" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td colspan="2">
+Pct. voting democratic
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+1992
+</td>
+<td>
+2016
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(1)
+</td>
+<td>
+(2)
+</td>
+</tr>
+<tr>
+<td colspan="3" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+hisp\_pct
+</td>
+<td>
+0.648<sup>\*</sup>
+</td>
+<td>
+0.532<sup>\*\*\*</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(0.347)
+</td>
+<td>
+(0.200)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Constant
+</td>
+<td>
+50.676<sup>\*\*\*</sup>
+</td>
+<td>
+42.552<sup>\*\*\*</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(1.586)
+</td>
+<td>
+(1.911)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td colspan="3" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Observations
+</td>
+<td>
+105
+</td>
+<td>
+94
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+R<sup>2</sup>
+</td>
+<td>
+0.033
+</td>
+<td>
+0.072
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Adjusted R<sup>2</sup>
+</td>
+<td>
+0.023
+</td>
+<td>
+0.062
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Residual Std. Error
+</td>
+<td>
+15.092 (df = 103)
+</td>
+<td>
+15.852 (df = 92)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+F Statistic
+</td>
+<td>
+3.490<sup>\*</sup> (df = 1; 103)
+</td>
+<td>
+7.107<sup>\*\*\*</sup> (df = 1; 92)
+</td>
+</tr>
+<tr>
+<td colspan="3" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+<em>Note:</em>
+</td>
+<td colspan="2" style="text-align:right">
+<sup>*</sup>p&lt;0.1; <sup>**</sup>p&lt;0.05; <sup>***</sup>p&lt;0.01
+</td>
+</tr>
+</table>
 We can also plot each model with ggplot.
 
 ``` r
@@ -163,110 +303,23 @@ ggplot(districts_select,aes(x=pct_dem_adj,y=hisp_pct)) +
 
 ![](assignment_files/figure-markdown_github/unnamed-chunk-5-1.png)
 
-We can map out the location of residuals to better understand the model results. To help interpret the residual values, we will use the scale function to convert them to a z score.
+Use both the models and scatterplot to assess the relationship between your variable and voting behavior.
 
-``` r
-districts_1990$residuals<-as.numeric(scale(residuals(model1990)))
-districts_2015$residuals<-as.numeric(scale(residuals(model2015)))
-districts_combine<-rbind(districts_1990,districts_2015)
-
-ggplot(districts_combine,aes(x=residuals))+
-  geom_density(fill="grey")+
-  facet_wrap(~year)
-```
-
-![](assignment_files/figure-markdown_github/unnamed-chunk-6-1.png)
-
-``` r
-map3<-tm_shape(districts_1990,projection="2163") +
-  tm_polygons("residuals", breaks=c(-2,-1,-0.5,0.5,1,2),border.alpha=0)+
-  tm_shape(states) + tm_borders()
-
-map4<-tm_shape(districts_2015,projection="2163") +
-  tm_polygons("residuals", breaks=c(-2,-1,-0.5,0.5,1,2),border.alpha=0)+
-  tm_shape(states) + tm_borders()
-
-tmap_arrange(map3,map4)
-```
-
-![](assignment_files/figure-markdown_github/unnamed-chunk-6-2.png)
-
-### List of requirements for the individual document (30 points total)
+### List of requirements for each individual section (20 points total)
 
 1.  **Descriptive analysis:** Ridge plots and maps of your variable, along with your interpretation. You are free to calculate additional analysis (e.g., state median values) as needed. (10 points)
 2.  **Models:** Linear regression models with a scatterplot and fit line as shown above. Interpret the strength of your models based on the regression output, the scatterplot, and any needed additional information you can get from the data frame itself. Focus on the magnitude, direction, and significance of your model output. (10 points)
-3.  **Diagnostics:** Density plots and maps of model residuals as shown above, along with your interpretation of the output (10 points).
 
-### Group chapter: combined variables
+### Group sections: summary, and multivariate model (20 points total, applied equally to each group member)
 
-In addition to your individual chapter, you should also write a final chapter as a group. That chapter should do two things.
+In addition to your individual sections, you'll collaborate on an overview and summary section and run a model with all three of your variables. The overview and summary sections are summarized below:
 
-First, you should combine your individuals models and create one final model with all your variables included, also using the stargazer package. Your final table should have eight models--the three indivdual models for each year and an additional model in each year with all three variables. You should interpret the result of each combined model, noting changes in the model coefficients compared to the original model and changes in measures showing overall model strength.
+1.  **Overview:** Write briefly about this region, listing the states included within it, the range of seats/districts for each state, and the general partisan landscape (lean Republican vs. Democratic). (5 points)
+2.  **Multivariate models:** Create two models (one each for 1992 and 2016) with all three of your variables included. Summarise these two models using stargazer as shown above. Look at the spatial and statistical distribution of residuals. Check for multicollinearity using VIF, creating a correlation matrix if there are issues to diagnose the problem. Also check for evidence of heterosketasticity. (10 points)
+3.  **Summary:** Summarise what you learned about the relationship between your variables and the voting patterns in the state across time periods. (5 points)
 
-Second, you will create a *first differences model* at the state level with the efficency gap as your dependent variable. To do so, you'll need to calculate the mean values for each variable in each year and then calculate change from each year. Load this file with the state efficiency gaps based on our house data. A negative value shows an efficiency gap in favor of Democrats. A positive value favors Republicans.
+To assess the distribution of residuals, the following code can serve as a guide:
 
-``` r
-states_effgap<-st_read("https://github.com/jshannon75/geog4300/raw/master/Labs/Final_assignment/USstates_48_effgap.geojson")
-```
+We can map out the location of residuals to better understand the model results. To help interpret the residual values, we will use the scale function to convert them to a z score.
 
-    ## Reading layer `USstates_48_effgap' from data source `https://github.com/jshannon75/geog4300/raw/master/Labs/Final_assignment/USstates_48_effgap.geojson' using driver `GeoJSON'
-    ## Simple feature collection with 76 features and 12 fields
-    ## geometry type:  MULTIPOLYGON
-    ## dimension:      XY
-    ## bbox:           xmin: -124.7328 ymin: 24.95638 xmax: -69.91778 ymax: 49.37173
-    ## epsg (SRID):    4326
-    ## proj4string:    +proj=longlat +datum=WGS84 +no_defs
-
-Then calculate mean values for your variables in each year at state level. Here's an example with the hisp\_pct variable, then join to the states dataset. This creates new variables showing the change between the 1992 and 2016 elections
-
-``` r
-district_data_mean<-district_data %>%
-  group_by(year,st_abbr) %>%
-  summarise(hisp_mean=mean(hisp_pct))
-
-states_effgap_data<-left_join(states_effgap,district_data_mean) %>%
-  select(st_abbr,year,hisp_mean,eff_gap) %>%
-  gather(hisp_mean,eff_gap,key="var",value="value") %>%
-  spread(year,value) %>%
-  mutate(chg=`2015`-`1990`) %>%
-  select(-`2015`,-`1990`) %>%
-  spread(var,chg)
-```
-
-    ## Joining, by = c("st_abbr", "year")
-
-    ## Warning: Column `st_abbr` joining factor and character vector, coercing
-    ## into character vector
-
-    ## Warning: Column `year` joining factor and character vector, coercing into
-    ## character vector
-
-You can then run a model with these variables.
-
-``` r
-fd_model<-lm(eff_gap~hisp_mean,data=states_effgap_data)
-summary(fd_model)
-```
-
-    ## 
-    ## Call:
-    ## lm(formula = eff_gap ~ hisp_mean, data = states_effgap_data)
-    ## 
-    ## Residuals:
-    ##      Min       1Q   Median       3Q      Max 
-    ## -0.32757 -0.10857  0.00207  0.09293  0.34358 
-    ## 
-    ## Coefficients:
-    ##              Estimate Std. Error t value Pr(>|t|)   
-    ## (Intercept)  0.155560   0.045918   3.388  0.00172 **
-    ## hisp_mean   -0.016536   0.007224  -2.289  0.02806 * 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 0.1692 on 36 degrees of freedom
-    ## Multiple R-squared:  0.127,  Adjusted R-squared:  0.1028 
-    ## F-statistic: 5.239 on 1 and 36 DF,  p-value: 0.02806
-
-Create a first difference model with your three variables as independent variables and efficency gap as the dependent variable. Interpret the results.
-
-This final chapter will be graded out of 10 points, and this will be added to each individuals' grade assuming equal participation.
+![](assignment_files/figure-markdown_github/unnamed-chunk-6-1.png)![](assignment_files/figure-markdown_github/unnamed-chunk-6-2.png)
