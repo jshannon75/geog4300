@@ -1,9 +1,0 @@
-# Group summary
-
-#Multivariate model
-
-(Run the model with your combined variables here and compare results to your indivdual models. Check for multicollinearity using VIF.)
-
-#State level model for the efficency gap
-
-(Summarize your variables to state level and run a model in each year against efficiency gap.)
