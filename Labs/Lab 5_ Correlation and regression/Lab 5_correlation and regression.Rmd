@@ -52,8 +52,6 @@ Now create rates from these data, using the raw counts and the total population.
 * % Hispanic/Latino
 * % < 200% of the poverty line
 
-Create a summary of your new data, showing mean, median, standard deviation and IQR (see lab 1).
-
 **Question 1 (2 points)** _List the code you used to create your new variables and call the resulting table._
 
 You can now use left_join to connect your table with the geographic boundaries you imported in question 1. After doing so, you can plot each variable separately using ggplot (as shown at the beginning of this lab). For example, if you were plotting just the compactness score in the geographic data, you would use the following command:
@@ -80,11 +78,9 @@ ggplot(census_shape)+
   scale_fill_viridis()
 ```
 
-**Question 2 (4 points)** _Use left_join to connect your district table from question 1 with the geographic boundaries you imported in question 1. Use select to choose the four census rate variables and the polsby variable. Scale the census variables to create z scores. Then use gather to transform the four scaled census variables to long format so you can plot them. Call the table when done._
+**Question 2 (6 points)** _Use left_join to connect your district table from question 1 with the geographic boundaries you imported in question 1. Use select to choose the four census rate variables and the polsby variable. Scale the census variables to create z scores. Then use gather to transform the four scaled census variables to long format so you can plot them. Lastly, using facet_wrap with ggplot, plot the distribution of each of the four scaled census variables on a single small multiples map using the Albers conic projection._
 
-**Question 3 (2 points)** _Using facet_wrap with ggplot, plot the distribution of each of the four scaled census variables on a single small multiples map using the Albers conic projection._
-
-**Question 4 (3 points)** _Based on the map from question 3, summarise two main patterns you see in the spatial distribution of these data. Be sure to make specific references to your data to illustrate your points._
+**Question 4 (3 points)** _Based on the map from question 2, summarise two main patterns you see in the spatial distribution of these data. Be sure to make specific references to your data to illustrate your points._
 
 ###Part 2: Correlation###
 The geographic data file you loaded has an additional variable: precinct compactness using the Polsby-Popper statistic ([more info here](https://www.azavea.com/blog/2016/07/11/measuring-district-compactness-postgis/). 
@@ -93,7 +89,7 @@ Using R’s rcorr command, found in the Hmisc package, assess the correlation of
 
 You’ll also have to test whether these variables are normally distributed or not and use the appropriate test (Pearson’s r or Spearman’s rho). You’ll also need to make sure your data are in a matrix format—see the in class example.
 
-**Question 5 (3 points):** _Using just the raw rates (not z scores), test your five variables of interest for normality, using qq plots and the shapiro-wilcox test on each one. Explain how your results suggest the use of parametric or non-parametric staistical tests._ 
+**Question 5 (3 points):** _Using just the raw rates (not z scores), assess the normality of your five variables of interest using qq plots. Explain how your results suggest the use of parametric or non-parametric staistical tests._ 
 
 To create a correlation matrix, you'll need to remove the geometry column from your dataset. Here's an example of how to do so:
 
@@ -102,8 +98,6 @@ census_shape_null<-census_shape #duplicate the boundaries
 st_geometry(census_shape_null)<-NULL #remove the geometry column
 ```
 
-**Question 6 (4 points)** _Create a data frame with just your five variables of interest (raw census rates plus polsby). Then use rcorr to create a correlation matrix with the appropriate measure based on your findings in question 5 (Pearson or Spearman). Interpret the results these matrices show, focusing on both the magnitude and direction of the correlation._
-
 ###Part 3: OLS Regression###
 Lastly, we'll use regression to determine how the census variables in this dataset are associated with the compactness of political districts. 
 
@@ -111,9 +105,13 @@ Lastly, we'll use regression to determine how the census variables in this datas
 
 **Question 8 (3 points)** _Interpret your regression model, focusing on the magnitude, direction, and significance of model coefficients and the overall power of the model._
 
-**Question 9 (3 points)** _Check your for the normality of residuals and heterosketasticity using the tests described in class. Add the residuals as a new variable in your model data and plot their spatial distribution using ggplot._
+**Question 9 (3 points)** _Check your final model for the normality of residuals and heterosketasticity using the tests described in class. Add the residuals as a new variable in your model data and plot their spatial distribution using ggplot. 
+
+##Change question below to testing for multicollinearity
+**Question 6 (4 points)** _Create a data frame with just your five variables of interest (raw census rates plus polsby). Then use rcorr to create a correlation matrix with the appropriate measure based on your findings in question 5 (Pearson or Spearman). Interpret the results these matrices show, focusing on both the magnitude and direction of the correlation._
 
 **Question 10 (3 points)** _Based on your results, assess how either the spatial/statistical distribution of residuals or heterosketasticity may show a problem with this model._ 
 
+##Also include Cook's distance?
 
 
