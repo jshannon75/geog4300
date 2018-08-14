@@ -22,7 +22,7 @@
 #devtools::install_github("charlie86/spotifyr")
 
 #Register your Spotify user account. 
-#You'll need to copy and paste those in the appropriate spots below:
+#You'll need to copy and paste the ID and secrets in the appropriate spots below:
 Sys.setenv(SPOTIFY_CLIENT_ID = 'xxxxxxxxxxxxxxxxxxxxx')
 Sys.setenv(SPOTIFY_CLIENT_SECRET = 'xxxxxxxxxxxxxxxxxxxxx')
 
