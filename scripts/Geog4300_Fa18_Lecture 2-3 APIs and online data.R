@@ -78,9 +78,13 @@ tract_income<-get_acs(state="GA",geography="tract",variable="B19013_001E",year=2
 plot(tract_income)
 ggplot()+geom_sf(data=tract_income, aes(fill=estimate), color=NA)
 
-#We will do more work with tidycensus later in the semester
+#We will do more work with tidycensus later in the semester.
+#If you want to do more work with tidycensus, you can get your own API key here: 
+#https://api.census.gov/data/key_signup.html
 
-###Daymet data
+
+
+###Daymet data####
 #The Daymet dataset provides gridded climate data going back to 1980 for the whole US.
 #Here's their website: https://daymet.ornl.gov/
 #They provide an API service where you can query their database directly.
