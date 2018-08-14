@@ -1,4 +1,4 @@
-##Geography 4300/6300: Reading in data using CSVs
+##Geography 4300/6300: Reading in data using CSVs and basic manipulation
 
 #Before starting this script, make sure that you've created a new Project in RStudio.
 #You can do so using the Project dropdown menu in the upper right.
@@ -67,24 +67,29 @@ boxplot(census_data$pov_pop_pct)
 
 census_data_se<-census_data %>%
   filter(Region=="SE")
-View(census_data_se)
+table(census_data_se$St_name)
 
 census_data_pov<-census_data %>%
-  filter(pov_pop_pct>30)
-View(census_data_pov)
+  filter(pov_pop_pct>20)
 
-#Look at which states those high poverty counties are in
-table(census_data_pov$St_name)
+#Build a tally of high poverty counties by state 
+#(Tidyverse has a better way that we'll discuss later)
+state_pov<-data.frame(table(census_data_pov$St_name))
+boxplot(state_pov$Freq) #Box plot
+hist(state_pov$Freq) #Histogram
+stem(state_pov$Freq) #Stem and leaf plot
+
+#Do the same tally by region and make a bar plot
+barplot(table(census_data_pov$Region))
 
 #You can also combine commands using pipes
 census_data_sepov<-census_data %>%
   filter(Region=="SE") %>%
   filter(pov_pop_pct>30)
-View(census_data_sepov)
+table(census_data_sepov$St_name)
 
 #The "select" command allows you to reduce the number of variables
 #You can select by column names or numbers
-
 names(census_data)
 
 census_data_pov<-census_data %>%
@@ -94,11 +99,10 @@ census_data_pov<-census_data %>%
   select(1,5,6,47)
 
 #Lastly, you can use mutate to create new variables
-
-census_data_new<-census_data %>%
+census_data<-census_data %>%
   mutate(LessBA_pct=HSGrad_pct+SomeCol_pct)
-hist(census_data$less_BA_pct)
-boxplot(census_data$less_BA_pct)
+hist(census_data$LessBA_pct)
+boxplot(census_data$LessBA_pct)
 
 #You try it! Our survey responses are online at 
 #https://github.com/jshannon75/geog4300/raw/master/Data/geog4300_survey.csv
