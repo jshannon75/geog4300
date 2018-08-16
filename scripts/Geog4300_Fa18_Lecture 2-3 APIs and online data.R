@@ -110,13 +110,26 @@ library(daymetr) # load the package
 
 #Load 10 years of data on Athens
 #The value for site will be the name of the new file
-athens<-download_daymet(site="athens",lat=33.948693,lon=-83.375475,start=2005,end=2015,internal=TRUE)
+athens_daymet<-download_daymet(site="athens",lat=33.948693,lon=-83.375475,start=2005,end=2015,internal=TRUE)
 
 #This returns a list! Let's extract the data file
 athens_data<-athens$data
 
+#We can also make this easier using the ggmap package to geocode
+#install.packages(ggmap)
+library(ggmap)
+atlanta_xy<-geocode("atlanta, ga", source="dsk")
+atlanta_daymet_list<-download_daymet(site="atlanta",lat=atlanta_xy$lat,lon=atlanta_xy$lon,start=2005,end=2015,internal=TRUE)
+atlanta_daymet<-atlanta_daymet_list$data
+hist(atlanta_daymet$tmax..deg.c.)
+
+whitehouse_xy<-geocode("the white house, washington, dc", source="dsk")
+whitehouse_daymet_list<-download_daymet(site="whitehouse",lat=whitehouse_xy$lat,lon=whitehouse_xy$lon,start=2005,end=2015,internal=TRUE)
+whitehouse_daymet<-whitehouse_daymet_list$data
+hist(whitehouse_daymet$tmax..deg.c.)
+
 ###You try it!
-###Download 10 years of climate data for a point of your choosing.
+###Download 10 years of climate data for two points of your choosing.
 
 #Another example of a atmospheric science relevant API: https://github.com/ropensci/rerddap/blob/master/vignettes/Using_rerddap.Rmd
 #And this one: https://github.com/ropensci/FedData
