@@ -26,10 +26,10 @@
 Sys.setenv(SPOTIFY_CLIENT_ID = 'xxxxxxxxxxxxxxxxxxxxx')
 Sys.setenv(SPOTIFY_CLIENT_SECRET = 'xxxxxxxxxxxxxxxxxxxxx')
 
+library(spotifyr)
 access_token <- get_spotify_access_token()
 
 #Now you can get to work.
-library(spotifyr)
 library(tidyverse)
 
 rem <- get_artist_audio_features('r.e.m.')
@@ -78,6 +78,14 @@ tract_income<-get_acs(state="GA",geography="tract",variable="B19013_001E",year=2
 plot(tract_income)
 ggplot()+geom_sf(data=tract_income, aes(fill=estimate), color=NA)
 
+#Switch to counties instead of tracts
+cty_income<-get_acs(state="GA",geography="county",variable="B19013_001E",year=2016,geometry=TRUE)
+ggplot()+geom_sf(data=cty_income, aes(fill=estimate), color=NA) 
+
+#Or do multiple states--Georgia and its neighbors
+cty_income<-get_acs(state=c("GA","SC","NC","FL","TN","AL"),geography="county",variable="B19013_001E",year=2016,geometry=TRUE)
+ggplot()+geom_sf(data=cty_income, aes(fill=estimate), color=NA)
+
 #We will do more work with tidycensus later in the semester.
 #If you want to do more work with tidycensus, you can get your own API key here: 
 #https://api.census.gov/data/key_signup.html
@@ -109,3 +117,6 @@ athens_data<-athens$data
 
 ###You try it!
 ###Download 10 years of climate data for a point of your choosing.
+
+#Another example of a atmospheric science relevant API: https://github.com/ropensci/rerddap/blob/master/vignettes/Using_rerddap.Rmd
+#And this one: https://github.com/ropensci/FedData
