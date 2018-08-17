@@ -9,7 +9,6 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(knitr)
-library(leaflet)
 ```
 
 Your name: {Name here}
@@ -22,9 +21,6 @@ Load the data and the tidyverse package in the code chunk below
 
 ```{r data}
 #Load the data here
-leaflet() %>%
-  addTiles() %>%  # Add default OpenStreetMap map tiles
-  addMarkers(lng=174.768, lat=-36.852, popup="The birthplace of R")
 ```
 
 **Question 1 (4 points):** Provide an example of nominal, ordinal, interval, and ratio data within this dataset. Explain why each fits in the level of measurement you chose in a sentence or two . If you cannot find an example for one of these four data types (no nominal variables, for example), given an example of climate data that would fit this type.*
