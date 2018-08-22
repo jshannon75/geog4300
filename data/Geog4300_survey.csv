@@ -1,14 +1,14 @@
-Timestamp,What's your academic background?,How many statistics courses have you taken in the past?,What statistics software have you used in the past?,"On a scale of 1 to 5, how would you rate your excitement about this course?",What time did you wake up this morning?,How many years have you lived in Athens?,How many college football games have you attended in your life? ,What is your favorite flavor of ice cream?
-8/12/2018 13:11:32,Physical geographer,Two,"R, Matlab, Excel, Perl, Python",3,7:00:00 AM,0,30,Death by Chocolate
-8/12/2018 13:28:20,Physical & Techniques,Two,"Stata, SPSS, R, Excel",4,9:21:00 AM,1,0,Rocky Road
-8/12/2018 19:34:45,Physical geographer,One,"Matlab, Excel, MiniTab",3,6:00:00 AM,0,0,No thanks to ice cream
-8/13/2018 11:35:39,Physical geographer,One,"Excel, JMP",4,7:00:00 AM,0,4,Strawberry with semisweet chocolate chips
-8/13/2018 12:23:14,Behavioral Biology/Psychology,Two,"SPSS, R, Excel",3,3:30:00 AM,5,40,Mint chocolate chip
-8/13/2018 14:36:14,Human geographer,None,Excel,2,6:30:00 AM,2.5,4,Cinnamon toast crunch
-8/15/2018 14:12:27,Physical geographer,Three or more,"SPSS, R, Matlab, Excel",5,7:10:00 AM,1,1,Strawberry
-8/16/2018 12:40:54,Urban Studies,Two,"R, Excel",4,6:15:00 AM,0,0,Pistachio 
-8/16/2018 17:09:07,Plant & Soil Science,Two,"SPSS, R, Excel",4,8:00:00 AM,2,0,Cookie dough 
-8/16/2018 18:18:18,GIS/techniques,One,"R, Excel",5,7:30:00 AM,0,1,peach
-8/16/2018 18:57:35,environmental science and anthropology - geospatial analysis,Two,"SPSS, Excel, GeoDa",5,5:42:00 AM,2,1,Dark Chocolate 
-8/17/2018 13:31:26,Human geographer,One,"SPSS, R",3,10:30:00 AM,1,0,Chocolate
-8/20/2018 10:45:29,GIS/techniques,None,Excel,4,7:00:00 AM,2,0,coconut
+time,discipline,stats_course,software,R,Matlab,Excel,Perl,Python,SPSS,JMP,excite,wakeup,athens_year,football,ice_cream
+8/12/2018 13:11,Physical geographer,Two,"R, Matlab, Excel, Perl, Python",1,1,1,1,1,0,0,3,7:00:00 AM,0,30,Death by Chocolate
+8/12/2018 13:28,Physical & Techniques,Two,"Stata, SPSS, R, Excel",1,0,1,0,0,1,0,4,9:21:00 AM,1,0,Rocky Road
+8/12/2018 19:34,Physical geographer,One,"Matlab, Excel, MiniTab",0,1,1,0,0,0,0,3,6:00:00 AM,0,0,No thanks to ice cream
+8/13/2018 11:35,Physical geographer,One,"Excel, JMP",0,0,1,0,0,0,1,4,7:00:00 AM,0,4,Strawberry with semisweet chocolate chips
+8/13/2018 12:23,Behavioral Biology/Psychology,Two,"SPSS, R, Excel",1,0,1,0,0,1,0,3,3:30:00 AM,5,40,Mint chocolate chip
+8/13/2018 14:36,Human geographer,None,Excel,0,0,1,0,0,0,0,2,6:30:00 AM,2.5,4,Cinnamon toast crunch
+8/15/2018 14:12,Physical geographer,Three or more,"SPSS, R, Matlab, Excel",1,1,1,0,0,1,0,5,7:10:00 AM,1,1,Strawberry
+8/16/2018 12:40,Urban Studies,Two,"R, Excel",1,0,1,0,0,0,0,4,6:15:00 AM,0,0,Pistachio 
+8/16/2018 17:09,Plant & Soil Science,Two,"SPSS, R, Excel",1,0,1,0,0,1,0,4,8:00:00 AM,2,0,Cookie dough 
+8/16/2018 18:18,GIS/techniques,One,"R, Excel",1,0,1,0,0,0,0,5,7:30:00 AM,0,1,peach
+8/16/2018 18:57,environmental science and anthropology - geospatial analysis,Two,"SPSS, Excel, GeoDa",0,0,1,0,0,1,0,5,5:42:00 AM,2,1,Dark Chocolate 
+8/17/2018 13:31,Human geographer,One,"SPSS, R",1,0,0,0,0,1,0,3,10:30:00 AM,1,0,Chocolate
+8/20/2018 10:45,GIS/techniques,None,Excel,0,0,1,0,0,0,0,4,7:00:00 AM,2,0,coconut
