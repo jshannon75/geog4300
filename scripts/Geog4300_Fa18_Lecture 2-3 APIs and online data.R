@@ -112,10 +112,10 @@ library(daymetr) # load the package
 #The value for site will be the name of the new file
 athens_daymet<-download_daymet(site="athens",lat=33.948693,lon=-83.375475,start=2005,end=2015,internal=TRUE)
 
-#This returns a list! Let's extract the data file
-athens_data<-athens$data
+#This returns a list, which is difficult to use. Let's extract the tabular data.
+athens_data<-athens_daymet$data
 
-#We can also make this easier using the ggmap package to geocode
+#We can also look at multiple sites using the ggmap package to geocode
 #install.packages(ggmap)
 library(ggmap)
 atlanta_xy<-geocode("atlanta, ga", source="dsk")

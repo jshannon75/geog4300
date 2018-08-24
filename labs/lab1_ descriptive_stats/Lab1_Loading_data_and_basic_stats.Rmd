@@ -124,7 +124,7 @@ Suppose we are just interested in the median. We would then want to create a dat
 daymet_summary_region<-daymet_month %>% 
   group_by(Region, year) %>% 
   summarise(tmax_med=median(tmax))
-kable(daymet_summary_region)
+kable(head(daymet_summary_region))
 ```
 
 Notice how much smaller this dataset is already. Plot it out using ggplot:
@@ -141,7 +141,7 @@ Suppose you wanted to see the distribution of the mean maximum temperatures of a
 daymet_summary_county <- daymet_month %>% 
   group_by(Region,gisjn_cty) %>% 
   summarise(tmax_mean=mean(tmax))
-kable(daymet_summary_county)
+kable(head(daymet_summary_county))
 ```
 
 You can then create a density plot of these mean values by region, again using facet_wrap to separate them.
