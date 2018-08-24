@@ -19,8 +19,7 @@
 ##Spotify API ####
 #This tutorial is based on support materials from the spotifyr package: http://www.rcharlie.com/spotifyr/
 #Install using the following link:
-install.packages("devtools")
-devtools::install_github("charlie86/spotifyr")
+install.packages("spotifyr")
 
 #Register your Spotify user account. 
 #You'll need to copy and paste the ID and secrets in the appropriate spots below:
@@ -33,7 +32,7 @@ access_token <- get_spotify_access_token()
 #Now you can get to work.
 library(tidyverse)
 
-rem <- get_artist_audio_features('beyonce')
+rem <- get_artist_audio_features('r.e.m.')
 head(rem)
 
 #Explore the data we can get
@@ -105,8 +104,7 @@ ggplot()+geom_sf(data=cty_income, aes(fill=estimate), color=NA)
 #The daymetr package allows you to access these data directly
 #We'll use this dataset in your first lab.
 
-#install.packages("devtools") #This package allows installation from Github
-devtools::install_github("khufkens/daymetr") #Installing the package directly from Github
+install.packages("daymetr")
 library(daymetr) # load the package
 
 #Load 10 years of data on Athens
