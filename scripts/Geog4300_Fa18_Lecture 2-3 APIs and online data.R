@@ -19,12 +19,13 @@
 ##Spotify API ####
 #This tutorial is based on support materials from the spotifyr package: http://www.rcharlie.com/spotifyr/
 #Install using the following link:
-#devtools::install_github("charlie86/spotifyr")
+install.packages("devtools")
+devtools::install_github("charlie86/spotifyr")
 
 #Register your Spotify user account. 
 #You'll need to copy and paste the ID and secrets in the appropriate spots below:
-Sys.setenv(SPOTIFY_CLIENT_ID = 'xxxxxxxxxxxxxxxxxxxxx')
-Sys.setenv(SPOTIFY_CLIENT_SECRET = 'xxxxxxxxxxxxxxxxxxxxx')
+Sys.setenv(SPOTIFY_CLIENT_ID = 'xxxxxxxxxxxxxxxxxxxxxx')
+Sys.setenv(SPOTIFY_CLIENT_SECRET = 'xxxxxxxxxxxxxxxxxxxxxx')
 
 library(spotifyr)
 access_token <- get_spotify_access_token()
@@ -32,7 +33,7 @@ access_token <- get_spotify_access_token()
 #Now you can get to work.
 library(tidyverse)
 
-rem <- get_artist_audio_features('r.e.m.')
+rem <- get_artist_audio_features('beyonce')
 head(rem)
 
 #Explore the data we can get
@@ -47,7 +48,7 @@ hist(rem$valence) #Higher = happier
 ##APIs and census data####
 #The tidycensus package gives us an easy way to explore census data
 #See https://walkerke.github.io/tidycensus/
-#install.packages(tidy.census)
+install.packages("tidycensus")
 library(tidycensus)
 
 census_api_key("YOUR API KEY GOES HERE")
@@ -105,7 +106,7 @@ ggplot()+geom_sf(data=cty_income, aes(fill=estimate), color=NA)
 #We'll use this dataset in your first lab.
 
 #install.packages("devtools") #This package allows installation from Github
-#devtools::install_github("khufkens/daymetr") #Installing the package directly from Github
+devtools::install_github("khufkens/daymetr") #Installing the package directly from Github
 library(daymetr) # load the package
 
 #Load 10 years of data on Athens
@@ -114,6 +115,7 @@ athens_daymet<-download_daymet(site="athens",lat=33.948693,lon=-83.375475,start=
 
 #This returns a list, which is difficult to use. Let's extract the tabular data.
 athens_data<-athens_daymet$data
+hist(athens_data$tmax..deg.c.)
 
 #We can also look at multiple sites using the ggmap package to geocode
 #install.packages(ggmap)
