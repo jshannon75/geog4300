@@ -26,7 +26,7 @@ library(tidyverse)
 #You could use the "Import dataset" button on the Environment tab.
 #Better to use "read_csv". If you've saved to your project folder, this should work:
 
-census_data<-read_csv("ACSCtyData_2014ACS.csv")
+census_data<-read_csv("data/ACSCtyData_2014ACS.csv")
 
 #Now open the data to look at it. Click on it in the Environment tab.
 #Or use this:
@@ -53,11 +53,12 @@ tail(census_data)
 
 #Table gives you the number of times a value shows up.
 #It's good for character fields
-table(census_data$St_name)
+table(census_data$St_name,census_data$Region)
 
 #You can also look at a histogram or boxplot of particular variables
 hist(census_data$pov_pop_pct)
 boxplot(census_data$pov_pop_pct)
+boxplot(pov_pop_pct~Region,data=census_data)
 
 #What if you only want data for some states, like the Southeast?
 #Or counties with >30% poverty?
@@ -72,8 +73,15 @@ table(census_data_se$St_name)
 census_data_pov<-census_data %>%
   filter(pov_pop_pct>20)
 
+#You try it!!
+##Filter all counties in the Northeast with a BA rate > 30% (BADeg_pct)
+
+census_data_elites<-census_data %>%
+  filter(Region=="NE" & BADeg_pct > 30)
+
 #Build a tally of high poverty counties by state 
 #(Tidyverse has a better way that we'll discuss later)
+table(census_data_pov$St_name)
 state_pov<-data.frame(table(census_data_pov$St_name))
 boxplot(state_pov$Freq) #Box plot
 hist(state_pov$Freq) #Histogram
@@ -95,11 +103,15 @@ names(census_data)
 census_data_pov<-census_data %>%
   select(GEOID,St_name,Region,pov_pop_pct)
 
+#Use a : to select a range of variable names.
+census_data_pov<-census_data %>%
+  select(GEOID,St_name,Region,LessHS_pct:GradDeg_pct)
+
 census_data_pov<-census_data %>%
   select(1,5,6,47)
 
 #Lastly, you can use mutate to create new variables
-census_data<-census_data %>%
+census_data1<-census_data %>%
   mutate(LessBA_pct=HSGrad_pct+SomeCol_pct)
 hist(census_data$LessBA_pct)
 boxplot(census_data$LessBA_pct)
