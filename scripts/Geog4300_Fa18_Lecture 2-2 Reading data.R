@@ -15,7 +15,7 @@ library(tidyverse)
 
 #Next download some county level data from GitHub
 #This data is stored in a csv and is available at this URL:
-#https://github.com/jshannon75/geog4300/blob/master/Data/ACSCtyData_2014ACS.csv
+#https://github.com/jshannon75/geog4300/raw/master/data/ACSCtyData_2014ACS.csv
 #Right click (or ctrl-click on Mac) on the Download button and save the file.
 #Best for you to have a flash drive if you're not on your computer.
 
