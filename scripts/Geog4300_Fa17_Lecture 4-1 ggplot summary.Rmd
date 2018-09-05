@@ -37,6 +37,8 @@ census_data_summary_grp<-census_data %>%
 census_data_summary_grp
 ```
 
+We can group by multiple variables--here using both region and state names.
+
 ```{r}
 census_data_summary_grp<-census_data %>%
   group_by(Region, St_name) %>%
@@ -56,7 +58,7 @@ Work on question 2 for lab 1!
 ggplot is structured in a particular way:
 * "ggplot(data,aes(x=variable...))" 
 
-Different "geoms" specify you want to plot those data. See this list of available geoms: http://sape.inf.usi.ch/quick-reference/ggplot2/geom. While ggplot is part of the tidyverse, it use the plus sign, not the pipe, to separate elements.
+Different "geoms" specify you want to plot those data. See this list of available geoms: http://sape.inf.usi.ch/quick-reference/ggplot2/geom. While ggplot is part of the tidyverse, it uses the plus sign, not the pipe, to separate elements.
 
 In this example, the second function, "geom_point," says you want a point scatterplot.
 
