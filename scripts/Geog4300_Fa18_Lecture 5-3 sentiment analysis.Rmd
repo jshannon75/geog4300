@@ -1,0 +1,132 @@
+---
+title: "Sentiment analysis"
+output: html_notebook
+---
+
+```{r}
+library(gutenbergr)
+library(tidytext)
+library(tidyverse)
+
+capital<-gutenberg_download(46423) 
+
+capital_words<- capital %>%
+  unnest_tokens(word,text)
+```
+
+We can use tidytext to do sentiment analysis. It includes a basic list of words and associated emotions:
+
+```{r}
+sentiments
+```
+
+We can see the list of sentiments by using table.
+
+```{r}
+table(sentiments$sentiment)
+```
+
+There's actually *three* different sentiment dictionaries: bing, AFIN and nrc. 
+
+```{r}
+bing_sentiment<-get_sentiments("bing")
+head(bing_sentiment)
+```
+
+
+What if we want to look for positive and negative words in Marx? Here, we just use the Bing sentiment dictionary.
+
+```{r}
+pos_neg<-get_sentiments("bing") %>%
+  filter(sentiment=="negative" | sentiment=="positive")
+
+capital_posneg<-capital_words %>%
+  inner_join(pos_neg) %>% #This keeps only words in both lists
+  group_by(word,sentiment) %>%
+  summarise(n=n())
+```
+
+You can then visualize the ten most common words in each sentiment:
+
+```{r}
+capital_posneg %>%
+  group_by(sentiment) %>%
+  top_n(10) %>%
+  ungroup() %>%
+  mutate(word=reorder(word,n)) %>%
+  ggplot(aes(word, n, fill = sentiment)) +
+  geom_col()+
+  facet_wrap(~sentiment,scales="free_y")+
+  coord_flip()
+```
+
+We can also look at sentiment by sentence. Here, we group by sentences and label those as "lines". The second function then separates sentences into individual words but keeps the line variable
+
+```{r}
+capital_sentences<-capital %>%
+  unnest_tokens(sentence,text,token="sentences") %>%
+  mutate(line=row_number()) 
+
+capital_sentences_long<-capital_sentences %>%
+  unnest_tokens(word,sentence)
+```
+
+We can then create a sentiment score by tallying positive and negative words by sentence.
+
+```{r}
+capital_sentences_posneg<-capital_sentences_long %>%
+  inner_join(pos_neg) %>%
+  group_by(line,sentiment) %>%
+  summarise(count=n()) %>%
+  spread(sentiment,count)
+head(capital_sentences_posneg)
+```
+There are some NA's here, so let's change those to zero. The replace_na function does that well.
+
+```{r}
+capital_sentences_posneg <-capital_sentences_posneg %>%
+  mutate(positive=replace_na(positive,0),
+         negative=replace_na(negative,0),
+         score=positive-negative)
+head(capital_sentences_posneg)
+```
+
+Let's visualize that. Here's the overall distribution of sentiment scores:
+
+```{r}
+ggplot(capital_sentences_posneg,aes(x=score)) + geom_histogram(binwidth=0.5)
+```
+
+Here's a graph looking at the scores throughout the length of the book: 
+
+```{r}
+ggplot(capital_sentences_posneg,aes(x=line,y=score))+
+  geom_bar(stat="identity")
+```
+
+What's the most negative sentence? The most positive one?
+
+```{r}
+#Find line numbers
+capital_min<-capital_sentences_posneg %>%
+  filter(score==min(capital_sentences_posneg$score))
+
+capital_max<-capital_sentences_posneg %>%
+  filter(score==max(capital_sentences_posneg$score))
+
+#Select min score (most negative)
+capital_minsent<-capital_sentences %>%
+  filter(line==capital_min$line) 
+
+as.character(capital_minsent$sentence)
+
+#Select max score (most positive)
+capital_maxsent<-capital_sentences %>%
+  filter(line==capital_max$line) 
+
+as.character(capital_maxsent$sentence)
+```
+
+To see Julia Silge show off more about this package, visit: https://www.youtube.com/watch?v=evTuL-RcRpc
+
+
