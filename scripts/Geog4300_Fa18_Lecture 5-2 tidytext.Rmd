@@ -39,14 +39,14 @@ capital_wordcount<-capital_words %>%
 View(capital_wordcount)
 ```
 
-What's the distribution of word frequency?
+What's the distribution of word frequency? That is, how often is any given word used?
 
 ```{r}
 ggplot(capital_wordcount,aes(x=marx_count)) + geom_histogram()
 
 ```
 
-We can use geom_col to visualize these with ggplot. Arrange orders the data before we plot it.
+We can use geom_col to visualize these with ggplot. The top_n function selects just the 20 highest count words and the mutate function orders the data before we plot it.
 
 ```{r}
 capital_graph<-capital_wordcount %>%
