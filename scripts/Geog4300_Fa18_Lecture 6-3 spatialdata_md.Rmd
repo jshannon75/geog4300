@@ -141,6 +141,7 @@ tm_shape(tornado_ga_march_long)+
 
 
 You can also do this with ggplot. We use "factor" to order the months for our output.
+
 ```{r}
 tornado_ga_long<-tornado_ga %>%
   gather(Apr:Sept,key="month",value="count") %>%
@@ -154,7 +155,7 @@ ggplot(tornado_ga_long) +
 ```
 
 
-You can also make interactive maps with tmap.
+You can also make interactive maps with tmap. Make sure you set the output to the Console using the gear icon above.
 
 ```{r}
 tmap_mode("view") #To shift back to static maps, use tmap_mode("plot")
