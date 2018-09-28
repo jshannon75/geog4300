@@ -1,0 +1,69 @@
+---
+title: "Geog4/6300:Dice survey"
+runtime: shiny
+output:
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    theme: cerulean
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(ona)
+library(tidyverse)
+
+dicedata<-data.frame(onaDownload("centrallimit_geog4300","communitymapuga","godawgs!")) %>%
+  filter(name!="213213") %>%
+  select(name:roll10) %>%
+  gather(roll1:roll10,key="roll",value="value")
+
+dicedata_mean<-dicedata %>%
+  group_by(name) %>%
+  summarise(mean=mean(value))
+```
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+#### Variable selection
+
+```{r}
+radioButtons("graph","What type of graph do you want?",
+             c("Individual rolls","All rolls","Means of individual rolls"))
+
+``` 
+
+
+
+Column {data-width=450}
+-----------------------------------------------------------------------
+
+```{r}
+
+
+output$plotind <- renderPlot({
+  validate(need(input$graph=="Individual rolls", message=FALSE))
+  ggplot(dicedata,aes(x=value))+
+    geom_histogram()+
+    xlim(2,12)+
+    facet_wrap(~name)
+  })
+
+output$plotall <- renderPlot({
+  validate(need(input$graph=="All rolls", message=FALSE))
+  ggplot(dicedata,aes(x=value))+
+    geom_histogram()+
+    xlim(2,12)
+  })
+
+output$plotmeans <- renderPlot({
+  validate(need(input$graph=="Means of individual rolls", message=FALSE))
+  ggplot(dicedata_mean,aes(x=mean))+
+    geom_histogram()+
+        xlim(2,12)
+  })
+
+conditionalPanel('input.graph=="Individual rolls"',plotOutput("plotind"))
+conditionalPanel('input.graph=="All rolls"',plotOutput("plotall"))
+conditionalPanel('input.graph=="Means of individual rolls"',plotOutput("plotmeans"))
+```
