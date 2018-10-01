@@ -25,7 +25,7 @@ z.score<-(29-21)/5.3
 z.score
 ```
 
-You could even convert the whole dataset to z scores. The scale function does something simlar.
+You could even convert the whole dataset to z scores. The scale function does something simlar--creating z scores based on the mean and sd of the sample.
 
 ```{r}
 ACT.scores<-ACT.scores %>%
@@ -56,4 +56,4 @@ hist(t.sample$tscore)
 ```
 
 
-You try it! If the average household in Athens is 3.6 miles away from the nearest Waffle House, and the sd is 1.2 miles, what distance defines the 10% of households furthest from a Waffle House? This assumes the data are normally distributed (though there's nothing normal abou Waffle House...)
+You try it! If the average household in Athens is 3.6 miles away from the nearest Waffle House, and the sd is 1.2 miles, what distance defines the 10% of households furthest from a Waffle House? This assumes the data are normally distributed (though there's nothing normal about Waffle House...)
