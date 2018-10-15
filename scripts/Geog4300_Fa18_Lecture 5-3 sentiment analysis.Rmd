@@ -1,6 +1,8 @@
 ---
 title: "Sentiment analysis"
 output: html_notebook
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r}
@@ -46,15 +48,14 @@ capital_posneg<-capital_words %>%
   summarise(n=n())
 ```
 
-You can then visualize the ten most common words in each sentiment:
+You can then visualize the ten most common words in each sentiment. Note how the reorder function is used here to arrange words from highest to lowest count using the n variable.
 
 ```{r}
 capital_posneg %>%
   group_by(sentiment) %>%
   top_n(10) %>%
   ungroup() %>%
-  mutate(word=reorder(word,n)) %>%
-  ggplot(aes(word, n, fill = sentiment)) +
+  ggplot(aes(reorder(word,n), n, fill = sentiment)) + 
   geom_col()+
   facet_wrap(~sentiment,scales="free_y")+
   coord_flip()
