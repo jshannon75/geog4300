@@ -71,7 +71,7 @@ ggplot(cps_data_south_visual)+
 Note that in the geom_line function we used reorder to sort states by the earn_mean variable. 
 
 
-###CI for proporstions. 
+###CI for proportions. 
 
 Confidence intervals for proportions would require a different standard error calculation. If 64.75% of geographers (n=400) voted to hold the next AAG in Maui, here's how we'd figure that out. 
 
@@ -108,7 +108,7 @@ We can then calculate the standard error and create a CI.
 
 ```{r}
 cps_data_hisp<-cps_data_hisp %>%
-  mutate(se=sqrt((mex_pct*(1-mex_pct))/totpop),
+  mutate(se=sqrt((mex_pct*(1-mex_pct))/(totpop-1)),
          error=z.score*se,
          ci_high=mex_pct+error,
          ci_low=mex_pct-error)
