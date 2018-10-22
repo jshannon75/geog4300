@@ -59,4 +59,4 @@ Let's look at the Daymet dataset from lab 1.
 daymet_data<-read_csv("https://github.com/jshannon75/geog4300_lab1/raw/master/Daymet_Cty_Summary_2005_2015.csv")
 ```
 
-The average high temperature for October in Clarke County is 23.1 degrees Celsius. Filter these data to select just observations from 2013 in Athens. Was this year *significantly* higher or lower than average? The gisjn_cty id for Clarke County is G13059.
+The average yearly high temperatur in Clarke County is 23.1 degrees Celsius. Filter these data to select just observations from 2013 in Athens. Was this year *significantly* higher or lower than average? The gisjn_cty id for Clarke County is G13059.
