@@ -65,4 +65,10 @@ wilcox.test(data2000, data2010, paired=TRUE)
 ```
 Here again, the Mann-Whitney test is used so the output is slightly different.
 
+##You try it!
+Let's look at a sample dataset of pollen reading for major tree species at several sites in the upper Midwest.
 
+```{r}
+pollen_data<-read_csv("https://github.com/jshannon75/geog4300/raw/master/data/Midwest_Pollen_Data.csv")
+```
+Pick two species and compare their pollen levels using the appropriate t-test.
