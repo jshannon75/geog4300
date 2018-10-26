@@ -1,0 +1,66 @@
+---
+title: "Tidy text and text mining"
+output: html_notebook
+---
+
+In this script, we'll be working with the tidytext package to get introduced to text mining. This closely follows the Text Mining with R book by Julia Silge and David Robinson, available online at https://www.tidytextmining.com/index.html
+
+We're going to need two packages: gutenbergr, which provides access to free texts at the Gutenberg project, and tidytext.
+
+```{r}
+#install.packages("gutenbergr")
+library(gutenbergr)
+
+#install.packages("tidytext")
+library(tidytext)
+
+library(tidyverse)
+```
+
+Let's start by downloading Marx's Capital (id 46423 on the Gutenberg project) and breaking it down by word using the unnest_tokens function.
+
+
+```{r}
+capital<-gutenberg_download(46423) 
+
+capital_words<- capital %>%
+  unnest_tokens(word,text)
+
+head(capital_words)
+```
+
+We can remove common "stop words" and then use group_by and summarise to count the most common ones.
+
+```{r}
+capital_wordcount<-capital_words %>%
+  anti_join(stop_words) %>%
+  group_by(word) %>%
+  summarise(marx_count=n())
+View(capital_wordcount)
+```
+
+What's the distribution of word frequency? That is, how often is any given word used?
+
+```{r}
+ggplot(capital_wordcount,aes(x=marx_count)) + geom_histogram()
+
+```
+
+We can use geom_col to visualize these with ggplot. The top_n function selects just the 20 highest count words and the mutate function orders the data before we plot it.
+
+```{r}
+capital_graph<-capital_wordcount %>%
+  top_n(20) %>% #Selects the 20 highest count words
+  mutate(word=reorder(word,marx_count)) 
+
+ggplot(capital_graph,aes(word,marx_count)) +
+  geom_col() +
+  coord_flip()
+```
+
+You try it! 
+Download The Wealth of Nations (book 3300) from Gutenberg and identify the ten most common words in the book (excluding stop words).
+
+Bonus challenge: Find words that are in both Smith and Marx and create a scatterplot that shows their frequency in both. Hint: you'll need to use an inner_join.
+
+In the Silge and Robinson book, there's much more detail about can identify common word groups and identify the relationships between them.
