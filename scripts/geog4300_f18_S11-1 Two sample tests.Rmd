@@ -60,16 +60,15 @@ prop_sample<-bind_cols(prop1,prop2) #Combine the two variables
 prop_samplelong<-prop_sample %>% gather(key="coin",value="result") #Reshape the dataset so all values are in one column
 ```
 
-
-Then we'll use group_by and summarise to get the counts of each outcome (0=tails, 1=heads). We can use prop.test to check whether these outcomes were significantly different. Note that prop.test needs the table in matrix format.
+Then we'll use group_by and summarise to get the counts of each outcome (0=tails, 1=heads). We can use prop.test to check whether these outcomes were significantly different. We use group_by and summarise to count the number of heads and tails by coin, spread those results to separate columns (labeled 0 and 1), and then calculate the total of all coin flips--100 in each case. The prop.test function looks at the numbers of "successes" and the total number of trials.
 
 ```{r}
 prop_sample.table<-prop_samplelong %>%
   group_by(coin,result) %>%
   summarise(count=n()) %>%
-  spread(result,count)
-prop_table_matrix<-as.matrix(prop_sample.table) 
-prop.test(prop_table_matrix) #Run prop.test on the table
+  spread(result,count) %>%
+  mutate(total=`0`+`1`)
+prop.test(prop_sample.table$`1`,prop_sample.table$total) #Run prop.test on the table
 ```
 
 
