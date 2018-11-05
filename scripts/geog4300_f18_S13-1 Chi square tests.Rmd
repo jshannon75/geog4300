@@ -1,0 +1,38 @@
+---
+title: "Geog6300: Chi square tests"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
+---
+
+Chi-square tests. First, we create the data and then run the test. Here we use the Thanksgiving.chisquare dataset from lecture.
+```{r}
+white<-c(15, 25)
+dark<-c(25, 10)
+tofurkey<-c(3, 7)
+thanksgiving<-data.frame(cbind(white, dark, tofurkey))
+
+chisq.test(thanksgiving)
+```
+
+Here's the same procedure for our in class problem.
+
+```{r}
+car<-c(58, 199, 205)
+transit<-c(21, 49, 32)
+walk<-c(36, 64, 29)
+survey<-data.frame(cbind(car, transit, walk))
+chisq.test(survey)
+```
+
+In class challenge: Look at the "tornado_points" data from earlier in the semester
+
+```{r}
+library(tidyverse)
+tornado<-read_csv("https://github.com/jshannon75/geog4300/raw/master/data/tornado_points.csv")
+```
+
+Is there a difference in the severity of tornados (MAG) across states (ST)?
+
+You will have to create a table of counts for each MAG category by state using the table function or group_by/summarise and then spread. Then run the chi-squared test.
+
