@@ -89,7 +89,7 @@ tm_shape(pollen_data_sf) +
 
 *Heteroskedasticity: We can use the Breusch-Pagan test in the lmtest package. The null hypothesis is that the data is uniform, NOT heteroskedastic.
 ```{r}
-require(lmtest)
+library(lmtest)
 bptest(model)
 ```
 
@@ -126,7 +126,7 @@ ggplot(pollen_data_sf,aes(y=Betula,x=tmeanyr,color=outlier))+
 Where are these outliers?
 ```{r}
 tm_shape(pollen_data_sf) +
-  tm_dots("outlier")
+  tm_dots("outlier",size=0.2)
 ```
 
 Let's run a model without the outliers.
