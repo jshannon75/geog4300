@@ -111,7 +111,7 @@ census_data_pov<-census_data %>%
   select(1,5,6,47)
 
 #Lastly, you can use mutate to create new variables
-census_data1<-census_data %>%
+census_data<-census_data %>%
   mutate(LessBA_pct=HSGrad_pct+SomeCol_pct)
 hist(census_data$LessBA_pct)
 boxplot(census_data$LessBA_pct)
