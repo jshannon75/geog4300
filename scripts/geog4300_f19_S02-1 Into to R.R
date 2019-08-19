@@ -1,4 +1,4 @@
-##Geography 4300/6300 Lab week 1
+##Geography 4300/6300 Lab--Getting started with R
 
 #These hash tags create comments in the code. 
 #R won't read anything on this line.
@@ -147,7 +147,8 @@ test_df1<-test_df %>%
 
 #This code sums the A and B columns based on the color variable C
 test_df2<-test_df %>%
+  mutate(Z=A+B)
   group_by(C) %>%
   summarise(A_total=sum(A),
-            B_total=sum(B))
+            Z_total=sum(Z))
   
