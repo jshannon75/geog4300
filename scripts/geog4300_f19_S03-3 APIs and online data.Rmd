@@ -1,0 +1,56 @@
+---
+title: "Geog4/6300: APIs and ggplot"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
+---
+While CSVs can be convenient ways to import data, APIs (application program interfaces) provide another way to access data directly from the source. Many orgs provide APIs for those using their data. 
+
+One example is the Star Wars API (SWAPI). See their website: https://swapi.co/. See also this presentation from Amanda Gadrow about using SWAPI: https://www.rstudio.com/resources/videos/using-web-apis-from-r/. And this one by Charlotte Wickham: https://www.rstudio.com/resources/videos/happy-r-users-purrr-tutorial/
+
+Another example is the Daymet dataset. The Daymet dataset provides gridded climate data going back to 1980 for the whole US. Here's their website: 
+
+* https://daymet.ornl.gov/
+
+They provide an API service where you can query their database directly. Directions are found here: 
+
+* https://daymet.ornl.gov/web_services.html
+
+For instance, the following uRL gives you data on the Geography/Geology building:
+
+* https://daymet.ornl.gov/data/send/query?lat=33.948693&lon=-83.375475&year=2016
+
+The daymetr package allows you to access these data directly. We'll use this dataset in your next lab.
+
+```{r}
+#install.packages("daymetr")
+library(daymetr)
+```
+
+If we wanted to download ten years of data for Athens, we can do so using the 'download_daymet' function. The value for site will be the name of the new file. 
+
+```{r}
+athens_daymet<-download_daymet(site="athens",lat=33.948693,lon=-83.375475,start=2005,end=2015,internal=TRUE)
+```
+
+This returns a list, which is difficult to use. Let's extract the tabular data.
+
+```{r}
+athens_data<-athens_daymet$data
+View(athens_data)
+```
+
+We can then begin to visualize these data.
+
+```{r}
+hist(athens_data$prcp..mm.day.)
+boxplot(athens_data$tmax..deg.c.)
+```
+
+Let's review! Create a summary of the median maximum temperature each year from these Athens data.
+
+Now try downloading 10 years of climate data for a point of your choosing.
+
+There's lots of APIs and an increasing number of packages to deal with them. For example, later this semester we'll be working with tidycensus to extract census data. A couple of other examples of a atmospheric science relevant API: 
+* https://github.com/ropensci/rerddap/blob/master/vignettes/Using_rerddap.Rmd
+* https://github.com/ropensci/FedData
