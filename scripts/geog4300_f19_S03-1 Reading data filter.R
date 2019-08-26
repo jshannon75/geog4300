@@ -124,4 +124,4 @@ boxplot(census_data$LessBA_pct)
 #Load the data into R. Then do the following
 # *Filter the dataset to look at only songs in A major (key_mode)
 # *Create a histogram for the danceability variable
-# *Create a new variable using mutate that combines danceability, energy, and loudness.
+# *Create a new variable using mutate that sums danceability, energy, and loudness.
