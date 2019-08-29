@@ -5,3 +5,4 @@ This repo contains files related to the Data Science in Geography course at the 
 Our lab templates are found on separate repos:
 
 * [Lab 1](https://github.com/jshannon75/geog4300_lab1): Loading data and summary statistics
+* [Lab 2](https://github.com/jshannon75/geog4300_lab2): Text mining and sentiment analysis
