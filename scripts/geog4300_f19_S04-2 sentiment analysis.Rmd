@@ -39,11 +39,8 @@ head(bing_sentiment)
 What if we want to look for positive and negative words in Marx? Here, we just use the Bing sentiment dictionary.
 
 ```{r}
-pos_neg<-get_sentiments("bing") %>%
-  filter(sentiment=="negative" | sentiment=="positive")
-
 capital_posneg<-capital_words %>%
-  inner_join(pos_neg) %>% #This keeps only words in both lists
+  inner_join(bing_sentiment) %>% #This keeps only words in both lists
   group_by(word,sentiment) %>%
   summarise(n=n())
 ```

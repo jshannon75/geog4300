@@ -47,10 +47,14 @@ hist(athens_data$prcp..mm.day.)
 boxplot(athens_data$tmax..deg.c.)
 ```
 
-Let's review! Create a summary of the median maximum temperature each year from these Athens data.
+Let's review! 
 
-Now try downloading 10 years of climate data for a point of your choosing.
+* Create a summary of the median maximum temperature each year from these Athens data.
+* Try downloading 10 years of climate data for a point of your choosing.
 
 There's lots of APIs and an increasing number of packages to deal with them. For example, later this semester we'll be working with tidycensus to extract census data. A couple of other examples of a atmospheric science relevant API: 
 * https://github.com/ropensci/rerddap/blob/master/vignettes/Using_rerddap.Rmd
 * https://github.com/ropensci/FedData
+
+For the Spotify data we used in the previous script, see the Spotifyr package.
+* https://github.com/charlie86/spotifyr
