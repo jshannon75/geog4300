@@ -74,11 +74,13 @@ Now you try it! Calculate the mean value by state for the nat_ins_pct, fbnat_ins
 
 ###Introducing joins
 
-If you've used a GIS desktop package, you should be familiar with the idea of joins. Based on some common variable, joins provide a way to merge two datasets together. The tidyverse has LOTS of ways to join. Here's one summary of them all: https://medium.com/@HollyEmblem/joining-data-with-dplyr-in-r-874698eb8898
+If you've used a GIS desktop package, you should be familiar with the idea of joins. Based on some common variable, joins provide a way to merge two datasets together. The tidyverse has LOTS of ways to join. Here's a couple of summaries of them all: 
+* https://medium.com/@HollyEmblem/joining-data-with-dplyr-in-r-874698eb8898
+* https://mikoontz.github.io/data-carpentry-week/lesson_joins.html
 
 The most common, at least in my experience, is the left_join. When joining datasets A and B, this command keeps all rows in A and includes matching values from B. It will NOT add new values from B that don't have a match in A--you'd want right_join or full_join for that.
 
-Here's an example. Let's say we want to add the poverty rate to our map of educational attainment above. We can do so using group_by and summarise:
+Here's an example. Let's say we want to add the poverty rate to our summary of educational attainment above. We can do so using group_by and summarise:
 
 ```{r}
 povrate_st<-census_data %>%
@@ -94,6 +96,4 @@ edpov<-edvars3 %>%
 ```
 
 Joins are really handy functions when combining datasets.
-
-You try it! Combine the edpov dataset with the summary of health insurance variables you created earlier.
 
