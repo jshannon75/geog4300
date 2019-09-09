@@ -10,9 +10,9 @@ library(gutenbergr)
 library(tidytext)
 library(tidyverse)
 
-capital<-gutenberg_download(46423) 
+tolstoy<-gutenberg_download(2600) 
 
-capital_words<- capital %>%
+tolstoy_words<- tolstoy %>%
   unnest_tokens(word,text)
 ```
 
@@ -39,8 +39,9 @@ head(bing_sentiment)
 What if we want to look for positive and negative words in Marx? Here, we just use the Bing sentiment dictionary.
 
 ```{r}
-capital_posneg<-capital_words %>%
+tolstoy_posneg<-tolstoy_words %>%
   inner_join(bing_sentiment) %>% #This keeps only words in both lists
+  anti_join(stop_words) %>%
   group_by(word,sentiment) %>%
   summarise(n=n())
 ```
@@ -48,10 +49,10 @@ capital_posneg<-capital_words %>%
 You can then visualize the ten most common words in each sentiment. Note how the reorder function is used here to arrange words from highest to lowest count using the n variable.
 
 ```{r}
-capital_posneg %>%
+tolstoy_posneg %>%
   group_by(sentiment) %>%
   top_n(10) %>%
-  ungroup() %>%
+  #ungroup() %>%
   ggplot(aes(reorder(word,n), n, fill = sentiment)) + 
   geom_col()+
   facet_wrap(~sentiment,scales="free_y")+
@@ -61,44 +62,43 @@ capital_posneg %>%
 We can also look at sentiment by sentence. Here, we group by sentences and label those as "lines". The second function then separates sentences into individual words but keeps the line variable
 
 ```{r}
-capital_sentences<-capital %>%
+tolstoy_sentences<-tolstoy %>%
   unnest_tokens(sentence,text,token="sentences") %>%
   mutate(line=row_number()) 
 
-capital_sentences_long<-capital_sentences %>%
+tolstoy_sentences_long<-tolstoy_sentences %>%
   unnest_tokens(word,sentence)
 ```
 
-We can then create a sentiment score by tallying positive and negative words by sentence.
+We can then count the number of positive and negative words by sentence. We use the spread function to create separate columns for positive and negative and use the fill parameter to add 0's where there would be NAs.
 
 ```{r}
-capital_sentences_posneg<-capital_sentences_long %>%
-  inner_join(pos_neg) %>%
+tolstoy_sentences_posneg<-tolstoy_sentences_long %>%
+  inner_join(bing_sentiment) %>%
+  anti_join(stop_words) %>%
   group_by(line,sentiment) %>%
   summarise(count=n()) %>%
-  spread(sentiment,count)
-head(capital_sentences_posneg)
+  spread(sentiment,count,fill=0)
+head(tolstoy_sentences_posneg)
 ```
-There are some NA's here, so let's change those to zero. The replace_na function does that well.
+Let's create a simple metric, "score", that counts the net positive or negative words in a sentence.
 
 ```{r}
-capital_sentences_posneg <-capital_sentences_posneg %>%
-  mutate(positive=replace_na(positive,0),
-         negative=replace_na(negative,0),
-         score=positive-negative)
-head(capital_sentences_posneg)
+tolstoy_sentences_posneg <-tolstoy_sentences_posneg %>%
+  mutate(score=positive-negative)
+head(tolstoy_sentences_posneg)
 ```
 
 Let's visualize that. Here's the overall distribution of sentiment scores:
 
 ```{r}
-ggplot(capital_sentences_posneg,aes(x=score)) + geom_histogram(binwidth=0.5)
+ggplot(tolstoy_sentences_posneg,aes(x=score)) +   geom_histogram(binwidth=0.5)
 ```
 
 Here's a graph looking at the scores throughout the length of the book: 
 
 ```{r}
-ggplot(capital_sentences_posneg,aes(x=line,y=score))+
+ggplot(tolstoy_sentences_posneg,aes(x=line,y=score))+
   geom_bar(stat="identity")
 ```
 
@@ -106,23 +106,23 @@ What's the most negative sentence? The most positive one?
 
 ```{r}
 #Find line numbers
-capital_min<-capital_sentences_posneg %>%
-  filter(score==min(capital_sentences_posneg$score))
+tolstoy_min<-tolstoy_sentences_posneg %>%
+  filter(score==min(tolstoy_sentences_posneg$score))
 
-capital_max<-capital_sentences_posneg %>%
-  filter(score==max(capital_sentences_posneg$score))
+tolstoy_max<-tolstoy_sentences_posneg %>%
+  filter(score==max(tolstoy_sentences_posneg$score))
 
 #Select min score (most negative)
-capital_minsent<-capital_sentences %>%
-  filter(line==capital_min$line) 
+tolstoy_minsent<-tolstoy_sentences %>%
+  filter(line==tolstoy_min$line) 
 
-as.character(capital_minsent$sentence)
+as.character(tolstoy_minsent$sentence)
 
 #Select max score (most positive)
-capital_maxsent<-capital_sentences %>%
-  filter(line==capital_max$line) 
+tolstoy_maxsent<-tolstoy_sentences %>%
+  filter(line==tolstoy_max$line) 
 
-as.character(capital_maxsent$sentence)
+as.character(tolstoy_maxsent$sentence)
 ```
 
 To see Julia Silge show off more about this package, visit: https://www.youtube.com/watch?v=evTuL-RcRpc
