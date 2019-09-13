@@ -1,0 +1,107 @@
+---
+title: "Visualizing central tendency and distribution"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
+---
+
+Most visualizations in ggplot focus on ways of visualizing the shape of distributions, but there's a few ways we can also look at central tendency. Let's visualize data from the county census data. 
+
+```{r}
+library(tidyverse)
+census_data<-read_csv("https://github.com/jshannon75/geog4300/raw/master/data/ACSCtyData_2014ACS.csv")
+```
+
+What if we want to identify the mean and median rates of insurance for naturalized citizens by state? First, we should calculate these using group_by and summarise.
+
+```{r}
+census_ins<-census_data %>%
+  group_by(St_name) %>%
+  summarise(nat_ins_mean=mean(nat_ins_pct),
+            nat_ins_med=median(nat_ins_pct))
+```
+
+We can then use gather to put all the values in the same column and plot them using a dot plot.
+
+```{r}
+census_ins_plot<-census_ins %>%
+  gather(nat_ins_mean:nat_ins_med,key="var",value="value")
+
+ggplot(census_ins_plot,aes(x=value,y=St_name,color=var))+
+    geom_point()
+```
+
+That's hard to read, so let's reorder the data and try again. We'll also draw from the ColorBrewer palette. (https://www.datanovia.com/en/blog/the-a-z-of-rcolorbrewer-palette/) Lastly, we'll tweak the axis labels.
+
+```{r}
+census_ins_plot<-census_ins %>%
+  mutate(St_name=reorder(St_name,nat_ins_mean)) %>%
+  gather(nat_ins_mean:nat_ins_med,key="var",value="value")
+
+ggplot(census_ins_plot,aes(x=value,y=St_name,color=var))+
+  geom_point()+
+  scale_colour_brewer("Variable",palette="Dark2",labels=c("Mean","Median"))+
+  xlab("% of population") +
+  ylab("")
+```
+
+Boxplots are a very common way to visualize distributions, showing the median, quartiles, and outliers. Let's visualize that insurance variable for the Midwest. We'll also rotate the axis labels slightly to make them easier to read.
+
+```{r}
+census_midwest<-census_data %>%
+  filter(Region=="MW")
+
+ggplot(census_midwest,aes(x=St_name,y=nat_ins_pct))+
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Histograms are also common. Here we can use facet_wrap by state.
+
+```{r}
+ggplot(census_midwest,aes(x=nat_ins_pct))+
+  geom_histogram()+
+  facet_wrap(~St_name)
+```
+
+Density plots are another alternative that gets everything in one graph. We can use the alpha parameter to make them semi-transparent.
+
+```{r}
+ggplot(census_midwest,aes(x=nat_ins_pct,fill=St_name))+
+  geom_density(alpha=0.5)
+```
+
+You can combine these! See this for more info: http://www.cookbook-r.com/Graphs/Plotting_distributions_(ggplot2)/
+
+```{r}
+ggplot(census_midwest,aes(x=nat_ins_pct))+
+  geom_histogram(aes(y=..density..,alpha=0.5)) +
+  geom_density(color="#70010a")+
+  facet_wrap(~St_name)
+```
+
+Ridge plots are similar. We'll also use the viridis package for fill, which brings in MatLab colors.
+
+```{r}
+#install.packages("ggridges")
+library(ggridges)
+library(viridis)
+
+ggplot(census_midwest,aes(x=nat_ins_pct,y=St_name))+
+  geom_density_ridges()
+
+#Scale zooms them
+ggplot(census_midwest,aes(x=nat_ins_pct,y=St_name))+
+  geom_density_ridges(scale=3)
+
+ggplot(census_midwest,aes(x=nat_ins_pct,y=St_name,fill=..x..))+
+  geom_density_ridges_gradient()+
+  scale_fill_viridis()
+
+#Let's do all the states!
+ggplot(census_data,aes(x=nat_ins_pct,y=St_name,fill=..x..))+
+  geom_density_ridges_gradient()+
+  scale_fill_viridis()
+```
+
+
