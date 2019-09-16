@@ -104,4 +104,19 @@ ggplot(census_data,aes(x=nat_ins_pct,y=St_name,fill=..x..))+
   scale_fill_viridis()
 ```
 
+Lastly, a beeswarm diagram provides another alternative to boxplots, somewhat like a sideways density plot. For more info, see https://github.com/eclarke/ggbeeswarm
+
+```{r}
+#install.packages("ggbeeswarm")
+library(ggbeeswarm)
+
+ggplot(census_midwest,aes(x=St_name,y=nat_ins_pct))+
+  geom_quasirandom()
+
+ggplot(census_midwest,aes(x=St_name,y=nat_ins_pct))+
+  geom_quasirandom(method="smiley")
+
+ggplot(census_midwest,aes(x=St_name,y=nat_ins_pct))+
+  geom_beeswarm(size=0.5)
+```
 
