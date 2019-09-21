@@ -7,4 +7,4 @@ Our lab templates are found on separate repos:
 * [Lab 1](https://github.com/jshannon75/geog4300_lab1): Loading data and summary statistics
 * [Lab 2](https://github.com/jshannon75/geog4300_lab2): Text mining and sentiment analysis
 * [Lab 3](https://github.com/jshannon75/geog4300_lab3): Descriptive stats
-* [Lab 4](https://github.com/jshannon75/geog4300_lab4): Spatial descriptives and kernel density
+* [Lab 4](https://github.com/jshannon75/geog4300_lab4): Spatial descriptives and kernel density | [Github classroom link](https://classroom.github.com/a/szJfFluM)
