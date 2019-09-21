@@ -1,0 +1,216 @@
+---
+title: "Spatial data in R"
+output:
+  html_document:
+    df_print: paged
+editor_options: 
+  chunk_output_type: console
+---
+
+### Loading and manipulating spatial data
+
+There are several packages available to create and edit spatial data in R. This includes both raster and vector data. This script focuses on the latter. The relatively new sf (stands for simple features) package is one efficent way to load vector data. Other popular packages for spatial data are rgdal, sp, and raster.
+
+
+```{r, message=FALSE}
+#install.packages("sf")
+library(tidyverse)
+library(sf)
+library(viridis)
+```
+
+First, let's load our spatial tract data for Charlotte as a spatial file using st_read from the sf package. We'll select tracts that are in Mecklenberg County (fips of 37119).
+
+```{r}
+charpop<-st_read("https://github.com/jshannon75/geog4300/raw/master/data/charlotte_tractpop.gpkg") %>%
+  mutate(cty_fips=substr(GEOID,1,5)) %>% #county fips code is the first five digits of the tract fips
+  filter(cty_fips==37119) %>%
+  st_transform(4326) 
+```
+
+We can also read in the reviews from Yelp from the lab 2 Github repo. For this lab, we don't care about individual reviews. So we'll remove the review specific variables and then use the distinct function to remove duplicates. The st_as_sf function takes coordinates in the csv and converts them to spatial data.
+
+```{r}
+restaurants<-read_csv("https://github.com/jshannon75/geog4300_lab2/raw/master/data/charlotte_restaurants.csv") %>%
+  select(-review_id,-date,-review_count,-text) %>%
+  distinct()
+
+restaurants_sf<-st_as_sf(restaurants,
+                  coords=c(x="longitude",y="latitude"), #Indicate the coordinate columns
+                  crs=4326, #Set the projections
+                  remove=FALSE) #Keep the coordinate columns
+```
+
+The sf package also has a set of spatial functions that can be used on these data. For example, you could convert the tract polygons to centroids. We then use geom_sf in ggplot to visualize those points.
+
+```{r}
+ggplot(charpop) + geom_sf()
+
+charpop_points<-st_centroid(charpop)
+ggplot(charpop_points) + geom_sf()
+
+#What if the color matched population?
+ggplot(charpop_points,aes(color=totpop)) + 
+  geom_sf()
+```
+
+We can use st_join to join the tract id to every restaurant based on its location. We join tract data based on whether the point is within the polygon (st_within).
+
+```{r}
+rest_tct<-restaurants_sf %>%
+  st_join(charpop,join=st_within)
+
+#Plot restaurants by tract
+ggplot(rest_tct) + 
+  geom_sf(aes(color=GISJOIN),show.legend=FALSE)
+
+#Plot burger places
+ggplot(rest_tct,aes(color=as.character(Burgers))) + geom_sf()
+```
+
+We can then remove the spatial data and tally these points by tract. We add a column for total count by grouping by GISJOIN and using summarise. We then join this count to the spatial tract data. 
+
+```{r}
+rest_tct_df<-rest_tct %>%
+  st_set_geometry(NULL) #Remove the geography column, which contains spatial data.
+
+rest_tct_count<-rest_tct_df %>%
+  group_by(GISJOIN) %>%
+  summarise(all_count=n())
+
+charpop_count<-charpop %>%
+  left_join(rest_tct_count)
+```
+
+The nngeo package provides a function called st_nn that calculates the Euclidean distance between pairs of points. We can calculate the distance from the centroid of each tract to all restaurants using the code below. The bind_rows function converts the output from a list to a data frame. We can then connect that list of distances to the tract data frame using bind_cols, which binds columns.
+
+```{r}
+#install.packages("nngeo")
+library(nngeo)
+
+tct_dist<-bind_rows(st_nn(charpop_points,rest_tct,returnDist=TRUE))
+
+tct_dist5<-bind_rows(st_nn(charpop_points,rest_tct %>% filter(stars==5),returnDist=TRUE)) %>%
+  rename(dist5=dist)
+
+tct_dist1<-bind_rows(st_nn(charpop_points,rest_tct %>% filter(stars==1),returnDist=TRUE)) %>%
+  rename(dist1=dist)
+
+charpop_dist<-charpop_count %>% 
+  bind_cols(tct_dist) %>%
+  bind_cols(tct_dist5) %>%
+  bind_cols(tct_dist1)
+```
+
+
+### Tools for viewing/mapping spatial data
+```{r}
+library(mapview)
+library(tmap)
+```
+
+You can use ggplot to view spatial data with the geom_sf package. For example, here's the distance to the closest Yelp reviewed restaurant. Scale_fill_viridis allows you to use the color scheme from Matlab (viridis)
+
+```{r}
+ggplot(charpop_dist) + 
+  geom_sf(aes(fill=dist)) + 
+  scale_fill_viridis_c()
+```
+
+There's some upper outliers at the top end. What if we select tracts with at least one review?
+
+```{r}
+charpop_filter<-charpop_dist %>% 
+  filter(all_count>0)
+
+ggplot(charpop_filter)+
+  geom_sf(aes(fill=dist)) + 
+  scale_fill_viridis_c()
+```
+
+There's multiple other packages to map with. You can use the tmap package, which provides lots of mapping tools. Here's a basic plot:
+
+```{r}
+tm_shape(charpop_filter)+
+  tm_polygons()
+```
+
+You can make a choropleth map by adding a variable. Here, the county FIPS code is also included with tm_text.
+
+```{r}
+tm_shape(charpop_filter)+
+  tm_polygons("dist")+
+  tm_text("GISJOIN",size=0.5)
+```
+
+Or you can add the five star restaurants as points. This also adds a north arrow and scale bar and moves the legend outside.
+
+```{r}
+tm_shape(charpop_filter)+
+  tm_polygons("dist5",style="jenks")+
+tm_shape(rest_tct %>% filter(stars==5))+
+  tm_dots(size=0.1) +
+tm_compass()+
+tm_scale_bar(position="left")+
+tm_legend(legend.outside=TRUE)
+```
+
+Here's a version for one star restaurants.
+```{r}
+tm_shape(charpop_filter)+
+  tm_polygons("dist1",style="jenks")+
+tm_shape(rest_tct %>% filter(stars==1))+
+  tm_dots(size=0.1) +
+tm_compass()+
+tm_scale_bar(position="left")+
+tm_legend(legend.outside=TRUE)
+```
+
+You can use tmap for small multiple maps. 
+```{r}
+charpop_long<-charpop_filter %>%
+  gather(dist,dist1,dist5,key="var",value="dist")
+
+tm_shape(charpop_long)+
+  tm_polygons("dist",style="jenks")+
+  tm_facets(by="var")
+```
+
+
+You can also do small multiple maps with ggplot.
+
+```{r}
+ggplot(charpop_long) +
+  geom_sf(aes(fill=dist))+
+  scale_fill_viridis_c()+
+  facet_wrap(~var)
+```
+
+
+You can also make interactive maps with tmap. Make sure you set the output to the Console using the gear icon above.
+
+```{r}
+tmap_mode("view") #To shift back to static maps, use tmap_mode("plot")
+
+tm_shape(charpop_filter)+
+  tm_polygons("dist5",style="jenks",alpha=0.4)+
+tm_shape(rest_tct %>% filter(stars==5))+
+  tm_dots(size=0.1)
+```
+
+The leaflet library is used in lots of web applications. The R version takes a little more work, but you can customize things like your basemap.
+
+```{r}
+library(leaflet)
+pal <- colorNumeric(
+  palette = "Blues",
+  domain = charpop_filter$dist5)
+
+leaflet(charpop_filter) %>%
+  addProviderTiles(providers$Stamen.TonerHybrid) %>%
+  addPolygons(stroke=FALSE,fillOpacity=0.8,color = ~pal(dist5))
+```
+
+There are other good mapping packages available. Mapview (https://r-spatial.github.io/mapview/articles/articles/mapview_01-basics.html) provides quick interactive maps. The new cartography package (https://github.com/riatelab/cartography) also has helpful looking tools for mapping.
+
+Learn more about spatial analysis in R in Manuel Gimond's web textbook: https://mgimond.github.io/Spatial/
