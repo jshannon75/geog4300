@@ -1,0 +1,79 @@
+---
+title: "Probability distributions"
+output: github_notebook
+editor_options: 
+  chunk_output_type: console
+---
+
+R has several built in functions for analyzing and simulating different probability distributions. For binomial distribution there are two options:
+
+1) dbinom povides the probability of an exact outcome. For example, what is the probability of getting *exactly* one two pair hand of cards over five deals? We know that the probability of two pair is .048. (see http://www.math.hawaii.edu/~ramsey/Probability/PokerHands.html)
+
+```{r}
+dbinom(1,size=5,prob=.048)
+```
+
+What is the probability of NO two pair hands?
+
+```{r}
+dbinom(0,size=5,prob=.048)
+```
+
+2) pbinom provides the *cumulative probability* of an outcome--from no occurance to a given maximum.
+What is the probability of getting one or LESS two pair hand of cards of five deals?
+
+```{r}
+pbinom(1,size=5,prob=.048)
+```
+
+What is the probability of 2 or more two pair hands in five deals?
+
+```{r}
+1-pbinom(1,size=5,prob=.048)
+```
+
+The same options can be used for a Poisson distibution: dpois and ppois. If Georgia has 21 tornadoes every year, what is the probability of exactly 18 tornadoes in a year? For dpois, the two numbers are the outcome you're interested in (18 tornados) and the lambda (21).
+
+```{r}
+dpois(18,21)
+```
+
+What is the probability of 18 or less tornadoes?
+
+```{r}
+ppois(18,21)
+```
+
+What is the probability of more than 18 tornadoes?
+
+```{r}
+1-ppois(18,21)
+```
+
+You can visualize these distributions using the "visualize" package
+
+```{r}
+#install.packages("visualize")
+library(visualize)
+```
+
+Probability of 1 or more two pair hands in 5 draws.
+```{r}
+visualize.binom(stat=1,size=5,prob=.048,section="upper")  
+```
+
+Probability of 15 or less tornadoes
+```{r}
+visualize.pois(stat=18,lambda=21,section="lower")
+```
+
+Probability of more than 16 tornadoes
+```{r}
+visualize.pois(stat=19,lambda=21,section="upper")
+```
+
+
+You try it!
+1) If the there are 12 rainy days in the average September in Athens, what's the chance of getting more than 15 rainy days this month?
+
+2) For the past 100 years, a stream close to Athens has been measured at a gauging station. A USGS scientist has crunched these numbers and determined that the results are normally distributed, with a mean of 35.26 CFM and a standard deviation of 4.61 CFM. Calculate the probabilities the stream flow in a given year will exceed 42 and 48 CFM.

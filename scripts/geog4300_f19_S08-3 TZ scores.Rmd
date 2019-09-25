@@ -1,0 +1,58 @@
+---
+title: "T and Z scores in R"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(tidyverse)
+```
+
+Let's start with our random distribution of ACT scores. The following code simulates random population of 100 taking the ACT in 2011.
+
+```{r}
+ACT.scores<-data.frame(rnorm(100, mean=21, sd=5.3))
+names(ACT.scores)<-"scores"
+```
+
+To calculate z scores, simply put the formula for z scores into R (value - mean)/sd. 
+
+What's the z score for an ACT score of 29? The mean is 21 and sd is 5.3.
+
+```{r}
+z.score<-(29-21)/5.3
+z.score
+```
+
+You could even convert the whole dataset to z scores. The scale function does something simlar--creating z scores based on the mean and sd of the sample.
+
+```{r}
+ACT.scores<-ACT.scores %>%
+  mutate(zscore=(scores-21)/5.3)
+
+ACT.scores$zscore_scale<-scale(ACT.scores)
+
+hist(ACT.scores$scores)
+hist(ACT.scores$zscore)
+hist(ACT.scores$zscore_scale)
+```
+
+##These two provide different numbers. Why??
+
+What's the ACT score associated with the 67th percentile? The qnorm function looks that up.
+
+```{r}
+score<-qnorm(0.67,mean=21,sd=5.3)
+score
+```
+
+T scores follow a similar logic. The function below creates a dataset of 10 variables with the t-distribution when df=10. The mean of this dataset is 0 and the standard deviation is 1.
+
+```{r}
+t.sample<-data.frame(rt(100, df=10))
+names(t.sample)<-"tscore"
+hist(t.sample$tscore)
+```
+
+You try it! If the average household in Athens is 3.6 miles away from the nearest Waffle House, and the sd is 1.2 miles, what distance defines the 10% of households furthest from a Waffle House? This assumes the data are normally distributed (though there's nothing normal about Waffle House...)
