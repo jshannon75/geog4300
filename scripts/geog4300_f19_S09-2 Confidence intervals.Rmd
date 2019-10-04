@@ -1,0 +1,137 @@
+---
+title: "Geog6300: Confidence intervals"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup}
+library(tidyverse)
+```
+
+Confidence intervals can be easily computed in R. You need to know three things: sample mean, standard error, and z-score. Suppose you have a sample (n=174) with a mean of 43 and a sample sd of 6.2. For a 95% confidence, do the following:
+
+```{r}
+mean<-43
+se<-(6.2/sqrt(174))
+z.score<-qnorm(.975) #This function gets the z score associated with a .975 probability
+error<-(se*z.score)
+CI.lower<-mean-error
+CI.upper<-mean+error
+```
+
+**You try it!** Adjust the code above for a 90% confidence interval and a sample size of only 80.
+
+We can also visualize these confidence intervals. Let's load the microdata you are working within the current lab.
+
+```{r}
+cps_data<-read_csv("https://github.com/jshannon75/geog4300_lab4/raw/master/IPUMS_CPS_FoodSec.csv")
+
+#Or if you have the data loaded locally:
+cps_data<-read_csv("data/IPUMS_CPS_FoodSec.csv")
+```
+
+What if we're looking for confidence intervals for mean earnings per week (the EARNWEEK variable) for in the South? First, we need to filter for only responses in the South and ones with a meaningful response to the EARNWEEK variable. See the codebook for more information--9999.99 is the NIU code.
+
+**Note: because income is usually skewed, we usually use median rather than mean. But mean is used here for illustration purposes.
+
+```{r}
+cps_data_south<-cps_data %>%
+  filter(Region=="South Region" & EARNWEEK<9000)
+```
+
+Now let's calculate the mean and standard deviation by state. We can also calculate the standard error, which is the sd divided by the square root of the number of responses.
+
+```{r}
+cps_data_south_summary<-cps_data_south %>%
+  group_by(STATE) %>%
+  summarise(earn_mean=mean(EARNWEEK),
+            earn_sd=sd(EARNWEEK),
+            responses=n(),
+            se=earn_sd/sqrt(responses))
+```
+
+We also need the z score for 95% confidence. This this includes both the top and bottom end, we want 2.5% on either side of the distribution (0.025 and 0.975 as the cutoffs). We'll use .975 in this case to get a positive number, but notice that the z.score for 0.025 is the same--just negative.
+
+```{r}
+z.score=qnorm(0.975)
+z.score_low=qnorm(0.025)
+```
+
+
+Lastly, we can calculate the error term, which is the z score for a 95% confidence interval times the standard error, and the resulting confidence interval. We will use the z score we already calculated above.
+
+```{r}
+cps_data_south_summary<-cps_data_south_summary %>%
+  mutate(error=z.score*se,
+         ci_high=earn_mean+error,
+         ci_low=earn_mean-error)
+```
+
+We've got our confidence interval. We can visualize these by state using geom_point for the means and geom_line for the confidence intervals. We just have to gather the two ci values under a single variable and use the "group" parameter to connect them in a line.
+
+```{r}
+cps_data_south_visual<-cps_data_south_summary %>%
+  gather(c(ci_high,ci_low),key="ci",value="est")
+
+ggplot(cps_data_south_visual)+
+  geom_line(aes(x=est,y=reorder(STATE,earn_mean),group=STATE))+
+  geom_point(aes(x=earn_mean,y=STATE))
+```
+
+Note that in the geom_line function we used reorder to sort states by the earn_mean variable. 
+
+
+###CI for proportions. 
+
+Confidence intervals for proportions would require a different standard error calculation. If 64.75% of geographers (n=400) voted to hold the next AAG in Maui, here's how we'd figure that out. 
+
+```{r}
+p<-.6475
+se<-sqrt((.6475*(1-.6475))/399)
+z.score<-qnorm(.975)
+moe<-se*z.score
+CI.lower<-p-moe
+CI.upper<-p+moe
+```
+
+Let's look at that in the CPS dataset for the Hispanic variable. This code gives us a count of responses by state as well as the total number of responses. Again, check the codebook for more information.
+
+```{r}
+cps_data_hisp<-cps_data %>%
+  filter(HISPAN<900) %>% #Filters NIU
+  group_by(STATE) %>%
+  mutate(totpop=n()) %>% #Mutate adds the total responses but keeps indivdiual obervations
+  ungroup() %>%
+  group_by(STATE,HISPAN,totpop) %>%
+  summarise(count=n()) %>%
+  spread(HISPAN,count)
+```
+
+To calculate the percent identifying as Mexican, we can do the following.
+
+```{r}
+cps_data_hisp<-cps_data_hisp %>%
+  mutate(mex_pct=`100`/totpop)
+```
+
+We can then calculate the standard error and create a CI.
+
+```{r}
+cps_data_hisp<-cps_data_hisp %>%
+  mutate(se=sqrt((mex_pct*(1-mex_pct))/(totpop-1)),
+         error=z.score*se,
+         ci_high=mex_pct+error,
+         ci_low=mex_pct-error)
+```
+
+Lastly, let's visualize those numbers.
+
+```{r}
+cps_data_visual<-cps_data_hisp %>%
+  gather(c(ci_high,ci_low),key="ci",value="est")
+
+ggplot(cps_data_visual) +
+  geom_line(aes(x=est,y=reorder(STATE,mex_pct),group=STATE))+
+  geom_point(aes(x=mex_pct,y=STATE))
+```

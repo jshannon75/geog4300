@@ -16,11 +16,21 @@ library(tidyverse)
 dicedata<-data.frame(onaDownload("centrallimit_geog4300","communitymapuga","godawgs!")) %>%
   filter(name!="213213") %>%
   select(name:roll10) %>%
-  gather(roll1:roll10,key="roll",value="value")
+  gather(roll1:roll10,key="roll",value="value") %>%
+  group_by(name) %>%
+  mutate(ind_mean=mean(value)) %>%
+  ungroup() %>%
+  mutate(all_mean=mean(value))
 
 dicedata_mean<-dicedata %>%
   group_by(name) %>%
-  summarise(mean=mean(value))
+  summarise(mean=mean(value)) 
+
+all_means<-round(mean(dicedata_mean$mean),2)
+all_sd<-round(sd(dicedata_mean$mean),2)
+
+allvalue_mean<-round(mean(dicedata$value),2)
+allvalue_sd<-round(sd(dicedata$value),2)
 ```
 Column {.sidebar}
 -----------------------------------------------------------------------
@@ -29,7 +39,7 @@ Column {.sidebar}
 
 ```{r}
 radioButtons("graph","What type of graph do you want?",
-             c("Individual rolls","All rolls","Means of individual rolls"))
+             c("Roll outcomes by person","All roll outcomes","Mean of roll outcomes by person"))
 
 ``` 
 
@@ -42,28 +52,33 @@ Column {data-width=450}
 
 
 output$plotind <- renderPlot({
-  validate(need(input$graph=="Individual rolls", message=FALSE))
-  ggplot(dicedata,aes(x=value))+
-    geom_histogram()+
+  validate(need(input$graph=="Roll outcomes by person", message=FALSE))
+  ggplot(dicedata)+
+    geom_histogram(aes(x=value))+
+    geom_vline(aes(xintercept = ind_mean,color="red",size=0.5))+
     xlim(2,12)+
     facet_wrap(~name)
   })
 
 output$plotall <- renderPlot({
-  validate(need(input$graph=="All rolls", message=FALSE))
-  ggplot(dicedata,aes(x=value))+
-    geom_histogram()+
+  validate(need(input$graph=="All roll outcomes", message=FALSE))
+  ggplot(dicedata)+
+    geom_histogram(aes(x=value))+
+    geom_vline(aes(xintercept = all_mean,color="red",size=1.5))+
+    geom_text(label=paste("Mean: ",allvalue_mean,"\n SD: ",allvalue_sd),x=11,y=4,color="red") +
     xlim(2,12)
   })
 
 output$plotmeans <- renderPlot({
-  validate(need(input$graph=="Means of individual rolls", message=FALSE))
-  ggplot(dicedata_mean,aes(x=mean))+
-    geom_histogram()+
-        xlim(2,12)
+  validate(need(input$graph=="Mean of roll outcomes by person", message=FALSE))
+  ggplot(dicedata_mean)+
+    geom_histogram(aes(x=mean))+
+    geom_vline(aes(xintercept=all_means,color="red",size=1.5))+
+        xlim(2,12)+
+    geom_text(label=paste("Mean: ",all_means,"\n SD: ",all_sd),x=11,y=0.5,color="red")
   })
 
-conditionalPanel('input.graph=="Individual rolls"',plotOutput("plotind"))
-conditionalPanel('input.graph=="All rolls"',plotOutput("plotall"))
-conditionalPanel('input.graph=="Means of individual rolls"',plotOutput("plotmeans"))
+conditionalPanel('input.graph=="Roll outcomes by person"',plotOutput("plotind"))
+conditionalPanel('input.graph=="All roll outcomes"',plotOutput("plotall"))
+conditionalPanel('input.graph=="Mean of roll outcomes by person"',plotOutput("plotmeans"))
 ```
