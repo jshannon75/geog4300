@@ -5,8 +5,8 @@ account: comapuga
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 478108
-bundleId: 1611681
+bundleId: 2468917
 url: https://comapuga.shinyapps.io/dicesurvey/
-when: 1538156442.07045
+when: 1570204681.29598
 asMultiple: FALSE
 asStatic: FALSE
