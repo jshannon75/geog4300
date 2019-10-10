@@ -1,0 +1,62 @@
+---
+title: "One sample tests"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup}
+library(tidyverse)
+```
+
+
+##One sample tests
+
+This script walks through the procedure for one sample tests in R. Let's start by generating a random sample of 40 individuals with a mean value of 24 and a standard deviation of 2. 
+
+```{r}
+sample20<-as.tibble(rnorm(20, mean=24, sd=2))
+ggplot(sample20,aes(x=value))+geom_histogram()
+```
+
+Is this sample significantly different from a population mean of 25? In this case, "t.test" is the function you want.
+
+```{r}
+t.test(sample20$value,mu=25)
+```
+
+How are the results different with with an n > 30? 
+
+```{r}
+sample50<-as.tibble(rnorm(50, mean=24, sd=3))
+t.test(sample50$value,mu=25)
+```
+
+You can change the p value with "conf.level". This will change the reported confidence interval.
+```{r}
+t.test(sample50$value,mu=25,conf.level=.99)
+t.test(sample50$value,mu=25,conf.level=.90)
+```
+
+Run a one tailed t.test using ""alternative"
+```{r}
+t.test(sample,mu=25,alternative="less") #Is the sample mean *less* than 25?
+t.test(sample,mu=25,alternative="greater") #Is the sample mean *greater* than 25?
+```
+
+The prop.test function does a one sample test for proportions. What if you rolled your dice 100 times and came up with snake eyes 5 times? Are you abnormallly lucky? Do you have loaded dice? We now that the probability of snake eyes is .027. So let's test the probability of 5 rolls in 100.
+```{r}
+prop.test(x=5, n=100, p=.027)
+```
+
+What about 50 snake eyes in 1,000 rolls?
+```{r}
+prop.test(x=50, n=1000, p=.027)
+```
+
+Let's look at the Daymet dataset from lab 1.
+```{r}
+daymet_data<-read_csv("https://github.com/jshannon75/geog4300/raw/master/data/Daymet_Cty_Summary_2005_2015.csv")
+```
+
+The average yearly high temperature in Clarke County (gisjn_cty code G13059) is 23.1 degrees Celsius. Filter these data to select just observations from 2013 in Athens. Was this year *significantly* higher or lower than average? The gisjn_cty id for Clarke County is G13059.
