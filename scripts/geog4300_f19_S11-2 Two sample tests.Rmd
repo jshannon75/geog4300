@@ -1,0 +1,108 @@
+---
+title: "Geog4/6300: Two sample tests"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
+---
+
+###Two sample tests
+
+Let's start by creating two samples that we know are (slightly) different.
+```{r}
+library(tidyverse)
+
+sample1<-data.frame(sample1=rnorm(50, mean=51.7, sd=6))
+sample2<-data.frame(sample2=rnorm(50, mean=53.4, sd=3))
+
+sample<-bind_cols(sample1,sample2) #Combine the two variables
+```
+
+Do they look different?
+```{r}
+sample_long<-sample %>% gather(key="sample",value="value")
+ggplot(sample_long,aes(y=value,x=sample)) + geom_boxplot() 
+ggplot(sample_long,aes(x=value, fill=sample)) + 
+  geom_histogram() + 
+  facet_wrap(~sample)
+```
+
+The "t.test" function allows us to test them. The var.equal parameter allows us to specify if variances are equal (TRUE) or unequal (FALSE). Notice the different degrees of freedom between the two tests.
+```{r}
+t.test(sample1, sample2, var.equal=TRUE) 
+t.test(sample1, sample2, var.equal=FALSE) 
+```
+
+What if the variance is really unequal?
+```{r}
+sample2<-data.frame(sample2=rnorm(50, mean=53.4, sd=50))
+t.test(sample1, sample2, var.equal=FALSE)
+```
+
+You can also specify 1 or 2 tailed tests
+```{r}
+sample1<-data.frame(sample1=rnorm(50, mean=51.7, sd=6))
+sample2<-data.frame(sample2=rnorm(50, mean=53.4, sd=3))
+
+t.test(sample1, sample2, var.equal=FALSE, alternative="two.sided")
+t.test(sample1, sample2, var.equal=FALSE, alternative="greater")
+t.test(sample1, sample2, var.equal=FALSE, alternative="less")
+```
+
+##Two sample test of proportions
+
+Proportions can be tested using prop.test. Let's check to see if we can detect a weighted coin in a con flip. First, we'll create a long table showing 100 flips of each coin.
+```{r}
+prop1<-data.frame(coin1=rbinom(100, 1 , .5)) #Regular coin
+prop2<-data.frame(coin2=rbinom(100, 1 ,.75)) #Altered coin
+
+prop_sample<-bind_cols(prop1,prop2) #Combine the two variables
+prop_samplelong<-prop_sample %>% gather(key="coin",value="result") #Reshape the dataset so all values are in one column
+```
+
+Then we'll use group_by and summarise to get the counts of each outcome (0=tails, 1=heads). We can use prop.test to check whether these outcomes were significantly different. We use group_by and summarise to count the number of heads and tails by coin, spread those results to separate columns (labeled 0 and 1), and then calculate the total of all coin flips--100 in each case. The prop.test function looks at the numbers of "successes" and the total number of trials.
+
+```{r}
+prop_sample.table<-prop_samplelong %>%
+  group_by(coin,result) %>%
+  summarise(count=n()) %>%
+  spread(result,count) %>%
+  mutate(total=`0`+`1`)
+prop.test(prop_sample.table$`1`,prop_sample.table$total) #Run prop.test on the table
+```
+
+
+###Paired t-tests
+
+Paired two sample tests also use t.test. Just add the parameter "paired=TRUE." Here, we look at readings from stream monitoring stations in 1990 and 2010.
+
+```{r}
+stream.1990<-c(334, 231, 261, 215, 209, 336, 393, 141, 185, 242, 122, 195, 421, 226)
+stream.2010<-c(316, 217, 226, 176, 215, 327, 335, 155, 128, 244, 129, 175, 379, 196)
+t.test(stream.1990, stream.2010, paired=TRUE) 
+```
+
+How does this compare to a regular t.test?
+```{r}
+t.test(stream.1990, stream.2010)
+```
+
+
+##You try it!
+
+1) Let's compare liters of coffee sold on campus per 100 students each day on Mondays and Wednesdays at seven coffee stands. 
+```{r}
+mon<-c(12.4, 13.9, 14.6, 11.3, 18.1, 15.2, 13.9)
+wed<-c(10.7, 11.1, 16.2, 12.5, 10.8, 16.7, 12.7)
+```
+
+Assume the data is normal. Is there a difference?
+
+
+2) Pollution levels in multiple California towns were measured before and after new guidlines. 
+```{r}
+prepolicy<-c(398,413,521,645,513,310)
+postpolicy<-c(375,403,410,552,406,308)
+```
+
+These levels are normally distributed at the state level. Did pollution go down?
+
