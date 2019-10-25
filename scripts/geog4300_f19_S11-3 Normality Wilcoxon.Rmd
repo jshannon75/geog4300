@@ -26,7 +26,7 @@ hist(test2)
 qqnorm(test2) 
 ```
 
-Shapiro-Wilk test: the null hypothesis is that the data IS normal, so a low p value indicates that the dataset is skewed/not noraml.
+Shapiro-Wilk test: the null hypothesis is that the data ARE normal, so a low p value indicates that the dataset is skewed/not normal.
 ```{r}
 shapiro.test(test1) #skewed data
 shapiro.test(test2) #normal data
