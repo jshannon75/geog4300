@@ -42,7 +42,7 @@ qqnorm(test2); qqline(test2)
 ##You try it!
 Go back to our census data (ACSCtyData_2014_ACS). 
 ```{r}
-acsdata<-read_csv("https://github.com/jshannon75/geog4300/raw/master/data/ACSCtyData_2014ACS.csv")
+acsdata<-read_csv("data/ACSCtyData_2014ACS.csv")
 ```
 What's the most normal variable you can find?
 
@@ -69,6 +69,6 @@ Here again, the Mann-Whitney test is used so the output is slightly different.
 Let's look at a sample dataset of pollen reading for major tree species at several sites in the upper Midwest.
 
 ```{r}
-pollen_data<-read_csv("https://github.com/jshannon75/geog4300/raw/master/data/Midwest_Pollen_Data.csv")
+pollen_data<-read_csv("data/Midwest_Pollen_Data.csv")
 ```
-Pick two species and compare their pollen levels using the appropriate t-test.
+Pick two species and determine their normality. Compare their pollen levels using the appropriate t-test.
