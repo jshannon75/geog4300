@@ -1,0 +1,122 @@
+---
+title: "Geog6300: Correlation"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup}
+library(tidyverse)
+#install.packages("Hmisc","broom","ggcorplot","corrgram")
+library(Hmisc)
+library(broom)
+library(ggcorrplot)
+library(corrgram)
+```
+
+
+Correlation
+
+Here's the fictitious dataset we used in lecture.
+```{r}
+MHI<-c(40000, 59000, 61000, 66000, 68000, 71000, 78000, 82000, 89000, 103000, 104000,113000, 129000, 141000,156000)
+VCR<-c(45.2, 44.6, 39.2, 42.4, 37.4, 29.4, 38.1, 28.5, 21.4, 19.4, 25.1, 28.5, 22.5, 17.3, 13.5)
+
+crimedata<-as_tibble(cbind(MHI,VCR))
+```
+
+
+A simple scatterpot shows possible correlation.
+
+```{r}
+plot(crimedata$MHI, crimedata$VCR)
+
+#Same plot in ggplot
+ggplot(crimedata,aes(x=MHI,y=VCR))+geom_point()
+```
+
+Use the cor function to see the correlation.
+
+```{r}
+#As separate vectors
+cor(MHI, VCR)
+
+#As columns in a data frame
+cor(crimedata$MHI,crimedata$VCR)
+```
+
+
+Correlations are often shown as a matrix. Here, we can use the pollen data for the Midwest. The rcorr function in the Hmisc package does this well.
+
+```{r}
+Midwest_Pollen_Data<-read_csv("data/Midwest_Pollen_Data.csv")
+pollen<-Midwest_Pollen_Data %>%
+  select(precpyr,Picea:Herbsum)#Take just the first 10 species
+names(pollen)
+rcorr(as.matrix(pollen))#The data must be formatted as a matrix
+```
+
+Note that this shows both the correlation coefficient and its p value.
+
+We can also extract these correlations using tidy from the broom package. You can sort and filter to see which associations are the most significant.
+
+```{r}
+cortable<-rcorr(as.matrix(pollen))
+cor_values<-tidy(cortable)
+```
+
+You can visualize the relationship using the pairs function, which is part of "base R" (comes installed). This creates scatterplots for every variable pair.
+```{r}
+pairs(pollen)
+```
+
+That's a lot! Let's just visualize those variables with correlations of 0.6 or more (or -0.6 or less).
+
+```{r}
+pollen_select<-cor_values %>%
+  filter(estimate > 0.6 | estimate < -0.6) 
+pollen_list<-unique(c(pollen_select$column1,pollen_select$column2))
+
+pollen_filter<-pollen %>%
+  select(c(precpyr,pollen_list))
+
+pairs(pollen_filter)
+```
+
+There's lots of ways to visualize correlation matrices, and we often want to look at lots of variable combinations at once. Here's ggcorrplot. (More info: http://www.sthda.com/english/wiki/ggcorrplot-visualization-of-a-correlation-matrix-using-ggplot2)
+
+```{r}
+correlation_matrix <- cor(pollen)
+ggcorrplot(correlation_matrix, 
+           type = "upper", 
+           method="circle")
+
+ggcorrplot(correlation_matrix,
+    lab=TRUE, #Include numbers
+    type = "lower", 
+    insig = "blank") #Leave out insignificant cells
+```
+
+The corrgram function in the corrgram package is another option. https://rawgit.com/kwstat/corrgram/master/vignettes/corrgram_examples.html
+
+```{r}
+corrgram(correlation_matrix, order=FALSE,
+         lower.panel=panel.conf,
+         upper.panel=panel.shade, text.panel=panel.txt,
+         main="Census correlations")
+```
+
+
+For non-parametric data, specify spearman's rho in the rcorr package.
+```{r}
+rcorr(as.matrix(pollen), type="spearman")
+```
+
+You can also specify test for the cor command.
+```{r}
+M<-cor(pollen,method="spearman")
+corrgram(M, panel=panel.shade)
+```
+
+
+
