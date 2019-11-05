@@ -1,0 +1,147 @@
+---
+title: "Geog6300: Univariate regression"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup}
+library(tidyverse)
+library(sf)
+```
+
+
+Here's our garden data from class
+```{r}
+med.age<-c(43, 21, 25, 42, 56, 59)
+garden<-c(99, 65, 79, 75, 87, 81)
+data<-data.frame(cbind(med.age, garden))
+```
+
+Now we can create a linear model. The actual model doesn't tell you much, but a summary of it does.
+```{r}
+lm(garden~med.age, data=data) 
+model<-lm(garden~med.age, data=data)
+summary(model)
+```
+
+You can also plot this model. The abline function plots a regression line created by the model.
+```{r}
+plot(garden~med.age, data=data)
+abline(model) 
+```
+
+Let's do a more complex model: pollen data. Does yearly mean temperature predict the levels of pollen from birch trees (Betula)? We will load the data from Github and then make it spatial using the st_as_sf function in the sf package.
+
+```{r}
+Midwest_Pollen_Data<-read_csv("data/Midwest_Pollen_Data.csv")
+pollen_data_sf<-st_as_sf(Midwest_Pollen_Data,coords=c(x="longitud",y="latitude"),crs=4326)
+```
+
+Let's look at the distribution of these variables first.
+```{r}
+hist(pollen_data_sf$Betula)
+qqnorm(pollen_data_sf$Betula);qqline(pollen_data_sf$Betula)
+
+hist(pollen_data_sf$tmeanyr)
+qqnorm(pollen_data_sf$tmeanyr);qqline(pollen_data_sf$tmeanyr)
+
+ggplot(pollen_data_sf,aes(y=Betula,x=tmeanyr))+
+  geom_point()
+```
+
+We can use tmap to visualize these points.
+
+```{r}
+library(tmap)
+tmap_mode("view")
+tm_shape(pollen_data_sf) +
+  tm_dots("Betula",size=.2)
+
+tm_shape(pollen_data_sf) +
+  tm_dots("tmeanyr",size=.2)
+```
+
+Now let's create a model.
+```{r}
+model<-lm(Betula~tmeanyr,data=pollen_data_sf)
+summary(model)
+```
+
+We can plot out the model.
+```{r}
+plot(Betula~tmeanyr,data=pollen_data_sf)
+abline(model)
+```
+
+##There's several diagnostics that can be used for regression.
+
+*Normality of residuals: Plot/test the residuals. The "residuals" function pulls residuals from the model.
+```{r}
+pollen_data_sf$residuals<-residuals(model) #Pull the residuals from the model
+hist(pollen_data_sf$residuals)
+qqnorm(pollen_data_sf$residuals)
+shapiro.test(pollen_data_sf$residuals)
+```
+
+Map the residuals using tmap
+```{r}
+tm_shape(pollen_data_sf) +
+  tm_dots("residuals",size=.2)
+```
+
+*Heteroskedasticity: We can use the Breusch-Pagan test in the lmtest package. The null hypothesis is that the data is uniform, NOT heteroskedastic.
+```{r}
+library(lmtest)
+bptest(model)
+```
+
+*Outliers: We'll use Cook's Distance to assess outliers This is adapted from: http://r-statistics.co/Outlier-Treatment-With-R.html See also https://onlinecourses.science.psu.edu/stat501/node/340 and http://www.statisticshowto.com/cooks-distance/.
+
+In th example below, we plot the Cooke's distance for each observation, which shows the leverage it has in the model as a whole. We then add a cutoff line that shows values four times greater than the mean. Lastly, we add labels that give the row number of each identified outlier.
+
+```{r}
+cooks_dist<-cooks.distance(model)
+
+plot(cooks_dist, pch="*", cex=2, main="Influential Obs by Cooks distance")
+abline(h = 4*mean(cooks_dist, na.rm=T), col="red") 
+text(x=1:length(cooks_dist)+1, y=cooks_dist, labels=ifelse(cooks_dist>4*mean(cooks_dist, na.rm=T),names(cooks_dist),""), col="red")  
+```
+
+We can go even further. Let's join these distances back to the dataset. We can add a "dummy variable" using if_else highlighting just those observations above that cutoff line.
+
+```{r}
+cooks_d<-data.frame(cooks_dist)
+cutoff<-mean(cooks_dist)*4
+
+pollen_data_sf<-pollen_data_sf %>%
+  bind_cols(cooks_d) %>%
+  mutate(outlier=if_else(cooks_dist>cutoff,1,0)) 
+```
+
+Where do those outliers fit in the overall distribution?
+
+```{r}
+ggplot(pollen_data_sf,aes(y=Betula,x=tmeanyr,color=outlier))+
+  geom_point()
+```
+
+Where are these outliers?
+```{r}
+tm_shape(pollen_data_sf) +
+  tm_dots("outlier",size=0.2)
+```
+
+Let's run a model without the outliers.
+```{r}
+pollen_data_sf1<-pollen_data_sf %>%
+  filter(outlier==0)
+model_rev<-lm(Betula~tmeanyr,data=pollen_data_sf1)
+summary(model_rev)
+
+plot(Betula~tmeanyr,data=pollen_data_sf1)
+abline(model_rev)
+```
+
+##You try it!
+Run a model for one other tree species. Assess the model results and run diagnostics.

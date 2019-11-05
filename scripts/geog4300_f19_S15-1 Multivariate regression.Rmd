@@ -1,0 +1,119 @@
+---
+title: "Geog4/6300: Multivariate Regression"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup}
+#install.packages(c("car","lmtest","stargazer"))
+library(car)
+library(tidyverse)
+library(stargazer)
+library(tmap)
+library(lmtest)
+library(sf)
+library(Hmisc)
+```
+
+##Multivariate regression
+Multivariate regression uses the same command as univariate regression. Just add more variables. 
+
+Let's start by loading the data illustrated in class: average date of the last spring frost:
+
+```{r}
+dlsf<-read_csv("data/DLSF_data.csv") %>%
+  st_as_sf(coords=c("Longitude","Latitude"),crs=4326,remove=FALSE)
+
+tmap_mode("view")
+tm_shape(dlsf)+
+  tm_bubbles(col="AvgDLSpF")
+```
+
+Now we can do regression for each variable individually.
+```{r}
+model_lat<-lm(AvgDLSpF~Latitude,data=dlsf)
+model_elev<-lm(AvgDLSpF~Elevation,data=dlsf)
+model_dist<-lm(AvgDLSpF~DisttoCoas,data=dlsf)
+
+summary(model_lat)
+summary(model_elev)
+summary(model_dist)
+```
+
+To do a multivariate regression, simply add more dependent variables using +.
+```{r}
+model_all<-lm(AvgDLSpF~Latitude+Elevation+DisttoCoas,data=dlsf)
+
+summary(model_all)
+```
+
+You can check for multicollinearity using the vif test (variance inflation factor). The vif function is in the car package. Look for values below 5
+```{r}
+vif(model_all)
+```
+
+You can also just look at the correlation matrix.
+```{r}
+dlsf_corr<-dlsf[,c(4,5,7,8)] %>%
+  st_set_geometry(NULL)
+rcorr(as.matrix(dlsf_corr))
+```
+
+We can check for heterosktasticity using the bptest function from the lmtest package. The null hypothesis is that the data are NOT heteroskedastic.
+```{r}
+bptest(model_all)
+```
+
+Let's test for outliers. We can plot the Cook's distance generally using the code below. Reminder: the numbers for the points refer to the row numbers of the observations in the data frame.
+
+```{r}
+cooks_dist<-cooks.distance(model_all)
+plot(cooks_dist, pch="*", cex=2, main="Influential Obs by Cooks distance")
+abline(h = 4*mean(cooks_dist, na.rm=T), col="red") 
+text(x=1:length(cooks_dist)+1, y=cooks_dist, labels=ifelse(cooks_dist>4*mean(cooks_dist, na.rm=T),names(cooks_dist),""), col="red")  
+```
+
+Let's add a dummy variable for those outliers in the original dataset.
+
+```{r}
+cooks_d<-data.frame(cooks_dist)
+cutoff<-mean(cooks_dist)*4
+
+dlsf_outliers<-dlsf %>%
+  bind_cols(cooks_d) %>%
+  mutate(outlier=if_else(cooks_dist>cutoff,1,0)) 
+
+tm_shape(dlsf_outliers) +
+  tm_dots("outlier")
+```
+
+There are many ways to identify and deal with outliers. You can top or bottom code them, interpolate values from your model, add additional control variables, or remove observations if you feel they are spurious. One easy option is to see if the model results change much if you just remove the outliers. This allows you to assess whether they change the "headline story" of your model. If they don't, you may choose to leave them be. 
+
+```{r}
+dlsf_no_outlier<-dlsf_outliers %>%
+  filter(outlier==0)
+
+model_all2<-lm(AvgDLSpF~Latitude+Elevation+DisttoCoas,data=dlsf_no_outlier)
+summary(model_all2)
+summary(model_all)
+```
+
+Look at the change in model coefficients and R2. What do you notice about these two?
+
+The stargazer package allows you to compare/list model results in a more visually appealing format. See this page for more information on customizing stargazer: http://jakeruss.com/cheatsheets/stargazer.html
+
+```{r}
+stargazer(model_lat,model_elev,model_dist,model_all,title="Comparison",type="text")
+
+stargazer(model_lat,model_elev,model_dist,model_all,title="Comparison",
+          type="text", #Sets type to text output,
+          no.space=TRUE,
+          out="models_s14-1.txt") #Saves the file in your project
+
+stargazer(model_lat,model_elev,model_dist,model_all,title="Comparison",
+          type="html", #Sets type to text output,
+          no.space=TRUE,
+          out="models_s14-1.html") #Saves the file in your project
+```
+
