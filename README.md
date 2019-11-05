@@ -10,3 +10,4 @@ Our lab templates are found on separate repos:
 * [Lab 4](https://github.com/jshannon75/geog4300_lab4): Spatial descriptives and kernel density
 * [Lab 5](https://github.com/jshannon75/geog4300_lab5): Confidence intervals and hypothesis testing
 * [Lab 6](https://github.com/jshannon75/geog4300_lab6): One sample tests and ANOVA
+* [Lab 7](https://github.com/jshannon75/geog4300_lab7): Correlation and regression
