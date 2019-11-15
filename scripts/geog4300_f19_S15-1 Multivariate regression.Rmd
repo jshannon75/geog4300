@@ -48,14 +48,15 @@ model_all<-lm(AvgDLSpF~Latitude+Elevation+DisttoCoas,data=dlsf)
 summary(model_all)
 ```
 
-You can check for multicollinearity using the vif test (variance inflation factor). The vif function is in the car package. Look for values below 5
+You can check for multicollinearity using the vif test (variance inflation factor). The vif function is in the car package. You want values below 5
 ```{r}
 vif(model_all)
 ```
 
 You can also just look at the correlation matrix.
 ```{r}
-dlsf_corr<-dlsf[,c(4,5,7,8)] %>%
+dlsf_corr<-dlsf %>%
+  select(AvgDLSpF,Latitude,Elevation,DisttoCoas) %>%
   st_set_geometry(NULL)
 rcorr(as.matrix(dlsf_corr))
 ```
