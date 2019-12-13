@@ -11,3 +11,4 @@ Our lab templates are found on separate repos:
 * [Lab 5](https://github.com/jshannon75/geog4300_lab5): Confidence intervals and hypothesis testing
 * [Lab 6](https://github.com/jshannon75/geog4300_lab6): One sample tests and ANOVA
 * [Lab 7](https://github.com/jshannon75/geog4300_lab7): Correlation and regression
+* [Final project](https://github.com/jshannon75/geog4300_finalproj): Dollar stores in Chicago
