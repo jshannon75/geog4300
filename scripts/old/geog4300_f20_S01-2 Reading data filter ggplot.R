@@ -43,6 +43,33 @@ str(census_data)
 head(census_data)
 tail(census_data)
 
+#Table gives you the number of times a value shows up.
+#It's good for character fields
+table(census_data$St_name,census_data$Region)
+
+#You can also look at a histogram or boxplot of particular variables.
+#We'll use the ggplot package to do so (part of tidyverse)
+#ggplot first defines the variables you're graphing, then adds "geom" or visualization type.
+#Here's a histogram
+ggplot(census_data,aes(x=pov_pop_pct))+
+  geom_histogram()
+
+#Here's a boxplot:
+ggplot(census_data,aes(y=pov_pop_pct))+
+  geom_boxplot()
+
+#Here's a boxplot by region
+ggplot(census_data,aes(x=Region,y=pov_pop_pct))+
+  geom_boxplot()
+
+#Here's a scaterplot with % of citizens having health insurance
+ggplot(census_data,aes(x=nat_ins_pct,y=pov_pop_pct))+
+  geom_point()
+
+#You can also color these by a variable. Here's that scatterplot colored by region
+ggplot(census_data,aes(x=nat_ins_pct,y=pov_pop_pct,color=Region))+
+  geom_point()
+
 #What if you only want data for some states, like the Southeast?
 #Or counties with >30% poverty?
 #You can use "filter" (part of the tidyverse).
@@ -83,14 +110,14 @@ census_data_pov<-census_data %>%
 
 #Use a : to select a range of variable names.
 #Let's select just educational variables
-census_data_ed<-census_data %>%
+census_data_pov<-census_data %>%
   select(GEOID,St_name,Region,LessHS_pct:GradDeg_pct)
 
 #Lastly, you can use mutate to create new variables
-census_data_ed<-census_data_ed %>%
+census_data<-census_data %>%
   mutate(LessBA_pct=HSGrad_pct+SomeCol_pct)
-hist(census_data_ed$LessBA_pct)
-boxplot(census_data_ed$LessBA_pct)
+hist(census_data$LessBA_pct)
+boxplot(census_data$LessBA_pct)
 
 #You try it! Information about REM songs on Spotify is available at this link
 #https://github.com/jshannon75/geog4300/raw/master/data/rem_songs.csv
