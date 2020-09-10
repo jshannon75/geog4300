@@ -1,0 +1,88 @@
+---
+title: "Kernel density and quadrats"
+output: github_notebook
+editor_options: 
+  chunk_output_type: console
+---
+
+For this script, you'll need tidyverse and sf, as well as a new (to us) package called spatstat.
+
+```{r}
+library(tidyverse)
+library(sf)
+
+#install.packages("spatstat")
+library(spatstat)
+```
+
+We will continue work with tornado data for this anlaysis.
+
+```{r}
+tornado_points<-read_csv("https://github.com/jshannon75/geog4300/raw/master/data/tornado_points.csv")
+```
+
+Quadrat analysis in R often uses a package called spatstat. A lot of info on spatstat is available here: https://research.csiro.au/software/wp-content/uploads/sites/6/2015/02/Rspatialcourse_CMIS_PDF-Standard.pdf. With spatstat, you can create square quadrants of varying sizes
+
+To use the spatstat package, you must first determine the maximum and minimum values for your lat/long coordinates. Here, we use the min and max functions to do so.
+
+```{r}
+maxlat<-max(tornado_points$CLAT)
+minlat<-min(tornado_points$CLAT)
+maxlon<-max(tornado_points$CLONG)
+minlon<-min(tornado_points$CLONG)
+```
+
+Spatstat needs a "ppp" object. To create that, use the ppp function, providing X and Y points plus the range of your X and Y coordinates.
+
+```{r}
+tornado_ppp<-ppp(tornado_points$CLONG,tornado_points$CLAT,
+                 c(minlon,maxlon),c(minlat,maxlat))
+plot(tornado_ppp)
+```
+
+Spatstat can give us some basic statistics. Remember that the unit is in decimal degrees.
+```{r}
+summary(tornado_ppp) #Remember that the unit here is decimal degrees
+```
+
+We can use the density function to create a kernel density map.
+
+```{r}
+plot(density(tornado_ppp))
+```
+
+We can change the size of the "kernel" used to interpolate this map. Again, remember that the unit here is decimal degrees. Which is best?
+
+```{r}
+plot(density(tornado_ppp,0.1))
+plot(density(tornado_ppp,0.25))
+plot(density(tornado_ppp,0.5))
+plot(density(tornado_ppp,1))
+```
+
+Spatstat can also create a contour map. The lines indicate the value of the kernel density map.
+
+```{r}
+contour(density(tornado_ppp))
+```
+
+Spatstat can create a quadrat map with square cells. The two numbers are the count of columns and rows.
+
+```{r}
+plot(quadratcount(tornado_ppp,10,5)) 
+plot(quadratcount(tornado_ppp,15,10)) 
+plot(quadratcount(tornado_ppp,6,3)) 
+```
+
+You can combine these maps with the add=TRUE parameter.
+```{r}
+kernel_map<-density(tornado_ppp,0.5)
+quad_map<-quadratcount(tornado_ppp,15,10)
+
+plot(kernel_map)
+plot(quad_map, add=TRUE,col="white")
+
+```
+
+You try it! Create a kernel density map for just tornadoes in Georgia
+In your lab: point pattern anlaysis of crimes in Spokane, WA.

@@ -1,0 +1,208 @@
+---
+title: "Spatial data in R"
+output:
+  html_document:
+    df_print: paged
+editor_options: 
+  chunk_output_type: console
+---
+
+### Loading and manipulating spatial data
+
+There are several packages available to create and edit spatial data in R. This includes both raster and vector data. This script focuses on the latter. The relatively new sf (stands for simple features) package is one efficent way to load vector data. Other popular packages for spatial data are rgdal, sp, and raster.
+
+
+```{r, message=FALSE}
+#install.packages("sf")
+library(tidyverse)
+library(sf)
+library(viridis)
+```
+
+First, let's load census tract data for Charlotte as a spatial file using st_read from the sf package. These data are saved in the open source geopackage format. We'll filter tracts that are in Mecklenberg County (fips of 37119). We also then transform the projection so it's in WGS84 using the EPSG number (4326).
+
+```{r}
+charpop<-st_read("https://github.com/jshannon75/geog4300/raw/master/data/charlotte_tractpop.gpkg") %>%
+  mutate(cty_fips=substr(GEOID,1,5)) %>% #county fips code is the first five digits of the tract fips
+  filter(cty_fips==37119) %>%
+  st_transform(4326) 
+```
+
+In Lab 3, we'll be doing some analysis of restaurant reviews from Yelp. We can read the data we'll be using there here as well. In this case, we don't care about individual reviews. So we'll remove the review specific variables and then use the distinct function to remove duplicates. The st_as_sf function takes coordinates in the csv and converts them to spatial data. (Note: the Yelp file is large, so this will take a bit to download.)
+
+```{r}
+restaurants_raw<-read_csv("https://github.com/jshannon75/geog4300/raw/master/data/charlotte_restaurants.csv") 
+
+restaurants<-restaurants_raw %>%
+  select(-review_id,-date,-review_count,-text) %>%
+  distinct()
+
+restaurants_sf<-st_as_sf(restaurants,
+                  coords=c(x="longitude",y="latitude"), #Indicate the coordinate columns
+                  crs=4326, #Set the projections
+                  remove=FALSE) #Keep the coordinate columns
+```
+
+The sf package also has a set of spatial functions that can be used on these data. For example, you could convert the tract polygons to centroids. We then use geom_sf in ggplot to visualize those points.
+
+```{r}
+ggplot(charpop) + geom_sf()
+
+charpop_points<-st_centroid(charpop)
+ggplot(charpop_points) + geom_sf()
+
+#What if the color matched population?
+ggplot(charpop_points,aes(color=totpop)) + 
+  geom_sf()
+```
+
+##Nearest neighbors
+
+The spatialEco package has a "nni" function that allows you to easily calculate the Nearest Neighbor Index. To use it, you'll have to transform these data into a different spatial format--the as_Spatial format does this part. The NNI and z-score tell you the index and a measure of significance--generally any absolute value higher than 1.96 would be significant.
+
+```{r}
+#install.packages("spatialEco")
+library(spatialEco)
+nni(as_Spatial(restaurants_sf))
+```
+
+##Point pattern analysis with census tracts
+We can use st_join to do a *spatial join* between restaurants and the underlying tracts. See [this page](https://gisgeography.com/spatial-join/) for an explanation of spatial joins. The st_join function will add a new variable with the fips code of the tract each restaurant is in based on its location. We join tract data based on whether the point is *within* the polygon (st_within).
+
+```{r}
+rest_tct<-restaurants_sf %>%
+  st_join(charpop,join=st_within)
+
+#Plot restaurants by tract
+ggplot(rest_tct) + 
+  geom_sf(aes(color=GISJOIN),show.legend=FALSE)
+```
+
+We can then remove the geometry column (which contains the spatial data) using the st_set_geometry function. This will transform the restaurants back to a regular data frame. 
+
+```{r}
+rest_tct_df<-rest_tct %>%
+  st_set_geometry(NULL) 
+```
+
+What if we wanted to see how many sandwich restaurants there are in each tract? We can then tally these points using the GISJOIN field (tract fips code) and the dummy (0/1) variable for the Sandwiches variable using group_by, summarise, and the n function. We then join this count to the spatial tract data. 
+
+```{r}
+rest_tct_count<-rest_tct_df %>%
+  group_by(GISJOIN,Sandwiches) %>%
+  summarise(count=n())
+
+View(rest_tct_count)
+```
+
+These data are in long format--see how the Burgers variable has separate lines for the count of non-sandwich and sandwich restauants. We can use pivot_wider and mutate to make this easier to read and calculate the total number of restaurants and the percentage that are Burger places. 
+
+Note that the new 0 and 1 variables created by pivot_wider are problematic for R--it doesn't like variables that start with numbers. To refer to them, you need to use the grave accent (`).
+
+```{r}
+rest_tct_count_wide<-rest_tct_count %>%
+  pivot_wider(names_from=Sandwiches,
+              values_from=count,
+              values_fill=0) %>%
+  mutate(total_rest=`0`+`1`,
+         sandwich_pct=`1`/total_rest*100)
+```
+
+Now we can join those summary data to the tract boundary dataset. 
+
+Note that in order to preserve the geometry column, you always want to join non-spatial data TO spatial data. That is, it should always looks like this: spatial data %>% left_join(non-spatial data).
+
+###Calculating location quotient
+What if we wanted the location quotient for the percentage of sandwich shops in each tract to be able to more easily compare them? We already have most of the data we need to calculate this figure. First, we need to see what percentage of all restaurants are sandwich shops. We can use the nrow function to count restaurants and then create an object with the percentage that are sandwich restaurants.
+
+```{r}
+total_rest=nrow(rest_tct)
+sand_rest=nrow(rest_tct %>% filter(Sandwiches==1))
+area_ratio=sand_rest/total_rest*100
+```
+
+Getting the LQ is simple using mutate.
+
+```{r}
+rest_tct_count_wide<-rest_tct_count_wide %>%
+  mutate(sand_lq=sandwich_pct/area_ratio)
+```
+
+
+### Tools for viewing/mapping spatial data
+```{r}
+#install.packages("tmap")
+library(tmap)
+```
+
+We can map those data using ggplot using geom_sf. Scale_fill_viridis allows you to use the color scheme from Matlab (viridis)
+
+```{r}
+charpop_count<-charpop %>%
+  left_join(rest_tct_count_wide)
+
+ggplot(charpop_count,aes(fill=sand_lq))+
+  geom_sf()+
+  scale_fill_viridis_c()
+```
+
+There's some upper outliers at the top end. What if we select tracts with at least one restaurant?
+
+```{r}
+charpop_filter<-charpop_count %>% 
+  filter(total_rest>0)
+
+ggplot(charpop_filter)+
+  geom_sf(aes(fill=sand_lq)) + 
+  scale_fill_viridis_c()
+```
+
+There's multiple other packages to map with. You can use the tmap package, which provides lots of mapping tools. Here's a basic plot:
+
+```{r}
+tm_shape(charpop_filter)+
+  tm_polygons()
+```
+
+You can make a choropleth map by adding a variable. 
+
+```{r}
+tm_shape(charpop_filter)+
+  tm_polygons("sand_lq")
+```
+
+Or you can add restaurants as points. The style parameter here sets Jenks natural breaks for the data classification scheme. Notice how we also filter the dataset on the third line to show just sandwich restaurants.
+
+```{r}
+tm_shape(charpop_filter)+
+  tm_polygons("sand_lq",style="jenks")+
+tm_shape(rest_tct %>% filter(Sandwiches==1))+
+  tm_dots(size=0.1,alpha=0.5) 
+```
+
+We can make this map prettier, adding a north arrow and scale bar and moving the legend outside.
+
+```{r}
+tm_shape(charpop_filter)+
+  tm_polygons("sand_lq",style="jenks")+
+tm_shape(rest_tct %>% filter(Sandwiches==1))+
+  tm_dots(size=0.1,alpha=0.5) +
+tm_compass()+
+tm_scale_bar(position="left")+
+tm_legend(legend.outside=TRUE)
+```
+
+You can also make interactive maps with tmap. Make sure you set the output to the Console using the gear icon above.
+
+```{r}
+tmap_mode("view") #To shift back to static maps, use tmap_mode("plot")
+
+tm_shape(charpop_filter)+
+  tm_polygons("sandwich_pct",style="jenks",alpha=0.4)+
+tm_shape(rest_tct %>% filter(Sandwiches==1))+
+  tm_dots(size=0.1)
+```
+
+There are other good mapping packages available. Mapview (https://r-spatial.github.io/mapview/articles/articles/mapview_01-basics.html) provides quick interactive maps. The new cartography package (https://github.com/riatelab/cartography) also has helpful looking tools for mapping.
+
+Learn more about spatial analysis in R in Manuel Gimond's web textbook: https://mgimond.github.io/Spatial/
