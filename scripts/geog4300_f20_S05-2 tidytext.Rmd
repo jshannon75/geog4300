@@ -1,0 +1,141 @@
+---
+title: "Tidy text and text mining"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
+---
+
+In this script, we'll be working with the tidytext package to get introduced to text mining. This closely follows the Text Mining with R book by Julia Silge and David Robinson, available online at https://www.tidytextmining.com/index.html
+
+We're going to need two packages: gutenbergr, which provides access to free texts at the Gutenberg project, and tidytext.
+
+```{r}
+#devtools::install_version('gutenbergr', '0.1.5')
+#If asked to install other packages, choose the "None" option (should be #3)
+library(gutenbergr)
+
+#install.packages("tidytext")
+library(tidytext)
+
+library(tidyverse)
+```
+
+Let's start by downloading Frederick Douglass' autobiography (id 23 on the Gutenberg project) and breaking it down by word using the unnest_tokens function.
+
+```{r}
+douglass<-gutenberg_download(23)
+
+douglass_words<- douglass  %>%
+  unnest_tokens(word,text)
+
+head(douglass_words)
+```
+
+We can remove common "stop words" and then use group_by and summarise to count the most common ones.
+
+```{r}
+douglass_wordcount<-douglass_words %>%
+  anti_join(stop_words) %>%
+  group_by(word) %>%
+  summarise(douglass_count=n())
+View(douglass_wordcount)
+```
+
+What's the distribution of word frequency? That is, how often is any given word used?
+
+```{r}
+ggplot(douglass_wordcount,aes(x=douglass_count)) + geom_histogram()
+
+```
+
+We can use geom_col to visualize these with ggplot. The top_n function selects just the 20 highest count words and the mutate function orders the data before we plot it.
+
+```{r}
+douglass_graph<-douglass_wordcount %>%
+  top_n(20) %>% #Selects the 20 highest count words
+  mutate(word=reorder(word,douglass_count)) 
+
+ggplot(douglass_graph,aes(word,douglass_count)) +
+  geom_col() +
+  coord_flip()
+```
+
+In the Silge and Robinson book, there's much more detail about can identify common word groups and identify the relationships between them.
+
+Lastly, there's a package called ggwordcloud that enables word clouds through ggplot. For more information, see: https://cran.r-project.org/web/packages/ggwordcloud/vignettes/ggwordcloud.html
+
+```{r}
+#install.packages("ggwordcloud")
+library(ggwordcloud)
+
+#Pick the top 50 words
+douglasswords<-top_n(douglass_wordcount,50)
+
+ggplot(douglasswords, aes(label=word,size=douglass_count)) +
+  geom_text_wordcloud() +
+  theme_minimal()
+
+ggplot(douglasswords, aes(label=word,size=douglass_count)) +
+  geom_text_wordcloud(shape="triangle-upright") +
+  theme_minimal()
+
+ggplot(douglasswords, aes(label=word,size=douglass_count)) +
+  geom_text_wordcloud(shape="square") +
+  theme_minimal()
+```
+
+
+Bonus challenge!!
+Download W.E.B. DuBois' The Souls of Black Folk (book 408) from Gutenberg and identify the ten most common words in the book (excluding stop words).
+
+Find words that are in both books and create a scatterplot that shows their frequency in both. Hint: you'll need to use an inner_join.
+
+The answer is located below...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+dubois<-gutenberg_download(408)
+
+dubois_words<- dubois  %>%
+  unnest_tokens(word,text)
+
+dubois_count<-dubois_words %>%
+  anti_join(stop_words) %>%
+  group_by(word) %>%
+  summarise(dubois_count=n()) 
+
+dubois10<-dubois_count %>%
+  top_n(10)
+
+joined_words<-dubois_count %>%
+  inner_join(douglass_wordcount)
+
+ggplot(joined_words,aes(x=dubois_count,y=douglass_count))+geom_point()
+
+#Which words are common in both?
+joined_select<-joined_words %>%
+  filter(dubois_count>30,douglass_count>30)
+
+#What words have the biggest gaps?
+joined_diff<-joined_words %>%
+  mutate(diff=abs(dubois_count-douglass_count))
+```
+

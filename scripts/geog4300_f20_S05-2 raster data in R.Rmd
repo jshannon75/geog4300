@@ -1,0 +1,82 @@
+---
+title: "Geog4/6300-Working with raster data"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+opts_knit$set(root.dir = "~/path/to/folder/")
+opts_chunk$set(echo = TRUE)
+```
+
+## Working with raster data in R
+
+The raster package in R provides a suite of tools for loading and working with raster data. We can load a digital elevation model (DEM) geotiff of elevation in Georgia using the raster function as shown below.
+
+```{r cars}
+#install.packages("raster")
+library(raster)
+library(sf)
+library(tidyverse)
+
+dem<-raster("data/dem_ga_clip.tif")
+plot(dem)
+```
+
+You can look at the distibution of values for these elevations using a regular histogram.
+
+```{r}
+hist(dem)
+```
+
+What if you have point data and want to extract values for the raster? Let's load the points for campuses in the University System of Georgia. Which one is the highest? The extract function pulls the value for each point.
+
+```{r}
+usg_schools<-read_csv("data/usg_schools_geo.csv") %>%
+  st_as_sf(coords=c("lon","lat"),remove=FALSE,crs=4326)
+
+usg_schools_elev<-raster::extract(dem,usg_schools)
+```
+
+The resulting object is just a simple vector of elevation values. We have to bind it back to the original data frame. The easiest way to do so is using base R.
+
+```{r}
+usg_schools$elev<-usg_schools_elev
+
+View(usg_schools)
+```
+
+The highest campus in Georgia is University of North Georgia, with an elevation of 440 meters. We can also plot this using tmap.
+
+```{r}
+library(tmap)
+tmap_mode("view")
+
+tm_shape(usg_schools)+
+  tm_dots("elev")
+```
+
+
+What if we wanted to do the same with counties? The zonal.stats function in the spatialEco package allows us to do so. We can then use bind_cols to connect it back to the county dataset
+
+```{r}
+library(spatialEco)
+ga_cty<-st_read("data/us_county_simplify_SE_2014pop.gpkg") %>%
+  filter(state=="G13")
+
+ga_cty_elev<-zonal.stats(ga_cty,dem)
+
+ga_cty_elev1 <- ga_cty %>%
+  bind_cols(ga_cty_elev)
+```
+ 
+Towns County has the highest mean elevation in the dataset. Let's map that out.
+
+```{r}
+tm_shape(ga_cty_elev1)+
+  tm_polygons("mean.dem_ga_clip",style="jenks")
+```
+
+For 3D Visualization, the rayshader package can do some pretty amazing things. Here's one walkthrough: https://wcmbishop.github.io/rayshader-demo/
