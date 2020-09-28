@@ -10,6 +10,9 @@ Let's start with our random distribution of ACT scores. The following code simul
 ```{r}
 ACT.scores<-data.frame(rnorm(100, mean=21, sd=5.3))
 names(ACT.scores)<-"scores"
+
+mean(ACT.scores$scores)
+sd(ACT.scores$scores)
 ```
 
 To calculate z scores, simply put the formula for z scores into R (value - mean)/sd. 
@@ -24,6 +27,7 @@ z.score
 You could even convert the whole dataset to z scores. The scale function does something simlar--creating z scores based on the mean and sd of the *sample.*
 
 ```{r}
+library(tidyverse)
 ACT.scores<-ACT.scores %>%
   mutate(zscore=(scores-21)/5.3)
 

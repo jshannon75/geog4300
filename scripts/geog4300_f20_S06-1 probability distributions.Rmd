@@ -5,7 +5,9 @@ editor_options:
   chunk_output_type: console
 ---
 
-R has several built in functions for analyzing and simulating different probability distributions. For binomial distribution there are two options:
+R has several built in functions for analyzing and simulating different probability distributions. See this page for a little more explanation: https://www.statology.org/dbinom-pbinom-qbinom-rbinom-in-r/
+
+For binomial distribution there are two options:
 
 1) dbinom povides the probability of an exact outcome. For example, what is the probability of getting *exactly* one two pair hand of cards over five deals? We know that the probability of two pair is .048. (see http://www.math.hawaii.edu/~ramsey/Probability/PokerHands.html)
 
