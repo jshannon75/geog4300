@@ -1,0 +1,47 @@
+---
+title: "Geog6300: Chi square tests"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
+---
+
+Chi-square tests. First, we create the data and then run the test. Here we use the Thanksgiving.chisquare dataset from lecture.
+```{r}
+white<-c(15, 25)
+dark<-c(25, 10)
+tofurkey<-c(3, 7)
+thanksgiving<-data.frame(cbind(white, dark, tofurkey))
+
+chisq.test(thanksgiving)
+```
+
+Here's the same procedure for our in class problem.
+
+```{r}
+car<-c(58, 199, 205)
+transit<-c(21, 49, 32)
+walk<-c(36, 64, 29)
+survey<-data.frame(cbind(car, transit, walk))
+chisq.test(survey)
+```
+
+Creating a contingency table is possible with tidyverse tools. Is there a difference in the severity of tornados (MAG) across states (ST)?  
+
+```{r}
+library(tidyverse)
+tornado<-read_csv("https://github.com/jshannon75/geog4300/raw/master/data/tornado_pointsSE.csv")
+
+tornado_table<-tornado %>%
+  group_by(ST,MAG) %>%
+  summarise(count=n()) %>%
+  pivot_wider(names_from=MAG,values_from=count,values_fill=0) %>%
+  select(-`-9`) %>%
+  ungroup()
+```
+
+We can then do a chi-square on just the count variables, removing the state variable.
+
+```{r}
+chisq.test(tornado_table %>% select(-ST))
+```
+
