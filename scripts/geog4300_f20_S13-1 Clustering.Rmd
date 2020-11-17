@@ -1,0 +1,126 @@
+---
+title: "Geog4/6300: Clustering"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup}
+#install.packages("albersusa")
+library(tidyverse)
+library(tmap)
+library(sf)
+library(albersusa)
+```
+
+##K-means Clustering
+Let's read in our elections data. We'll pull county boundaries from the albersusa package (the counties_sf function).
+
+```{r}
+countydata<-read_csv("https://github.com/jshannon75/geog4300/raw/master/data/elections0816_demog_pct.csv") %>%
+  filter(year==2016 & indpop_ag_pct>-1 & region == "Midwest Region")
+
+countydata_sf<-counties_sf("laea") %>%
+  rename(fips_code=fips) %>%
+  inner_join(countydata)
+```
+
+We can cluster these counties based on the industry that residents work in. Here's how you would use kmeans to do so. First we remove all other variables except the ones of interest. We'll also have to remove the geometry column. We then use the kmeans function to identify four clusters. The set.seed fimcyopm specifies which observation to start with, which will give the same results every time.
+
+```{r}
+vars_select<-c("indpop_ag_pct","indpop_info_pct",
+         "indpop_manuf_pct","indpop_serv_pct")
+
+county_ind<-countydata_sf %>%
+  select(all_of(vars_select)) %>%
+  st_set_geometry(NULL)
+
+set.seed(124)
+ind_cluster<-kmeans(county_ind,4)
+```
+
+This produces an object with multiple components. We just want the cluster number, so we'll extract that and then use bind_cols to add it to the original dataset. To change this to a categorical variable we'll change it from numeric to character.
+
+```{r}
+clusters<-data.frame(cluster=ind_cluster$cluster)
+
+countycluster_sf_clust<-countydata_sf %>%
+  bind_cols(clusters) %>%
+  mutate(cluster_char=as.character(cluster)) 
+```
+
+Let's map out the clusters that result.
+
+```{r}
+tm_shape(countycluster_sf_clust) + 
+  tm_polygons("cluster_char",border.alpha = 0.3)
+
+tmap_mode("view")
+tm_shape(countycluster_sf_clust) + 
+  tm_polygons("cluster_char",alpha=0.3)
+```
+
+What do these clusters mean? We could summarise them by looking at the mean values for each variable by cluster.
+
+```{r}
+cluster_vars<-countycluster_sf_clust %>%
+  st_set_geometry(NULL) %>% #Remove the geometry column
+  select(cluster_char,all_of(vars_select)) %>% #Select variables if interest
+  pivot_longer(indpop_ag_pct:indpop_serv_pct,
+               names_to="var",
+               values_to="value") %>% #Make data long for the summary
+  group_by(cluster_char,var) %>%
+  summarise(var_mean=mean(value)) 
+cluster_vars
+```
+
+We can graph the results. If there's not a clear "theme" to each cluster, that's one sign the number of clusters isn't right.
+
+```{r}
+ggplot(cluster_vars,aes(x=var,y=var_mean,fill=cluster_char))+
+  geom_bar(stat="identity",position="dodge")+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+#Hierarchical clustering
+For hierarchical clustering, we use the `hclust` function in base R. First, we need to calculate a distance matrix, showing the difference between observations. Then we use hclust to group observations at different levels based on difference. We can plot the resulting dendrogram. The hca_clust function draws boxes showing how different numbers of clusters (set using k=?) would be grouped.
+
+```{r}
+ind_dist<-dist(county_ind)
+
+hca_clust<-hclust(ind_dist)
+plot(hca_clust)
+rect.hclust(hca_clust, k = 8)
+```
+
+The `cutree` function then creates a list of clusters for each observation.
+
+```{r}
+groups<-data.frame(hca_clust=cutree(hca_clust,k=8))
+
+countyind_hca<-bind_cols(countydata_sf,groups) %>%
+  mutate(hcaclust_char=as.character(hca_clust)) 
+
+tm_shape(countyind_hca)+
+  tm_polygons("hcaclust_char")
+```
+
+What do these clusters look like?
+
+```{r}
+cluster_vars_hca<-countyind_hca %>%
+  st_set_geometry(NULL) %>% #Remove the geometry column
+  select(hcaclust_char,all_of(vars_select)) %>% #Select variables if interest
+    pivot_longer(indpop_ag_pct:indpop_serv_pct,
+               names_to="var",
+               values_to="value")%>% #Make data long for the summary
+  group_by(hcaclust_char,var) %>%
+  summarise(var_mean=mean(value)) 
+View(cluster_vars_hca)
+
+ggplot(cluster_vars_hca,aes(x=var,y=var_mean,fill=hcaclust_char))+
+  geom_bar(stat="identity",position="dodge")+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+How many clusters is right? There's seldom a clear answer. See this page for a walkthrough of some computational methods that can be of use: https://www.datanovia.com/en/lessons/determining-the-optimal-number-of-clusters-3-must-know-methods/
