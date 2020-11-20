@@ -63,6 +63,7 @@ The Moran's I statistic comes back at 0.48, which is reasonably high. Like corre
 ```{r}
 moran.mc(election_sf$gop_pct,election_weight,nsim=499)
 ```
+
 ##Getis-Ord Gi*
 
 There's several measures of local spatial autocorrelation, which is often called hot spot analysis. While Moran's I gives a measure of overall clustering, these measures identify local high or low values. Getis-Ord Gi* identifies just these high and low clusters. 
