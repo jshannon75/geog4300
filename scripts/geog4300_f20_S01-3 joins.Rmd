@@ -1,7 +1,9 @@
 ---
-title: "Data manipulation: spread, gather, and join; Loading vector data"
-output: html_notebook
-editor_options: 
+title: 'Data manipulation: spread, gather, and join; Loading vector data'
+output:
+  html_document:
+    df_print: paged
+editor_options:
   chunk_output_type: console
 ---
 
@@ -9,6 +11,7 @@ In this script, we'll go over learn a few more functions from the tidyverse: gat
 
 ```{r}
 library(tidyverse)
+library(learnr)
 
 census_data<-read_csv("https://github.com/jshannon75/geog4300/raw/master/data/ACSCtyData_2014ACS.csv")
 ```
@@ -23,7 +26,7 @@ The most common, at least in my experience, is the left_join. When joining datas
 
 Here's an example. Our data folder also has a data file with climate data from the Daymet dataset. We'll filter it for just data from June of 2012.
 
-```{r}
+```{r, exercise=TRUE}
 daymet<-read_csv("https://github.com/jshannon75/geog4300/raw/master/data/Daymet_Cty_Summary_2005_2015.csv") %>%
   filter(year==2012 & month=="June")
 ```
