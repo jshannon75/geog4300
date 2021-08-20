@@ -1,0 +1,79 @@
+name,label,concept
+B03002_001,Estimate!!Total:,HISPANIC OR LATINO ORIGIN BY RACE
+B03002_002,Estimate!!Total:!!Not Hispanic or Latino:,HISPANIC OR LATINO ORIGIN BY RACE
+B03002_003,Estimate!!Total:!!Not Hispanic or Latino:!!White alone,HISPANIC OR LATINO ORIGIN BY RACE
+B03002_004,Estimate!!Total:!!Not Hispanic or Latino:!!Black or African American alone,HISPANIC OR LATINO ORIGIN BY RACE
+B03002_005,Estimate!!Total:!!Not Hispanic or Latino:!!American Indian and Alaska Native alone,HISPANIC OR LATINO ORIGIN BY RACE
+B03002_006,Estimate!!Total:!!Not Hispanic or Latino:!!Asian alone,HISPANIC OR LATINO ORIGIN BY RACE
+B03002_007,Estimate!!Total:!!Not Hispanic or Latino:!!Native Hawaiian and Other Pacific Islander alone,HISPANIC OR LATINO ORIGIN BY RACE
+B03002_008,Estimate!!Total:!!Not Hispanic or Latino:!!Some other race alone,HISPANIC OR LATINO ORIGIN BY RACE
+B03002_009,Estimate!!Total:!!Not Hispanic or Latino:!!Two or more races:,HISPANIC OR LATINO ORIGIN BY RACE
+B03002_010,Estimate!!Total:!!Not Hispanic or Latino:!!Two or more races:!!Two races including Some other race,HISPANIC OR LATINO ORIGIN BY RACE
+B03002_011,"Estimate!!Total:!!Not Hispanic or Latino:!!Two or more races:!!Two races excluding Some other race, and three or more races",HISPANIC OR LATINO ORIGIN BY RACE
+B03002_012,Estimate!!Total:!!Hispanic or Latino:,HISPANIC OR LATINO ORIGIN BY RACE
+B03002_013,Estimate!!Total:!!Hispanic or Latino:!!White alone,HISPANIC OR LATINO ORIGIN BY RACE
+B03002_014,Estimate!!Total:!!Hispanic or Latino:!!Black or African American alone,HISPANIC OR LATINO ORIGIN BY RACE
+B03002_015,Estimate!!Total:!!Hispanic or Latino:!!American Indian and Alaska Native alone,HISPANIC OR LATINO ORIGIN BY RACE
+B03002_016,Estimate!!Total:!!Hispanic or Latino:!!Asian alone,HISPANIC OR LATINO ORIGIN BY RACE
+B03002_017,Estimate!!Total:!!Hispanic or Latino:!!Native Hawaiian and Other Pacific Islander alone,HISPANIC OR LATINO ORIGIN BY RACE
+B03002_018,Estimate!!Total:!!Hispanic or Latino:!!Some other race alone,HISPANIC OR LATINO ORIGIN BY RACE
+B03002_019,Estimate!!Total:!!Hispanic or Latino:!!Two or more races:,HISPANIC OR LATINO ORIGIN BY RACE
+B03002_020,Estimate!!Total:!!Hispanic or Latino:!!Two or more races:!!Two races including Some other race,HISPANIC OR LATINO ORIGIN BY RACE
+B03002_021,"Estimate!!Total:!!Hispanic or Latino:!!Two or more races:!!Two races excluding Some other race, and three or more races",HISPANIC OR LATINO ORIGIN BY RACE
+B15003_001,Estimate!!Total:,EDUCATIONAL ATTAINMENT FOR THE POPULATION 25 YEARS AND OVER
+B15003_002,Estimate!!Total:!!No schooling completed,EDUCATIONAL ATTAINMENT FOR THE POPULATION 25 YEARS AND OVER
+B15003_003,Estimate!!Total:!!Nursery school,EDUCATIONAL ATTAINMENT FOR THE POPULATION 25 YEARS AND OVER
+B15003_004,Estimate!!Total:!!Kindergarten,EDUCATIONAL ATTAINMENT FOR THE POPULATION 25 YEARS AND OVER
+B15003_005,Estimate!!Total:!!1st grade,EDUCATIONAL ATTAINMENT FOR THE POPULATION 25 YEARS AND OVER
+B15003_006,Estimate!!Total:!!2nd grade,EDUCATIONAL ATTAINMENT FOR THE POPULATION 25 YEARS AND OVER
+B15003_007,Estimate!!Total:!!3rd grade,EDUCATIONAL ATTAINMENT FOR THE POPULATION 25 YEARS AND OVER
+B15003_008,Estimate!!Total:!!4th grade,EDUCATIONAL ATTAINMENT FOR THE POPULATION 25 YEARS AND OVER
+B15003_009,Estimate!!Total:!!5th grade,EDUCATIONAL ATTAINMENT FOR THE POPULATION 25 YEARS AND OVER
+B15003_010,Estimate!!Total:!!6th grade,EDUCATIONAL ATTAINMENT FOR THE POPULATION 25 YEARS AND OVER
+B15003_011,Estimate!!Total:!!7th grade,EDUCATIONAL ATTAINMENT FOR THE POPULATION 25 YEARS AND OVER
+B15003_012,Estimate!!Total:!!8th grade,EDUCATIONAL ATTAINMENT FOR THE POPULATION 25 YEARS AND OVER
+B15003_013,Estimate!!Total:!!9th grade,EDUCATIONAL ATTAINMENT FOR THE POPULATION 25 YEARS AND OVER
+B15003_014,Estimate!!Total:!!10th grade,EDUCATIONAL ATTAINMENT FOR THE POPULATION 25 YEARS AND OVER
+B15003_015,Estimate!!Total:!!11th grade,EDUCATIONAL ATTAINMENT FOR THE POPULATION 25 YEARS AND OVER
+B15003_016,"Estimate!!Total:!!12th grade, no diploma",EDUCATIONAL ATTAINMENT FOR THE POPULATION 25 YEARS AND OVER
+B15003_017,Estimate!!Total:!!Regular high school diploma,EDUCATIONAL ATTAINMENT FOR THE POPULATION 25 YEARS AND OVER
+B15003_018,Estimate!!Total:!!GED or alternative credential,EDUCATIONAL ATTAINMENT FOR THE POPULATION 25 YEARS AND OVER
+B15003_019,"Estimate!!Total:!!Some college, less than 1 year",EDUCATIONAL ATTAINMENT FOR THE POPULATION 25 YEARS AND OVER
+B15003_020,"Estimate!!Total:!!Some college, 1 or more years, no degree",EDUCATIONAL ATTAINMENT FOR THE POPULATION 25 YEARS AND OVER
+B15003_021,Estimate!!Total:!!Associate's degree,EDUCATIONAL ATTAINMENT FOR THE POPULATION 25 YEARS AND OVER
+B15003_022,Estimate!!Total:!!Bachelor's degree,EDUCATIONAL ATTAINMENT FOR THE POPULATION 25 YEARS AND OVER
+B15003_023,Estimate!!Total:!!Master's degree,EDUCATIONAL ATTAINMENT FOR THE POPULATION 25 YEARS AND OVER
+B15003_024,Estimate!!Total:!!Professional school degree,EDUCATIONAL ATTAINMENT FOR THE POPULATION 25 YEARS AND OVER
+B15003_025,Estimate!!Total:!!Doctorate degree,EDUCATIONAL ATTAINMENT FOR THE POPULATION 25 YEARS AND OVER
+B17025_001,Estimate!!Total:,POVERTY STATUS IN THE PAST 12 MONTHS BY NATIVITY
+B17025_002,Estimate!!Total:!!Income in the past 12 months below poverty level:,POVERTY STATUS IN THE PAST 12 MONTHS BY NATIVITY
+B17025_003,Estimate!!Total:!!Income in the past 12 months below poverty level:!!Native:,POVERTY STATUS IN THE PAST 12 MONTHS BY NATIVITY
+B17025_004,Estimate!!Total:!!Income in the past 12 months below poverty level:!!Native:!!Born in the United States,POVERTY STATUS IN THE PAST 12 MONTHS BY NATIVITY
+B17025_005,Estimate!!Total:!!Income in the past 12 months below poverty level:!!Native:!!Born outside the United States,POVERTY STATUS IN THE PAST 12 MONTHS BY NATIVITY
+B17025_006,Estimate!!Total:!!Income in the past 12 months below poverty level:!!Foreign born:,POVERTY STATUS IN THE PAST 12 MONTHS BY NATIVITY
+B17025_007,Estimate!!Total:!!Income in the past 12 months below poverty level:!!Foreign born:!!Naturalized citizen,POVERTY STATUS IN THE PAST 12 MONTHS BY NATIVITY
+B17025_008,Estimate!!Total:!!Income in the past 12 months below poverty level:!!Foreign born:!!Not a citizen,POVERTY STATUS IN THE PAST 12 MONTHS BY NATIVITY
+B17025_009,Estimate!!Total:!!Income in the past 12 months at or above poverty level:,POVERTY STATUS IN THE PAST 12 MONTHS BY NATIVITY
+B17025_010,Estimate!!Total:!!Income in the past 12 months at or above poverty level:!!Native:,POVERTY STATUS IN THE PAST 12 MONTHS BY NATIVITY
+B17025_011,Estimate!!Total:!!Income in the past 12 months at or above poverty level:!!Native:!!Born in the United States,POVERTY STATUS IN THE PAST 12 MONTHS BY NATIVITY
+B17025_012,Estimate!!Total:!!Income in the past 12 months at or above poverty level:!!Native:!!Born outside the United States,POVERTY STATUS IN THE PAST 12 MONTHS BY NATIVITY
+B17025_013,Estimate!!Total:!!Income in the past 12 months at or above poverty level:!!Foreign born:,POVERTY STATUS IN THE PAST 12 MONTHS BY NATIVITY
+B17025_014,Estimate!!Total:!!Income in the past 12 months at or above poverty level:!!Foreign born:!!Naturalized citizen,POVERTY STATUS IN THE PAST 12 MONTHS BY NATIVITY
+B17025_015,Estimate!!Total:!!Income in the past 12 months at or above poverty level:!!Foreign born:!!Not a citizen,POVERTY STATUS IN THE PAST 12 MONTHS BY NATIVITY
+B27020_001,Estimate!!Total:,HEALTH INSURANCE COVERAGE STATUS AND TYPE BY CITIZENSHIP STATUS
+B27020_002,Estimate!!Total:!!Native Born:,HEALTH INSURANCE COVERAGE STATUS AND TYPE BY CITIZENSHIP STATUS
+B27020_003,Estimate!!Total:!!Native Born:!!With health insurance coverage,HEALTH INSURANCE COVERAGE STATUS AND TYPE BY CITIZENSHIP STATUS
+B27020_004,Estimate!!Total:!!Native Born:!!With health insurance coverage!!With private health insurance,HEALTH INSURANCE COVERAGE STATUS AND TYPE BY CITIZENSHIP STATUS
+B27020_005,Estimate!!Total:!!Native Born:!!With health insurance coverage!!With public coverage,HEALTH INSURANCE COVERAGE STATUS AND TYPE BY CITIZENSHIP STATUS
+B27020_006,Estimate!!Total:!!Native Born:!!No health insurance coverage,HEALTH INSURANCE COVERAGE STATUS AND TYPE BY CITIZENSHIP STATUS
+B27020_007,Estimate!!Total:!!Foreign Born:,HEALTH INSURANCE COVERAGE STATUS AND TYPE BY CITIZENSHIP STATUS
+B27020_008,Estimate!!Total:!!Foreign Born:!!Naturalized:,HEALTH INSURANCE COVERAGE STATUS AND TYPE BY CITIZENSHIP STATUS
+B27020_009,Estimate!!Total:!!Foreign Born:!!Naturalized:!!With health insurance coverage,HEALTH INSURANCE COVERAGE STATUS AND TYPE BY CITIZENSHIP STATUS
+B27020_010,Estimate!!Total:!!Foreign Born:!!Naturalized:!!With health insurance coverage!!With private health insurance,HEALTH INSURANCE COVERAGE STATUS AND TYPE BY CITIZENSHIP STATUS
+B27020_011,Estimate!!Total:!!Foreign Born:!!Naturalized:!!With health insurance coverage!!With public coverage,HEALTH INSURANCE COVERAGE STATUS AND TYPE BY CITIZENSHIP STATUS
+B27020_012,Estimate!!Total:!!Foreign Born:!!Naturalized:!!No health insurance coverage,HEALTH INSURANCE COVERAGE STATUS AND TYPE BY CITIZENSHIP STATUS
+B27020_013,Estimate!!Total:!!Foreign Born:!!Noncitizen:,HEALTH INSURANCE COVERAGE STATUS AND TYPE BY CITIZENSHIP STATUS
+B27020_014,Estimate!!Total:!!Foreign Born:!!Noncitizen:!!With health insurance coverage,HEALTH INSURANCE COVERAGE STATUS AND TYPE BY CITIZENSHIP STATUS
+B27020_015,Estimate!!Total:!!Foreign Born:!!Noncitizen:!!With health insurance coverage!!With private health insurance,HEALTH INSURANCE COVERAGE STATUS AND TYPE BY CITIZENSHIP STATUS
+B27020_016,Estimate!!Total:!!Foreign Born:!!Noncitizen:!!With health insurance coverage!!With public coverage,HEALTH INSURANCE COVERAGE STATUS AND TYPE BY CITIZENSHIP STATUS
+B27020_017,Estimate!!Total:!!Foreign Born:!!Noncitizen:!!No health insurance coverage,HEALTH INSURANCE COVERAGE STATUS AND TYPE BY CITIZENSHIP STATUS

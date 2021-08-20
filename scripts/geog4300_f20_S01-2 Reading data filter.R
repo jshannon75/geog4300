@@ -10,7 +10,7 @@ library(tidyverse)
 
 #Next download some county level data from GitHub
 #This data is stored in a csv and is available at this URL:
-#https://github.com/jshannon75/geog4300/raw/master/data/ACSCtyData_2014ACS.csv
+#https://github.com/jshannon75/geog4300/raw/master/data/ACSCtyData_2019ACS.csv
 #Right click (or ctrl-click on Mac) on the Download button and save the file.
 #Best for you to have a flash drive if you're not on your computer.
  
@@ -18,7 +18,7 @@ library(tidyverse)
 #You could use the "Import dataset" button on the Environment tab.
 #Better to use "read_csv". If you've saved to a folder called "data" in your project, this should work:
 
-census_data<-read_csv("data/ACSCtyData_2014ACS.csv")
+census_data<-read_csv("data/ACSCtyData_2019ACS.csv")
 
 #Now open the data to look at it. Click on it in the Environment tab.
 #Or use this:
@@ -29,7 +29,7 @@ View(census_data)
 #Click on the Download button and then copy the URL. 
 #See what this looks like below:
 
-census_data<-read_csv("https://github.com/jshannon75/geog4300/raw/master/data/ACSCtyData_2014ACS.csv")
+census_data<-read_csv("https://github.com/jshannon75/geog4300/raw/master/data/ACSCtyData_2019ACS.csv")
 
 #Let's take a look at this file.
 
