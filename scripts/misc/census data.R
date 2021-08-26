@@ -74,7 +74,7 @@ ctydata_all<-old %>%
   mutate(GEOID=str_pad(GEOID,5,pad="0")) %>%
   left_join(ctydata_format)
 
-write_csv(ctydata_format,"data/ACSCtyData_2019ACS.csv")
+write_csv(ctydata_all,"data/ACSCtyData_2019ACS.csv")
 
 library(sf)
 cty_boundary<-st_read("data/ACSCtyData_2014ACS_simplify.gpkg") %>%
