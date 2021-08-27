@@ -10,7 +10,7 @@ In this script, we'll go over learn a few more functions from the tidyverse: gat
 ```{r}
 library(tidyverse)
 
-census_data<-read_csv("data/ACSCtyData_2019ACS.csv")
+census_data<-read_csv("https://github.com/jshannon75/geog4300/raw/master/data/ACSCtyData_2019ACS.csv")
 ```
 
 ###Group_by and summarise
@@ -31,9 +31,7 @@ badeg_state2<-census_data %>%
 
 
 ###Long and wide format
-Summarise multiple variables can be tricky. You can calculate each mean separately, but this can be cumbersome for a large number of variables. One solution is to use functions that collapse multiple variables down to just two columns: one for the variable name and the other for the observational values. This "long" format is useful in lots of ways, but for our purposes, it can allow us to summarise multiple variables in just one line of code.
-
-For awhile, the main commands used for reshaping datasets in this way were 'gather' and 'spread.' However, they have been recently replaced with 'pivot_longer' and 'pivot_wider.'
+Summarise multiple variables can be tricky. You can calculate each mean separately, but this can be cumbersome for a large number of variables. One solution is to use functions that collapse multiple variables down to just two columns: one for the variable name and the other for the observational values. This "long" format is useful in lots of ways, but for our purposes, it can allow us to summarise multiple variables in just one line of code. The two commands we use for this in the tidyverse are pivot_wide and pivot_longer.
 
 Here's how they work. Let's say we wanted to summarise all the education variables. We could first select just the variables of interest and then use 'pivot_longer' to bring all these variables into two *longer* columns. The *names_to* parameter (on l. 44) names the variable with all the former variable headings. The *values_to* parameter (l. 45) tells what to do with all the values in those columns. Here's what this looks like.
 
