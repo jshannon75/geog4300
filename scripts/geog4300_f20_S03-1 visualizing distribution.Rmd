@@ -14,10 +14,10 @@ library(tidyverse)
 library(sf)
 library(tmap)
 
-census_data<-read_csv("https://github.com/jshannon75/geog4300/raw/master/data/ACSCtyData_2014ACS.csv")
+census_data<-read_csv("data/ACSCtyData_2019ACS.csv")
 
-census_data_geo<-st_read("https://github.com/jshannon75/geog4300/raw/master/data/ACSCtyData_2014ACS_simplify.gpkg") %>%
-  filter(State=="Georgia")
+census_data_geo<-st_read("data/ACSCtyData_2019ACS_simplify.gpkg") %>%
+  filter(GISJn_St=="G13")
 ```
 
 What if we want to identify the mean and median rates of insurance for naturalized citizens by state? First, we should calculate these using group_by and summarise.
@@ -52,9 +52,9 @@ census_ins_plot<-census_ins %>%
 
 ggplot(census_ins_plot,aes(x=value,y=St_name,color=var))+
   geom_point()+
-  scale_colour_brewer("Variable",palette="Dark2",labels=c("Mean","Median"))+
-  xlab("% of population") +
-  ylab("")
+  scale_colour_brewer("Variable",palette="Dark2",labels=c("Mean","Median"))+ #Change the colors
+  xlab("% of population") + #X axis label
+  ylab("") #Y axis label
 ```
 
 Identifying standard deviation and interquartile range is pretty easy with group_by and summarise. For rates of health insurance, we could do it this way. (Notice that there's one NA in these results--think about why that is.)
@@ -141,19 +141,19 @@ Lastly, we can visualize different classifications schemes for these data cartog
 
 ```{r}
 tm_shape(census_data_geo)+
-  tm_polygons("NAT_INS_PC")
+  tm_polygons("nat_ins_pct")
 ```
 
 We can use the style parameter to classify data differently. Here's natural breaks (jenks), quantile, and equal interval.
 
 ```{r}
 tm_shape(census_data_geo)+
-  tm_polygons("NAT_INS_PC",style="jenks")
+  tm_polygons("nat_ins_pct",style="jenks")
 
 tm_shape(census_data_geo)+
-  tm_polygons("NAT_INS_PC",style="quantile")
+  tm_polygons("nat_ins_pct",style="quantile")
 
 tm_shape(census_data_geo)+
-  tm_polygons("NAT_INS_PC",style="equal")
+  tm_polygons("nat_ins_pct",style="equal")
 ```
 
