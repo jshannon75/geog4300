@@ -21,7 +21,7 @@ library(viridis)
 First, let's load census tract data for Charlotte as a spatial file using st_read from the sf package. These data are saved in the open source geopackage format. We'll filter tracts that are in Mecklenberg County (fips of 37119). We also then transform the projection so it's in WGS84 using the EPSG number (4326).
 
 ```{r}
-charpop<-st_read("https://github.com/jshannon75/geog4300/raw/master/data/charlotte_tractpop.gpkg") %>%
+charpop<-st_read("data/charlotte_tractpop.gpkg") %>%
   mutate(cty_fips=substr(GEOID,1,5)) %>% #county fips code is the first five digits of the tract fips
   filter(cty_fips==37119) %>%
   st_transform(4326) 
@@ -30,7 +30,7 @@ charpop<-st_read("https://github.com/jshannon75/geog4300/raw/master/data/charlot
 In Lab 3, we'll be doing some analysis of restaurant reviews from Yelp. We can read the data we'll be using there here as well. In this case, we don't care about individual reviews. So we'll remove the review specific variables and then use the distinct function to remove duplicates. The st_as_sf function takes coordinates in the csv and converts them to spatial data. (Note: the Yelp file is large, so this will take a bit to download.)
 
 ```{r}
-restaurants_raw<-read_csv("https://github.com/jshannon75/geog4300/raw/master/data/charlotte_restaurants.csv") 
+restaurants_raw<-read_csv("data/charlotte_restaurants.csv") 
 
 restaurants<-restaurants_raw %>%
   select(-review_id,-date,-review_count,-text) %>%
@@ -145,7 +145,7 @@ ggplot(charpop_count,aes(fill=sand_lq))+
   scale_fill_viridis_c()
 ```
 
-There's some upper outliers at the top end. What if we select tracts with at least one restaurant?
+What if we select tracts with at least one restaurant?
 
 ```{r}
 charpop_filter<-charpop_count %>% 
@@ -202,6 +202,6 @@ tm_shape(rest_tct %>% filter(Sandwiches==1))+
   tm_dots(size=0.1)
 ```
 
-There are other good mapping packages available. Mapview (https://r-spatial.github.io/mapview/articles/articles/mapview_01-basics.html) provides quick interactive maps. The new cartography package (https://github.com/riatelab/cartography) also has helpful looking tools for mapping.
+There are other good mapping packages available. For example, mapview (https://r-spatial.github.io/mapview/articles/articles/mapview_01-basics.html) provides quick interactive maps.
 
 Learn more about spatial analysis in R in Manuel Gimond's web textbook: https://mgimond.github.io/Spatial/
