@@ -8,23 +8,26 @@ editor_options:
 For this script, you'll need tidyverse and sf, as well as a new (to us) package called spatstat. We're also going to use a couple of other spatial packages--rgdal and maptools.
 
 ```{r}
-library(tidyverse)
 #library(sf)
 library(knitr)
 opts_knit$set(root.dir = "~/path/to/folder/")
 
 #install.packages(c("spatstat","rgdal","maptools"))
+library(tidyverse)
 library(spatstat)
-library(rgdal)
+library(sf)
 library(maptools)
 ```
 
-We will continue work with tornado data for this analysis. We will also load a spatial file (in geopackage format) for states in the Southeast.
+We will continue work with tornado data for this analysis. We will also load a spatial file (in geopackage format) for states in the Southeast. Spatstat requires a projection, so we will use UTM 15.
 
 ```{r}
-tornado_points<-read_csv("data/tornado_pointsSE.csv")
-states<-readOGR("data/states_se.gpkg") 
-states1<-as(states,"owin")
+tornado_points<-read_csv("data/tornado_pointsSE.csv") %>%
+  st_as_sf(coords=c("x_utm","y_utm"),remove=FALSE,crs=32615) #Coordinate system is UTM 15
+
+states<-st_read("data/states_se.gpkg") %>%
+  st_transform(32615) #Transform to UTM 15
+states1<-as.owin(as_Spatial(states))
 ```
 
 Quadrat analysis in R often uses a package called spatstat. A lot of info on spatstat is available here: https://research.csiro.au/software/wp-content/uploads/sites/6/2015/02/Rspatialcourse_CMIS_PDF-Standard.pdf. With spatstat, you can create square quadrants of varying sizes
@@ -32,16 +35,16 @@ Quadrat analysis in R often uses a package called spatstat. A lot of info on spa
 To use the spatstat package, you must first determine the maximum and minimum values for your lat/long coordinates (using the point where each tornado started). Here, we use the min and max functions to do so.
 
 ```{r}
-maxlat<-max(tornado_points$SLAT)
-minlat<-min(tornado_points$SLAT)
-maxlon<-max(tornado_points$SLON)
-minlon<-min(tornado_points$SLON)
+maxlat<-max(tornado_points$y_utm)
+minlat<-min(tornado_points$y_utm)
+maxlon<-max(tornado_points$x_utm)
+minlon<-min(tornado_points$x_utm)
 ```
 
 Spatstat needs a "ppp" object. To create that, use the ppp function, providing X and Y points plus the range of your X and Y coordinates.
 
 ```{r}
-tornado_ppp<-ppp(tornado_points$SLON,tornado_points$SLAT,
+tornado_ppp<-ppp(tornado_points$x_utm,tornado_points$y_utm,
                  c(minlon,maxlon),c(minlat,maxlat))
 Window(tornado_ppp)<-states1
 plot(tornado_ppp)
@@ -56,21 +59,21 @@ kernel_map<-density(tornado_ppp)
 plot(kernel_map)
 ```
 
-We can change the size of the "kernel" used to interpolate this map. Again, remember that the unit here is decimal degrees. Which is best?
+We can change the size of the "kernel" used to interpolate this map. Again, remember that the unit here is meters. Which is best?
 
 ```{r}
-plot(density(tornado_ppp,0.1))
-plot(density(tornado_ppp,0.25))
-plot(density(tornado_ppp,0.5))
-plot(density(tornado_ppp,1))
-plot(density(tornado_ppp,2))
-plot(density(tornado_ppp,5))
+plot(density(tornado_ppp,1000))
+plot(density(tornado_ppp,5000))
+plot(density(tornado_ppp,10000))
+plot(density(tornado_ppp,50000))
+plot(density(tornado_ppp,100000))
+plot(density(tornado_ppp,500000))
 ```
 
 Spatstat can also create a contour map. The lines indicate the value of the kernel density map.
 
 ```{r}
-map<-contour(density(tornado_ppp,0.5))
+map<-contour(density(tornado_ppp,100000),)
 ```
 
 Spatstat can create a quadrat map with square cells. The two numbers are the count of columns and rows.
@@ -83,7 +86,7 @@ plot(quadratcount(tornado_ppp,6,3))
 
 You can combine these maps with the add=TRUE parameter.
 ```{r}
-kernel_map<-density(tornado_ppp,0.5)
+kernel_map<-density(tornado_ppp,50000)
 quad_map<-quadratcount(tornado_ppp,6,3)
 
 plot(kernel_map,add=TRUE)

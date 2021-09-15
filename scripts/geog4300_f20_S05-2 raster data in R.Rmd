@@ -63,7 +63,7 @@ What if we wanted to do the same with counties? The zonal.stats function in the 
 
 ```{r}
 library(spatialEco)
-ga_cty<-st_read("data/us_county_simplify_SE_2014pop.gpkg") %>%
+ga_cty<-st_read("data/us_county_simplify_SE_2014pop1.gpkg") %>%
   filter(state=="G13")
 
 ga_cty_elev<-zonal.stats(ga_cty,dem)
