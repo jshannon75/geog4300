@@ -10,6 +10,7 @@ In this script, we'll be working with the tidytext package to get introduced to 
 We're going to need two packages: gutenbergr, which provides access to free texts at the Gutenberg project, and tidytext.
 
 ```{r}
+#install.packages("devtools")
 #devtools::install_version('gutenbergr', '0.1.5')
 #If asked to install other packages, choose the "None" option (should be #3)
 library(gutenbergr)
@@ -137,5 +138,19 @@ joined_select<-joined_words %>%
 #What words have the biggest gaps?
 joined_diff<-joined_words %>%
   mutate(diff=abs(dubois_count-douglass_count))
+
+#Calculate the tf-idf in both
+dubois_douglass<-dubois_count %>%
+  mutate(book="dubois") %>%
+  rename(n=dubois_count) %>%
+  bind_rows(douglass_wordcount %>%
+              mutate(book="douglass") %>%
+              rename(n=douglass_count)) %>%
+  bind_tf_idf(term=word,document=book,n)
+
+#Which words are most distinctive?
+top_tfidf<-dubois_douglass %>%
+  group_by(book) %>%
+  top_n(5,tf_idf)
 ```
 
