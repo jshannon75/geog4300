@@ -8,7 +8,7 @@ editor_options:
 ---
 ### Loading and manipulating spatial data
 
-There are several packages available to create and edit spatial data in R. This includes both raster and vector data. This script focuses on the latter. The relatively new sf (stands for simple features) package is one efficent way to load vector data. Other popular packages for spatial data are rgdal, sp, and raster.
+There are several packages available to create and edit spatial data in R. This includes both raster and vector data. This script focuses on the latter. The relatively new sf (stands for simple features) package is one efficient way to load vector data. Other popular packages for spatial data are rgdal, sp, and raster.
 
 
 ```{r, message=FALSE}
@@ -23,8 +23,8 @@ First, let's load census tract data for Charlotte as a spatial file using st_rea
 ```{r}
 charpop<-st_read("data/charlotte_tractpop.gpkg") %>%
   mutate(cty_fips=substr(GEOID,1,5)) %>% #county fips code is the first five digits of the tract fips
-  filter(cty_fips==37119) %>%
-  st_transform(4326) 
+  filter(cty_fips==37119) %>% #Select just Mecklenberg Cty
+  st_transform(4326) #Transform to WSG84 (crs 4326)
 ```
 
 In Lab 3, we'll be doing some analysis of restaurant reviews from Yelp. We can read the data we'll be using there here as well. In this case, we don't care about individual reviews. So we'll remove the review specific variables and then use the distinct function to remove duplicates. The st_as_sf function takes coordinates in the csv and converts them to spatial data. (Note: the Yelp file is large, so this will take a bit to download.)

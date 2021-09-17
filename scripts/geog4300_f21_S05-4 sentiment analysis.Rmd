@@ -124,7 +124,7 @@ as.character(douglass_minsent$sentence)
 
 #Select max score (most positive)
 douglass_maxsent<-douglass_sentences %>%
-  filter(line==douglass_max$line) 
+  filter(line==douglass_max[1,]$line) 
 
 as.character(douglass_maxsent$sentence)
 ```
