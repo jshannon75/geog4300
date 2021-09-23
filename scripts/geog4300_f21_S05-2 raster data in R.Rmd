@@ -31,13 +31,13 @@ You can look at the distibution of values for these elevations using a regular h
 hist(dem)
 ```
 
-What if you have point data and want to extract values for the raster? Let's load the points for campuses in the University System of Georgia. Which one is the highest? The extract function pulls the value for each point.
+What if you have point data and want to extract values for the raster? Let's load the points for campuses in the University System of Georgia. Which one is the highest? The extract function (from raster) pulls the value for each point.
 
 ```{r}
 usg_schools<-read_csv("data/usg_schools_geo.csv") %>%
   st_as_sf(coords=c("lon","lat"),remove=FALSE,crs=4326)
 
-usg_schools_elev<-raster::extract(dem,usg_schools)
+usg_schools_elev<-extract(dem,usg_schools)
 ```
 
 The resulting object is just a simple vector of elevation values. We have to bind it back to the original data frame. The easiest way to do so is using base R.
