@@ -25,10 +25,11 @@ CI.upper<-mean+error
 We can also visualize these confidence intervals. Let's load the microdata you are working within the current lab.
 
 ```{r}
-cps_data<-read_csv("https://github.com/jshannon75/geog4300/raw/master/data/IPUMS_CPS_FoodSec.csv")
-
-#Or if you have the data loaded locally:
 cps_data<-read_csv("data/IPUMS_CPS_FoodSec.csv")
+
+#Or if you need the data from Github:
+#cps_data<-read_csv("https://github.com/jshannon75/geog4300/raw/master/data/IPUMS_CPS_FoodSec.csv")
+
 ```
 
 What if we're looking for confidence intervals for mean earnings per week (the EARNWEEK variable) for in the South? First, we need to filter for only responses in the South and ones with a meaningful response to the EARNWEEK variable. See the codebook for more information--9999.99 is the NIU code.
