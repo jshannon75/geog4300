@@ -82,6 +82,7 @@ ggplot(cps_data_south_visual)+
 
 Note that in the geom_line function we used reorder to sort states by the earn_mean variable. 
 
+**You try it!** Calculate the confidence intervals for weekly income by census region (the Region variable).
 
 ###CI for proportions. 
 
