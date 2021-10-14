@@ -65,7 +65,7 @@ Then we'll use group_by and summarise to get the counts of each outcome (0=tails
 prop_sample.table<-prop_samplelong %>%
   group_by(coin,result) %>%
   summarise(count=n()) %>%
-  spread(result,count) %>%
+  pivot_wider(names_from=result,values_from=count) %>%
   mutate(total=`0`+`1`)
 prop.test(prop_sample.table$`1`,prop_sample.table$total) #Run prop.test on the table
 ```
