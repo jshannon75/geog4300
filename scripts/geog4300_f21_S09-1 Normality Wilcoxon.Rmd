@@ -16,28 +16,25 @@ Normality tests and Wilcoxon non-parametric tests. This code chunk generates a s
 test1<-data.frame(var1=rbeta(5000,7,2))
 hist(test1$var1) 
 ggplot(test1,aes(x=var1)) + geom_histogram()
-qqnorm(test1) 
+ggplot(test1,aes(sample=var1)) +
+  stat_qq()+
+  stat_qq_line()
 ```
 
 This code chunk does the same with a normal dataset.
 
 ```{r}
-test2<-rnorm(5000,0,1)
-hist(test2) 
-qqnorm(test2) 
+test2<-data.frame(var2=rnorm(5000,0,1))
+hist(test2$var2) 
+ggplot(test2,aes(sample=var2)) +
+  stat_qq()+
+  stat_qq_line()
 ```
 
 Shapiro-Wilk test: the null hypothesis is that the data ARE normal, so a low p value indicates that the dataset is skewed/not normal.
 ```{r}
-shapiro.test(test1) #skewed data
-shapiro.test(test2) #normal data
-```
-
-The qqline function can also add in a line showing normal distribution. It's helpful for seeing how much the actual data deviates.
-
-```{r}
-qqnorm(test1); qqline(test1)
-qqnorm(test2); qqline(test2)
+shapiro.test(test1$var1) #skewed data
+shapiro.test(test2$var2) #normal data
 ```
 
 ##You try it!

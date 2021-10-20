@@ -60,7 +60,7 @@ TukeyHSD(drugtest)
 Testing residuals for normality--just use the "residuals" function on the ANOVA object. We can then create a qqplot and use shapiro.test to look at normality.
 ```{r}
 drugtest.resid<-residuals(drugtest)
-qqnorm(drugtest.resid);qqline(drugtest.resid)
+qqnorm(drugtest.resid);qqline(drugtest.resid) #Using a base R version of a QQ plot
 hist(drugtest.resid)
 shapiro.test(drugtest.resid)
 ```
@@ -75,9 +75,9 @@ You could also treat the drug trial data as non-parametric. kruskal.test is the 
 kruskal.test(anova_data_navarro$result~anova_data_navarro$drug)
 ```
 
-In class: Test for differences in pollen levels for species across regions. Do any species NOT have regional differences? The region variable is Region_fac.
+You try it! Test for differences in pollen levels for species across regions. Do any species NOT have regional differences? The region variable is Region_fac.
 ```{r}
-pollen_data<-read_csv("https://github.com/jshannon75/geog4300/raw/master/data/Midwest_Pollen_Data.csv")
+pollen_data<-read_csv("data/Midwest_Pollen_Data.csv")
 ```
 
 Some examples below...
