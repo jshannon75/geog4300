@@ -11,6 +11,7 @@ library(tidyverse)
 library(Hmisc)
 library(ggcorrplot)
 library(corrgram)
+library(broom)
 ```
 
 
@@ -58,7 +59,6 @@ Note that this shows both the correlation coefficient and its p value.
 We can also extract these correlations using tidy from the broom package. You can sort and filter to see which associations are the most significant.
 
 ```{r}
-library(broom)
 cor_values<-tidy(pollen_cor)
 ```
 

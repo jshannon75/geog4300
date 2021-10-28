@@ -11,7 +11,7 @@ library(sf)
 ```
 
 
-Here's our garden data from class
+Here's our garden data from class lecture
 ```{r}
 med.age<-c(43, 21, 25, 42, 56, 59)
 garden<-c(99, 65, 79, 75, 87, 81)
@@ -31,20 +31,23 @@ plot(garden~med.age, data=data)
 abline(model) 
 ```
 
-Let's do a more complex model: pollen data. Does yearly mean temperature predict the levels of pollen from birch trees (Betula)? We will load the data from Github and then make it spatial using the st_as_sf function in the sf package.
+Let's do a more complex model: pollen data. Does yearly mean temperature predict the levels of pollen from birch trees (Betula)? We will load the data and then make it spatial using the st_as_sf function in the sf package.
 
 ```{r}
 Midwest_Pollen_Data<-read_csv("data/Midwest_Pollen_Data.csv")
+
 pollen_data_sf<-st_as_sf(Midwest_Pollen_Data,coords=c(x="longitud",y="latitude"),crs=4326)
 ```
 
 Let's look at the distribution of these variables first.
 ```{r}
 hist(pollen_data_sf$Betula)
-qqnorm(pollen_data_sf$Betula);qqline(pollen_data_sf$Betula)
+ggplot(pollen_data_sf,aes(sample=Betula))+
+  stat_qq()+stat_qq_line()
 
 hist(pollen_data_sf$tmeanyr)
-qqnorm(pollen_data_sf$tmeanyr);qqline(pollen_data_sf$tmeanyr)
+ggplot(pollen_data_sf,aes(sample=tmeanyr))+
+  stat_qq()+stat_qq_line()
 
 ggplot(pollen_data_sf,aes(y=Betula,x=tmeanyr))+
   geom_point()
@@ -76,11 +79,28 @@ abline(model)
 
 ##There's several diagnostics that can be used for regression.
 
+R comes with some diagnostic plots baked in. To see them, just plot the model. There are four screens: 
+
+1) The first is the values predicted by the model vs. the residuals. It shouldn't show a pattern.
+
+2) The second is a QQ plot for residuals. These should appear normal.
+
+3) The third should also appear random, it's similar to graph 1.
+
+4) The last shows Cook's distance for outliers (See below). It identifies observations with the greatest "leverage" on the model by their row number. They will be near or past the dotted line thresholds.
+
+```{r}
+plot(model)
+```
+
+
+Here's a more detailed walkthrough:
+
 *Normality of residuals: Plot/test the residuals. The "residuals" function pulls residuals from the model.
 ```{r}
 pollen_data_sf$residuals<-residuals(model) #Pull the residuals from the model
-hist(pollen_data_sf$residuals)
-qqnorm(pollen_data_sf$residuals)
+ggplot(pollen_data_sf,aes(sample=residuals))+
+  stat_qq()+stat_qq_line()
 shapiro.test(pollen_data_sf$residuals)
 ```
 
@@ -142,3 +162,7 @@ summary(model_rev)
 plot(Betula~tmeanyr,data=pollen_data_sf1)
 abline(model_rev)
 ```
+
+##You try it!
+Run a model for one other tree species and either temperature or precipitation. Check the diagnostics and interpret your results.
+

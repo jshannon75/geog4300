@@ -6,6 +6,7 @@ editor_options:
 ---
 ```{r setup}
 library(tidyverse)
+library(broom)
 ```
 
 
@@ -26,6 +27,13 @@ Next we create an ANOVA object and use summary to look at our results. What's ou
 drugtest<-aov(result~drug,anova_data_navarro)
 summary(drugtest)
 ```
+
+We can also use the tidy function on ANOVA objects:
+
+```{r}
+drugtest_sf<-tidy(drugtest)
+```
+
 
 Based on our results we can run follow up t-tests.
 ```{r}
@@ -56,6 +64,8 @@ Tukey HSD test is a more sophisticated test with correction. We use the ANOVA ob
 ```{r}
 TukeyHSD(drugtest)
 ```
+
+
 
 Testing residuals for normality--just use the "residuals" function on the ANOVA object. We can then create a qqplot and use shapiro.test to look at normality.
 ```{r}
@@ -107,6 +117,7 @@ pollen_aov<-aov(Picea~Region_fac,data=pollen_data)
 summary(pollen_aov)
 ```
 
+#Bonus: Functional programming
 We could create a function that runs this analysis and then converts results to a tidy dataset using broom
 
 ```{r}
