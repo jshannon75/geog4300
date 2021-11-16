@@ -46,6 +46,13 @@ To do a multivariate regression, simply add more dependent variables using +.
 model_all<-lm(AvgDLSpF~Latitude+Elevation+DisttoCoas,data=dlsf)
 
 summary(model_all)
+
+dlsf1<-dlsf %>%
+  mutate(elev100=Elevation/100,
+         dist50=DisttoCoas/50)
+
+model_all1<-lm(AvgDLSpF~Latitude+elev100+dist50,data=dlsf1)
+summary(model_all1)
 ```
 
 You can check for multicollinearity using the vif test (variance inflation factor). The vif function is in the car package. You want values below 5
