@@ -6,7 +6,7 @@ editor_options:
 ---
 
 ```{r setup}
-#install.packages("albersusa")
+#remotes::install_git("https://git.rud.is/hrbrmstr/albersusa.git")
 library(tidyverse)
 library(tmap)
 library(sf)
@@ -17,7 +17,7 @@ library(albersusa)
 Let's read in our elections data. We'll pull county boundaries from the albersusa package (the counties_sf function).
 
 ```{r}
-countydata<-read_csv("https://github.com/jshannon75/geog4300/raw/master/data/elections0816_demog_pct.csv") %>%
+countydata<-read_csv("data/elections0816_demog_pct.csv") %>%
   filter(year==2016 & indpop_ag_pct>-1 & region == "Midwest Region")
 
 countydata_sf<-counties_sf("laea") %>%
@@ -56,6 +56,7 @@ tm_shape(countycluster_sf_clust) +
   tm_polygons("cluster_char",border.alpha = 0.3)
 
 tmap_mode("view")
+tmap_options(check.and.fix = TRUE)
 tm_shape(countycluster_sf_clust) + 
   tm_polygons("cluster_char",alpha=0.3)
 ```
@@ -74,13 +75,31 @@ cluster_vars<-countycluster_sf_clust %>%
 cluster_vars
 ```
 
-We can graph the results. If there's not a clear "theme" to each cluster, that's one sign the number of clusters isn't right.
+We can graph the results. If there's not a clear "theme" to each cluster, that's one sign the number of clusters isn't right. Here's a simple bar chart:
 
 ```{r}
 ggplot(cluster_vars,aes(x=var,y=var_mean,fill=cluster_char))+
   geom_bar(stat="identity",position="dodge")+
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
+
+Here's a boxplot:
+
+```{r}
+cluster_vars1<-countycluster_sf_clust %>%
+  st_set_geometry(NULL) %>% #Remove the geometry column
+  select(cluster_char,all_of(vars_select)) %>% #Select variables if interest
+  pivot_longer(indpop_ag_pct:indpop_serv_pct,
+               names_to="var",
+               values_to="value")
+
+ggplot(cluster_vars1,aes(x=cluster_char,y=value,fill=cluster_char))+
+  geom_boxplot()+
+  facet_wrap(~var,scales="free")
+```
+
+
+You try it! Pick out 3-5 variables of interest to you and use k-means to create clusters that you can map.
 
 #Hierarchical clustering
 For hierarchical clustering, we use the `hclust` function in base R. First, we need to calculate a distance matrix, showing the difference between observations. Then we use hclust to group observations at different levels based on difference. We can plot the resulting dendrogram. The hca_clust function draws boxes showing how different numbers of clusters (set using k=?) would be grouped.
