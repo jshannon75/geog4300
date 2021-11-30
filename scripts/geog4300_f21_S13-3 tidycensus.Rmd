@@ -9,8 +9,9 @@ editor_options:
 library(tidyverse)
 library(sf)
 library(tmap)
-#install.packages("tidycensus")
+#install.packages(c("tidycensus","tigris"))
 library(tidycensus)
+library(tigris)
 ```
 
 
@@ -69,10 +70,18 @@ To map these data, we can either join to an already existing spatial file or dow
 cty<-get_acs(geography="county",variables="B01001_001",geometry=TRUE)
 ```
 
+Or you can use Kyle's earlier tigris package to download county boundaries. Here we get a version of them that moves Alaska and Hawaii down below the 48 states.
+
+```{r}
+cty1<-counties(class="sf",resolution="20m") %>%
+  shift_geometry(position="below")
+```
+
+
 Now we can join the data table to these boundaries and map! We'll create an interactive tmap in this case. To speed up the mapping, we'll select just counties in Texas (FIPS code 48)
 
 ```{r}
-cty_data<-cty %>%
+cty_data<-cty1 %>%
   inner_join(cty_internet_wide_nobroad %>%
               filter(substr(GEOID,1,2)==48))
 
