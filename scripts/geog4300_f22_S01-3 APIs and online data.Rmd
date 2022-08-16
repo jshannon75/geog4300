@@ -1,0 +1,114 @@
+---
+title: "Geog4/6300: Importing data with APIs"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
+---
+While CSVs can be convenient ways to import data, APIs (application program interfaces) provide another way to access data directly from the source. Many orgs provide APIs for those using their data. 
+
+### Working with Daymet
+
+One example is the Daymet dataset. Created by NASA, the Daymet dataset provides gridded climate data going back to 1980 for the whole US. Here's their website: 
+
+* https://daymet.ornl.gov/
+
+They provide an API service where you can query their database directly. Directions are found here: 
+
+* https://daymet.ornl.gov/web_services.html
+
+For instance, the following uRL gives you data on the Geography/Geology building. You can create a free account with NASA to download these data.
+
+* https://daymet.ornl.gov/data/send/query?lat=33.948693&lon=-83.375475&year=2016
+
+The daymetr package allows you to access these data directly. We'll use this dataset in your next lab.
+
+```{r}
+#install.packages("daymetr")
+library(daymetr)
+```
+
+If we wanted to download ten years of data for Athens, we can do so using the 'download_daymet' function. The value for site will be the name of the new file. 
+
+```{r}
+athens_daymet<-download_daymet(site="athens",lat=33.948693,lon=-83.375475,start=2005,end=2015,internal=TRUE)
+```
+
+This returns a list, which is difficult to use. Let's extract the tabular data.
+
+```{r}
+athens_data<-athens_daymet$data
+View(athens_data)
+```
+
+We can then begin to visualize these data.
+
+```{r}
+hist(athens_data$prcp..mm.day.)
+boxplot(athens_data$tmax..deg.c.)
+```
+
+Let's pratice! 
+
+* Create a summary of the median maximum temperature each year from these Athens data.
+* Try downloading 10 years of climate data for a point of your choosing.
+
+### Data from Safegraph
+
+Safegraph provides data on local places and, more importantly, the people who visit them. It makes use of cell phone data to do so. Academics are eligible for a license that provides free access to those data. 
+
+* Safegraph website: https://www.safegraph.com/
+* Information on the academic license: https://www.safegraph.com/academics
+
+Like many APIs, Safegraph provides their data in JSON format, which is hierarchical. That means for any given observation, a variable might have multiple values. Here's an example--some data on Waffle Houses that's already been downloaded.
+
+```{r}
+library(tidyverse)
+waffle<-read_csv("data/whdata_dec21_mar22.csv")
+```
+
+If we wanted to, we could also download this data directly from the course Github repo by pasting its URL into the read_csv function.
+
+```{r}
+waffle_github<-read_csv("")
+```
+
+
+Notice how the visits_by_day variable lists multiple numbers. That's the registered visits by Safegraph's included sample phones on each day of the relevant time period. There's also variables like number of visits by people's home census block group. These would need to be "flattened" out to be useful in R, and we'll talk about how to do so later in the semester.
+
+### Census data and tidycensus
+
+Lastly, we can make use of the Census API and the awesome tidycensus package created by Kyle Walker. There's more info on the tidycensus package in Kyle's book: https://walker-data.com/census-r/.
+
+This page is also useful: https://walker-data.com/tidycensus/articles/basic-usage.html
+
+To use tidycensus, you need to register for a Census API Key. You can do so here: https://api.census.gov/data/key_signup.html
+
+We're going to download data on median income by county.
+
+To start with, you need to install and call the tidycensus package and register your key. Just replace "key" below with the key you received. The overwrite parameter replaces previous keys and install saves the key for future work sessions.
+
+```{r}
+#install.packages(tidycensus)
+library(tidycensus)
+
+census_api_key(key, overwrite = FALSE, install = TRUE)
+```
+
+Let's start by downloading a list of available variables from the 2015-19 American Community Survey. We'll specify the year, dataset, and whether to cache this file locally on your computer.
+
+```{r}
+v20 <- load_variables(2020, "acs5", cache = TRUE)
+```
+
+You can open this downloaded file to see the list. You have a variable ID (name), specific variable label (label), and table name (concept). To find variables related to internet usage, filter the data frame and search for Internet under concept. It looks like we want table B19013, which has several variables related to median household income. 
+Let's download those variables. We'll first create a subsetted dataframe showing just variables from B19013. We'll then use get_acs to download them, both by the full list and then for the specific variable for median income for the whole population.
+
+```{r}
+var_select<-v20 %>% filter(substr(name,1,6)=="B19013")
+
+cty_medinc<-get_acs(geography="county",variables=var_select$name,year=2020)
+
+cty_medinc_all<-get_acs(geography="county",variables="B19013_001",year=2020)
+```
+
+Feel free to practice with this--find other variables of interest to you and try downloading them.
