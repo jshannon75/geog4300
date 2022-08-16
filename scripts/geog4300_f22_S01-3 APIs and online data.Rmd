@@ -69,7 +69,7 @@ waffle<-read_csv("data/whdata_dec21_mar22.csv")
 If we wanted to, we could also download this data directly from the course Github repo by pasting its URL into the read_csv function.
 
 ```{r}
-waffle_github<-read_csv("")
+waffle_github<-read_csv("https://github.com/jshannon75/geog4300/raw/master/data/whdata_dec21_mar22.csv")
 ```
 
 
