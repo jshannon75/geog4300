@@ -75,6 +75,28 @@ waffle_github<-read_csv("https://github.com/jshannon75/geog4300/raw/master/data/
 
 Notice how the visits_by_day variable lists multiple numbers. That's the registered visits by Safegraph's included sample phones on each day of the relevant time period. There's also variables like number of visits by people's home census block group. These would need to be "flattened" out to be useful in R, and we'll talk about how to do so later in the semester.
 
+### Another example of reading data from the web
+
+The Athens-Clarke County open data website (hosted by ESRI) provides a URL for direct loading of data from their servers, so you always have the most up to date dataset. For example, we can get zoning information for parcels from this page: https://data-athensclarke.opendata.arcgis.com/datasets/AthensClarke::zoning/explore. 
+
+There's a link there to download the data as a geojson spatial data file, which we can do with the following code. Find it by clicking on "I want to use this" in the lower left and then "View API Resources". This code also uses the tmap package to map out these data.
+
+```{r}
+library(sf)
+
+zoning<-st_read("https://enigma.accgov.com/server/rest/services/Parcel_Zoning_Types/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson")
+
+library(tmap)
+sf_use_s2(FALSE) #Addresses topology issues in the dataset
+tm_shape(zoning)+
+  tm_borders()
+
+tmap_mode("view")
+tm_shape(zoning)+
+  tm_polygons("CurrentZn",border.alpha = 0.1,alpha=0.6)
+```
+
+
 ### Census data and tidycensus
 
 Lastly, we can make use of the Census API and the awesome tidycensus package created by Kyle Walker. There's more info on the tidycensus package in Kyle's book: https://walker-data.com/census-r/.
