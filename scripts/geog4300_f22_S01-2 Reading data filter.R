@@ -9,11 +9,6 @@
 library(tidyverse)
 
 #Next download some county level data from GitHub
-#This data is stored in a csv and is available at this URL:
-#https://github.com/jshannon75/geog4300/raw/master/data/ACSCtyData_2019ACS.csv
-#Right click (or ctrl-click on Mac) on the Download button and save the file.
-#Best for you to have a flash drive if you're not on your computer.
- 
 #There's several ways to read these data into R.
 #You could use the "Import dataset" button on the Environment tab.
 #Better to use "read_csv". If you've saved to a folder called "data" in your project, this should work:
@@ -92,8 +87,8 @@ census_data_ed<-census_data_ed %>%
 hist(census_data_ed$LessBA_pct)
 boxplot(census_data_ed$LessBA_pct)
 
-#You try it! Information about REM songs on Spotify is available at this link
-#https://github.com/jshannon75/geog4300/raw/master/data/rem_songs.csv
+#You try it! Information about REM songs on Spotify is available in the data folder: rem_songs.csv
+#On Github it's: https://github.com/jshannon75/geog4300/raw/master/data/rem_songs.csv
 #Load the data into R. Then do the following
 # *Filter the dataset to look at only songs in A major (key_mode)
 # *Create a histogram for the danceability variable
