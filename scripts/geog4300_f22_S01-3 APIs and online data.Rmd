@@ -66,13 +66,6 @@ library(tidyverse)
 waffle<-read_csv("data/whdata_dec21_mar22.csv")
 ```
 
-If we wanted to, we could also download this data directly from the course Github repo by pasting its URL into the read_csv function.
-
-```{r}
-waffle_github<-read_csv("https://github.com/jshannon75/geog4300/raw/master/data/whdata_dec21_mar22.csv")
-```
-
-
 Notice how the visits_by_day variable lists multiple numbers. That's the registered visits by Safegraph's included sample phones on each day of the relevant time period. There's also variables like number of visits by people's home census block group. These would need to be "flattened" out to be useful in R, and we'll talk about how to do so later in the semester.
 
 ### Another example of reading data from the web
