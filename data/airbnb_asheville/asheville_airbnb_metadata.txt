@@ -1,0 +1,15 @@
+Asheville Airbnb listings
+
+From the Inside AirBNB page: http://insideairbnb.com/get-the-data
+
+Asheville, North Carolina, United States
+
+Explore the Asheville data.
+Date Compiled	Country/City	File Name	Description
+19 March, 2022	Asheville	listings.csv.gz	Detailed Listings data
+19 March, 2022	Asheville	calendar.csv.gz	Detailed Calendar Data
+19 March, 2022	Asheville	reviews.csv.gz	Detailed Review Data
+19 March, 2022	Asheville	listings.csv	Summary information and metrics for listings in Asheville (good for visualisations).
+19 March, 2022	Asheville	reviews.csv	Summary Review data and Listing ID (to facilitate time based analytics and visualisations linked to a listing).
+N/A	Asheville	neighbourhoods.csv	Neighbourhood list for geo filter. Sourced from city or open source GIS files.
+N/A	Asheville	neighbourhoods.geojson	GeoJSON file of neighbourhoods of the city.
