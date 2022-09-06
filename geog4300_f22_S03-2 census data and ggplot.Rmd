@@ -1,0 +1,137 @@
+---
+title: "vizualizing census data with ggplot"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup}
+library(tidyverse)
+library(tidycensus)
+```
+
+Let's use the tidycensus package to download and vizualize census data. Tidycensus uses the Census API, and so you need to register for an API Key. You can do so here: https://api.census.gov/data/key_signup.html
+
+We're going to download data on median income by county.
+
+To start with, you need to install and call the tidycensus package and register your key. Just replace "key" below with the key you received. The overwrite parameter replaces previous keys and install saves the key for future work sessions.
+
+```{r}
+#install.packages(tidycensus)
+
+census_api_key(key, overwrite = FALSE, install = TRUE)
+```
+
+Let's start by downloading a list of available variables from the 2015-19 American Community Survey. We'll specify the year, dataset, and whether to cache this file locally on your computer.
+
+```{r}
+v20 <- load_variables(2020, "acs5", cache = TRUE)
+```
+
+You can open this downloaded file to see the list. You have a variable ID (name), specific variable label (label), and table name (concept). To find variables related to internet usage, filter the data frame and search for Internet under concept. It looks like we want table B19013, which has several variables related to median household income. 
+
+Let's download those variables. We'll first create a subsetted dataframe showing just variables from B19013. We'll then use get_acs to download them.
+
+```{r}
+var_select<-v20 %>% filter(substr(name,1,6)=="B19013")
+
+cty_medinc<-get_acs(geography="county",variables=var_select$name,year=2020)
+```
+
+To work with these data, it might be useful to have them in wide format. To do so, we need to remove the margin of error column (`moe`) and then use `pivot_wider`. We can also separate the county and state name using separate.
+
+```{r}
+cty_medinc_wide<-cty_medinc %>%
+  select(-moe) %>%
+  pivot_wider(names_from=variable,values_from=estimate) %>%
+  separate(NAME,into=c("county","state"),sep=", ")
+```
+
+There's more info on the tidycensus package in Kyle's book: https://walker-data.com/census-r/. This page is also useful: https://walker-data.com/tidycensus/articles/basic-usage.html
+
+##Visualizing the data with ggplot
+
+ggplot is the most common tool used for data visualization in R. It is extremely flexible and versatile, which is why it is so popular. There's a cheat sheet on using ggplot on the RStudio page that explains the basic structure it uses: https://www.rstudio.com/resources/cheatsheets/
+
+Let's start with a basic histogram for the main median income variable. In those code, the first line defines the data and lists the "aesthetics"--the variable used for the x-axis in this case. The second names the visualization type (`geom_histogram`)
+
+```{r}
+ggplot(cty_medinc_wide,aes(x=B19013_001))+
+  geom_histogram()
+```
+
+We could use additional parameters to change the look of this graph. For instance, we could have more or fewer "bins" for the data
+
+```{r}
+ggplot(cty_medinc_wide,aes(x=B19013_001))+
+  geom_histogram(bins=100)
+
+ggplot(cty_medinc_wide,aes(x=B19013_001))+
+  geom_histogram(bins=20)
+```
+
+what if we wanted to compare the median income of White and Black households (tables A and B)? We can use a scatterplot (`geom_point`) for that.
+
+```{r}
+ggplot(cty_medinc_wide,aes(x=B19013A_001, y=B19013B_001))+
+  geom_point()
+```
+
+We could color these points by state:
+
+```{r}
+ggplot(cty_medinc_wide,aes(x=B19013A_001, y=B19013B_001, color=state))+
+  geom_point()
+```
+
+That's a lot of states! Let's just compare three big states: New York, Texas, and California. We'll use `%in%` to filter for states in a pre-set list. 
+
+```{r}
+states_sel<-c("New York","Texas","California")
+
+ggplot(cty_medinc_wide %>% filter(state %in% states_sel),
+       aes(x=B19013A_001, y=B19013B_001, color=state))+
+  geom_point()
+```
+
+--
+##You try it!
+* Adapt the code chunk above to choose three other states of your choosing. 
+* Add one more parameter to the geom_point function--see the documentation for options.
+--
+
+We can also change the labeling with additional functions:
+
+```{r}
+ggplot(cty_medinc_wide %>% filter(state %in% states_sel),
+       aes(x=B19013A_001, y=B19013B_001, color=state))+
+  geom_point()+
+  scale_x_continuous(labels=scales::dollar_format())+
+  scale_y_continuous(labels=scales::dollar_format())+
+  labs(title="Household median income for White and Black households",
+       x="White households",y="Black households")
+```
+
+ggplot also includes several themes that can change the look of the graph. To save code, we can save the basic graph commands and then just add the last line. See more here: https://ggplot2.tidyverse.org/reference/ggtheme.html
+
+```{r}
+plot_basic<-ggplot(cty_medinc_wide %>% filter(state %in% states_sel),
+       aes(x=B19013A_001, y=B19013B_001, color=state))+
+  geom_point()+
+  scale_x_continuous(labels=scales::dollar_format())+
+  scale_y_continuous(labels=scales::dollar_format())+
+  labs(title="Household median income for White and Black households",
+       x="White households",y="Black households")
+plot_basic
+
+plot_basic+theme_minimal()
+plot_basic+theme_dark()
+plot_basic+theme_void()
+```
+
+--
+##You try it!
+* Look at the ggplot cheat sheet (link at the top of this document). Visualize these data with two other geom types listed on that sheet. Which work best? How do their stories differ? What other parts of the visualization can you customize?
+    * https://www.rstudio.com/resources/cheatsheets/
+
+* Create a new variable that gives the ratio of median income for White and Black households (White hh divided by Black hh). Plot the new variable in ggplot as a histogram.
