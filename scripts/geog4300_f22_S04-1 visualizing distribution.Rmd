@@ -137,7 +137,7 @@ ggplot(census_midwest,aes(x=St_name,y=nat_ins_pct))+
   geom_beeswarm(size=0.5)
 ```
 
-Lastly, we can visualize different classifications schemes for these data cartographically. We'll talk more about the sf and tmap packages later in the course, but tmap provides a way to quickly map out spatial data. Here's an example.
+Lastly, we can visualize the *spatial* distribution for these data. We'll talk more about the sf and tmap packages later in the course, but tmap provides a way to quickly map out spatial data. Here's an example.
 
 ```{r}
 tm_shape(census_data_geo)+
