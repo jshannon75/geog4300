@@ -78,6 +78,14 @@ ggplot(census_midwest,aes(x=St_name,y=nat_ins_pct))+
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
+##You try it!
+Create a boxplot for Midwest states with another census variable of your choosing.
+
+```{r}
+
+```
+
+
 Histograms are also common. Here we can use facet_wrap by state. Facet_wrap is a nifty command that allows you to make small multiples charts--a set of charts broken up by some categorical variable (such as state).
 
 ```{r}
@@ -136,6 +144,14 @@ ggplot(census_midwest,aes(x=St_name,y=nat_ins_pct))+
 ggplot(census_midwest,aes(x=St_name,y=nat_ins_pct))+
   geom_beeswarm(size=0.5)
 ```
+
+##You try it!
+Create a distribution graph for the percent classified as Asian variable using a geom of your choosing.
+
+```{r}
+
+```
+
 
 Lastly, we can visualize the *spatial* distribution for these data. We'll talk more about the sf and tmap packages later in the course, but tmap provides a way to quickly map out spatial data. Here's an example.
 
