@@ -5,3 +5,4 @@ This repo contains files related to the Data Science in Geography course at the 
 Lab repositories
 * Lab 0: [Master Repo](https://github.com/jshannon75/geog4300_lab0) | [Github Classroom link](https://classroom.github.com/a/CTk2c31D)
 * Lab 1: [Master Repo](https://github.com/jshannon75/geog4300_lab1) | [GitHub Classroom link](https://classroom.github.com/a/YLQS7qO9)
+* Lab 2: [Master Repo](https://github.com/jshannon75/geog4300_lab2) | [Github Classroom Link](https://classroom.github.com/a/kbYt78bJ)
