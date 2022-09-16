@@ -113,6 +113,36 @@ atl_pumas_join<-atl_pumas %>%
 
 Note that in order to preserve the geometry column, you always want to join non-spatial data TO spatial data. That is, it should always looks like this: spatial data %>% left_join(non-spatial data).
 
+###Quadrats in R
+Quadrat analysis is also possible in R. To create quadrats, you can use `st_make_grid` from the sf package. You can change the size and shape (hex/square).
+
+```{r}
+grid1<-st_make_grid(atl_pumas,cellsize=0.05)
+grid2<-st_make_grid(atl_pumas,cellsize=0.1)
+grid3<-st_make_grid(atl_pumas,cellsize=0.05,square=FALSE)
+
+ggplot()+
+  geom_sf(data=grid1)+
+  geom_sf(data=atl_pumas,alpha=0.5)
+
+ggplot()+
+  geom_sf(data=grid2)+
+  geom_sf(data=atl_pumas,alpha=0.5)
+
+ggplot()+
+  geom_sf(data=grid3)+
+  geom_sf(data=atl_pumas,alpha=0.5)
+
+```
+
+To add a row number ID, just use the `row_number` function. This can be useful for spatial joins.
+
+```{r}
+grid1<-st_make_grid(atl_pumas,cellsize=0.05) %>%
+  mutate(rowID=row_number())
+```
+
+
 ###Calculating location quotient
 What if we wanted the location quotient for the percentage of Dollar General stores in each PUMA to be able to more easily compare them? We already have most of the data we need to calculate this figure. First, we need to calculate a rate for the whole metro area. We can use the nrow function to count restaurants and then create an object with the percentage that are sandwich restaurants.
 
