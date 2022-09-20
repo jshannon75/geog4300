@@ -19,7 +19,13 @@ library(tidycensus)
 library(viridis)
 ```
 
-First, we will be downloading public use microdata area (PUMA) boundaries for Atlanta. PUMAs have uniform populations, making them smaller than counties in metro areas but larger in rural ones. We will download boundaries using the tidycensus package and then filter for those whose name refers to Atlanta.
+The main way to read in data using sf is the function `st_read`, which uses gdal to read a variety of vector file formats (shapefile, geopackage, geojson, etc.). The resulting object is formatted just like a data frame. For example, we could read our census county dataset this way:
+
+```{r}
+cty<-st_read("data/ACSCtyData_2019ACS_simplify.gpkg")
+```
+
+For this script, we won't be using st_read. Instead, we will download public use microdata area (PUMA) boundaries for Atlanta. PUMAs have uniform populations, making them smaller than counties in metro areas but larger in rural ones. We will download boundaries using the tidycensus package and then filter for those whose name refers to Atlanta.
 
 ```{r}
 atl_pumas<-get_acs(geography="puma", #Use PUMA data
