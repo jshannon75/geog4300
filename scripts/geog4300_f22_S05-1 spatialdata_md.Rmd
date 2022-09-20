@@ -28,6 +28,8 @@ atl_pumas<-get_acs(geography="puma", #Use PUMA data
                    geometry=TRUE) %>% #Include the spatial boundaries
   filter(str_detect(NAME,"Atlanta")) #Filter for just Atlanta boundaries using the name
 
+ggplot(atl_pumas) + 
+  geom_sf()
 ```
 
 For this analysis, we'll be looking at dollar stores in the Atlanta metro in 2020. We will read in a csv file with a national dollar store listing, select only those identified as being in Atlanta and still open (no end year). Lastly, we will use st_as_sf to convert to spatial data
@@ -45,8 +47,10 @@ The sf package also has a set of spatial functions that can be used on these dat
 ```{r}
 ggplot(atl_pumas) + geom_sf()
 
-atl_pumas_points<-st_centroid(atl_pumas)
-ggplot(atl_pumas_points) + geom_sf()
+atl_pumas_points<-atl_pumas %>%
+  st_centroid()
+ggplot(atl_pumas_points) + 
+  geom_sf()
 
 #What if the color matched population?
 ggplot(atl_pumas_points,aes(color=estimate)) + 
@@ -62,6 +66,14 @@ The spatialEco package has a "nni" function that allows you to easily calculate 
 library(spatialEco)
 nni(as_Spatial(dollars))
 ```
+
+####You try it!
+Create new data frames from the dollar store dataset for Family Dollar and Dollar General. Compute the NNI index for each. What does each result tell you?
+
+```{r}
+
+```
+
 
 ##Point pattern analysis with census tracts
 We can use st_join to do a *spatial join* between stores and the underlying PUMAs. See [this page](https://gisgeography.com/spatial-join/) for an explanation of spatial joins. The st_join function will join all the variables for the PUMA each store is in based on its location--in this case whether the store is *within* the PUMA polygon (st_within). The tract data is not in WGS 84, so we will set the projection while joining.
