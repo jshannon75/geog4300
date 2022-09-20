@@ -7,7 +7,6 @@ editor_options:
 
 ```{r setup, include=FALSE}
 library(knitr)
-opts_knit$set(root.dir = "~/path/to/folder/")
 opts_chunk$set(echo = TRUE)
 ```
 
@@ -25,7 +24,7 @@ dem<-raster("data/dem_ga_clip.tif")
 plot(dem)
 ```
 
-You can look at the distibution of values for these elevations using a regular histogram.
+You can look at the distribution of values for these elevations using a regular histogram.
 
 ```{r}
 hist(dem)
@@ -63,7 +62,7 @@ What if we wanted to do the same with counties? The zonal.stats function in the 
 
 ```{r}
 library(spatialEco)
-ga_cty<-st_read("data/us_county_simplify_SE_2014pop1.gpkg") %>%
+ga_cty<-st_read("data/us_county_simplify_SE_2014pop.gpkg") %>%
   filter(state=="G13")
 
 ga_cty_elev<-zonal.stats(ga_cty,dem)
@@ -77,6 +76,65 @@ Towns County has the highest mean elevation in the dataset. Let's map that out.
 ```{r}
 tm_shape(ga_cty_elev1)+
   tm_polygons("mean.dem_ga_clip",style="jenks")
+```
+
+### Working with categorical raster data
+
+What if we wanted to work with categorical data? We can load data from the National Land Cover Database. We'll also pull in a set of values from the FedData package to see the NLCD classifications
+
+```{r}
+nlcd<-raster("data/nlcd2016_ga.tif")
+plot(nlcd)
+legend<-FedData::pal_nlcd()
+```
+
+We can use the `mask` function in raster to crop this to just Fulton county. We do this in two steps--first cropping the image to a bounding box and then masking with a county polygon.
+
+```{r}
+cty<-st_read("data/ACSCtyData_2019ACS_simplify.gpkg") %>%
+  filter(cty_name == "Fulton County, Georgia") %>%
+  st_transform(crs(nlcd)) #Important to align the projection
+
+nlcd_crop<-crop(nlcd,cty)
+plot(nlcd_crop)
+
+nlcd_mask<-mask(nlcd_crop,cty)
+plot(nlcd_mask)
+```
+
+
+What's the distribution of land uses for this area?
+
+```{r}
+values<-data.frame(freq(nlcd_mask[[1]])) %>%
+  mutate(code=as.character(value)) %>%
+  left_join(legend) %>%
+  filter(is.na(class)==FALSE)
+```
+
+We could sum the total pixels to calculate a percentage and filter for only those above 1%.
+
+```{r}
+total_pix<-sum(values$count)
+
+values<-values %>%
+  mutate(count_pct=round(count/total_pix*100,1)) %>%
+  filter(count_pct>1)
+```
+
+**You try it!**
+Pick another county in Georgia and compare its land use to that of Fulton County.
+
+```{r}
+
+```
+
+Lastly, we could use the `clamp` function to select only certain pixel values, like those for forests (41-43).
+
+```{r}
+nlcd_forest<-clamp(nlcd_mask,lower=41,upper=43)
+
+plot(nlcd_forest)
 ```
 
 For 3D Visualization, the rayshader package can do some pretty amazing things. Here's one walkthrough: https://wcmbishop.github.io/rayshader-demo/

@@ -1,0 +1,111 @@
+---
+title: "Spatial functions and geocoding"
+output:
+  html_document:
+    df_print: paged
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup}
+#install.packages(c("tidygeocoder","tmaptools"))
+
+library(tidyverse)
+library(tmaptools)
+library(tmap)
+library(tidygeocoder)
+
+```
+
+## Overview
+
+The sf package contains many spatial functions that you may be familiar with from the toolbox in ArcGIS or QGIS. These include buffers, spatial joins, dissolves, or intersections. We will also do a walkthrough of geocoding in R.
+
+### Geocoding
+
+Geocoding is a very common process in spatial analysis. At UGA, we have an institutional ESRI license that covers the cost of modest geocoding projects. However, there are multiple other tools available for geocoding within R. The ggmap package allows you to geocode through the Google Maps API. There is a limited cap for free geocoding and then a cost above that amount. 
+
+For this script, we will use the free U.S. Census geocoder to map Waffle Houses in Fulton County. To start with, let's read in our list of Waffle House locations in Georgia (from the Safegraph dataset)
+
+```{r, message=FALSE}
+wh<-read_csv("data/wh_georgia_safegraph.csv") %>%
+  distinct(location_name,street_address,city,region,postal_code) %>%
+  unite(full_address,c(street_address,city,region,postal_code),remove=FALSE,sep=", ")
+```
+
+The tidygeocoder package provides an interface for several geocoding services. In this case, we'll use one provided by the U.S. census for cities in Fulton County, including Atlanta. Note that several addresses will not match using this method and would need to be manually geocoded or done with ESRI/Google Maps should we use this for an actual research project.
+
+```{r}
+fulton_cities<-c("Atlanta","Sandy Springs","Roswell","Johns Creek","Alpharetta",
+                 "Milton","East Point","Union City","Fairburn","College Park")
+
+wh_sel<-wh %>%
+  filter(city %in% fulton_cities)
+
+wh_sel_geo<-wh_sel %>%
+  geocode(street=street_address,city=city,state=region,postalcode=postal_code,method="census") %>%
+  filter(is.na(long)==FALSE) %>%
+  st_as_sf(coords=c("long","lat"),crs=4326,remove=FALSE)
+
+tmap_mode("view")
+tm_shape(wh_sel_geo)+
+  tm_dots()
+```
+
+***You try it!***
+Add towns in DeKalb county to our list of Waffle House cities: Avondale Estates, Brookhaven, Chamblee, Clarkston, Decatur, Doraville, Dunwoody, Lithonia, Pine Lake, Stonecrest, Stone Mountain, and Tucker. Geocode the resulting list of stores in both Fulton and DeKalb.
+
+Cities from the list on the ARC website: https://atlantaregional.org/atlanta-region/county-profiles/dekalb-county/
+
+```{r}
+
+```
+
+You can read more about geocoding with tidygeocoder here: https://cran.r-project.org/web/packages/tidygeocoder/vignettes/tidygeocoder.html
+
+### Spatial functions in R
+
+You can also use R to spatial functions, like dissolves, unions, intersects, or buffers. Here's one cheat sheet with several of those functions: 
+
+https://github.com/rstudio/cheatsheets/blob/main/sf.pdf
+
+For example, we can buffer the Waffle House points. Here, we transform the data to the Georgia East projection, which uses feet as units, and draw a one mile buffer.
+
+```{r}
+wh_buffer<-wh_sel_geo %>%
+  st_transform(6445) %>% 
+  st_buffer(5280)
+
+tm_shape(wh_buffer) +
+  tm_polygons()
+```
+
+Let's download a block shapefile using the tigris package, which is also made by Kyle Walker. Blocks are from the Census Tiger files.
+
+```{r}
+blocks<-tigris::blocks(state=13,county=121)
+
+tm_shape(blocks)+
+  tm_polygons()
+```
+
+Blocks are very detailed! What if we wanted to dissolve these to tracts? We can just use group_by and summarise, and sf will dissolve the boundaries.
+
+```{r}
+blocks_tract<-blocks %>%
+  group_by(STATEFP20,COUNTYFP20,TRACTCE20) %>%
+  summarise()
+
+tm_shape(blocks_tract)+
+  tm_polygons()+
+tm_shape(st_centroid(blocks))+
+  tm_dots()
+```
+
+**You try it!**
+How many blocks are NOT within a one mile buffer of a Waffle House? Use st_centroid to create block centroids and st_join to do a spatial join to the Waffle House buffers. Then count the number of tracts without a joined buffer.
+
+```{r}
+
+```
+
