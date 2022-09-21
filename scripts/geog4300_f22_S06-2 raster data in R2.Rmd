@@ -1,0 +1,376 @@
+<<<<<<< HEAD
+---
+title: "Geog4/6300-Working with raster data"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+```
+
+## Working with raster data in R
+
+The raster package in R provides a suite of tools for loading and working with raster data. We can load a digital elevation model (DEM) geotiff of elevation in Georgia using the raster function as shown below.
+
+```{r cars}
+#install.packages("raster")
+library(raster)
+library(sf)
+library(tidyverse)
+
+dem<-raster("data/dem_ga_clip.tif")
+plot(dem)
+```
+
+You can look at the distribution of values for these elevations using a regular histogram.
+
+```{r}
+hist(dem)
+```
+
+What if you have point data and want to extract values for the raster? Let's load the points for campuses in the University System of Georgia. Which one is the highest? The extract function (from raster) pulls the value for each point.
+
+```{r}
+usg_schools<-read_csv("data/usg_schools_geo.csv") %>%
+  st_as_sf(coords=c("lon","lat"),remove=FALSE,crs=4326)
+
+usg_schools_elev<-raster::extract(dem,usg_schools)
+```
+
+The resulting object is just a simple vector of elevation values. We have to bind it back to the original data frame. The easiest way to do so is using base R.
+
+```{r}
+usg_schools$elev<-usg_schools_elev
+
+View(usg_schools)
+```
+
+The highest campus in Georgia is University of North Georgia, with an elevation of 440 meters. We can also plot this using tmap.
+
+```{r}
+library(tmap)
+tmap_mode("view")
+
+tm_shape(usg_schools)+
+  tm_dots("elev")
+```
+
+
+What if we wanted to do the same with counties? The zonal.stats function in the spatialEco package allows us to do so. We can then use bind_cols to connect it back to the county dataset
+
+```{r}
+library(spatialEco)
+ga_cty<-st_read("data/us_county_simplify_SE_2014pop.gpkg") %>%
+  filter(state=="G13")
+
+ga_cty_elev<-zonal.stats(ga_cty,dem)
+
+ga_cty_elev1 <- ga_cty %>%
+  bind_cols(ga_cty_elev)
+```
+ 
+Towns County has the highest mean elevation in the dataset. Let's map that out.
+
+```{r}
+tm_shape(ga_cty_elev1)+
+  tm_polygons("mean.dem_ga_clip",style="jenks")
+```
+
+###Mapping countours and slope
+
+Let's subset out county data to just Rabun county in NE Georgia and map out the terrain. We can use the countour function to add countours to a plot of the elevations. The `add=TRUE` parameter keeps the underlying map.
+
+```{r}
+rabun<-ga_cty %>%
+  filter(str_detect(NAME,"Rabun"))
+
+dem_rabun<-crop(dem,rabun)
+
+plot(dem_rabun)
+contour(dem_rabun,add=TRUE,col="brown")
+```
+
+The terrain function allows you to extract properties like slope and aspect. Here, we map both slope and then select only those areas with a slope greater than 10 degrees.
+
+```{r}
+x <- terrain(dem_rabun, opt = "slope", unit = "degrees")
+plot(x$slope)
+
+x1<-x >= 10
+
+plot(x1)
+```
+
+### Working with categorical raster data
+
+What if we wanted to work with categorical data? We can load data from the National Land Cover Database. We'll also pull in a set of values from the FedData package to see the NLCD classifications
+
+```{r}
+nlcd<-raster("data/nlcd2016_ga.tif")
+plot(nlcd)
+legend<-FedData::pal_nlcd()
+```
+
+We can use the `mask` function in raster to crop this to just Fulton county. We do this in two steps--first cropping the image to a bounding box and then masking with a county polygon.
+
+```{r}
+cty<-st_read("data/ACSCtyData_2019ACS_simplify.gpkg") %>%
+  filter(cty_name == "Fulton County, Georgia") %>%
+  st_transform(crs(nlcd)) #Important to align the projection
+
+nlcd_crop<-crop(nlcd,cty)
+plot(nlcd_crop)
+
+nlcd_mask<-mask(nlcd_crop,cty)
+plot(nlcd_mask)
+```
+
+
+What's the distribution of land uses for this area?
+
+```{r}
+values<-data.frame(freq(nlcd_mask[[1]])) %>%
+  mutate(code=as.character(value)) %>%
+  left_join(legend) %>%
+  filter(is.na(class)==FALSE)
+```
+
+We could sum the total pixels to calculate a percentage and filter for only those above 1%.
+
+```{r}
+total_pix<-sum(values$count)
+
+values<-values %>%
+  mutate(count_pct=round(count/total_pix*100,1)) %>%
+  filter(count_pct>1)
+```
+
+**You try it!**
+Pick another county in Georgia and compare its land use to that of Fulton County.
+
+```{r}
+
+```
+
+Lastly, we could use the `clamp` function to select only certain pixel values, like those for forests (41-43).
+
+```{r}
+nlcd_forest<-clamp(nlcd_mask,lower=41,upper=43)
+
+plot(nlcd_forest)
+```
+
+Note that raster is an older package, and both `terra` (created as the successor to `raster`) and `stars` are newer. However, the other packages used on this page do not yet work seamlessly with those newer tools. 
+
+For 3D Visualization, the rayshader package can do some pretty amazing things. Here's one walkthrough: https://wcmbishop.github.io/rayshader-demo/. Examples:
+
+```{r}
+library(rayshader)
+
+#2D image
+elmat = raster_to_matrix(dem_rabun) 
+elmat %>%
+  sphere_shade(texture = "desert", progbar=FALSE) %>%
+  plot_map()
+
+#3d image
+elmat1<-elmat %>%
+  sphere_shade(texture = "desert", progbar = FALSE)
+
+elmat1 %>%
+  plot_3d(elmat, linewidth=0)
+
+rgl::rglwidget()
+```
+
+=======
+---
+title: "Geog4/6300-Working with raster data"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+opts_chunk$set(echo = TRUE)
+```
+
+## Working with raster data in R
+
+The raster package in R provides a suite of tools for loading and working with raster data. We can load a digital elevation model (DEM) geotiff of elevation in Georgia using the raster function as shown below.
+
+```{r cars}
+#install.packages("raster")
+library(raster)
+library(sf)
+library(tidyverse)
+
+dem<-raster("data/dem_ga_clip.tif")
+plot(dem)
+```
+
+You can look at the distribution of values for these elevations using a regular histogram.
+
+```{r}
+hist(dem)
+```
+
+What if you have point data and want to extract values for the raster? Let's load the points for campuses in the University System of Georgia. Which one is the highest? The extract function (from raster) pulls the value for each point.
+
+```{r}
+usg_schools<-read_csv("data/usg_schools_geo.csv") %>%
+  st_as_sf(coords=c("lon","lat"),remove=FALSE,crs=4326)
+
+usg_schools_elev<-extract(dem,usg_schools)
+```
+
+The resulting object is just a simple vector of elevation values. We have to bind it back to the original data frame. The easiest way to do so is using base R.
+
+```{r}
+usg_schools$elev<-usg_schools_elev
+
+View(usg_schools)
+```
+
+The highest campus in Georgia is University of North Georgia, with an elevation of 440 meters. We can also plot this using tmap.
+
+```{r}
+library(tmap)
+tmap_mode("view")
+
+tm_shape(usg_schools)+
+  tm_dots("elev")
+```
+
+
+What if we wanted to do the same with counties? The zonal.stats function in the spatialEco package allows us to do so. We can then use bind_cols to connect it back to the county dataset
+
+```{r}
+library(spatialEco)
+ga_cty<-st_read("data/us_county_simplify_SE_2014pop.gpkg") %>%
+  filter(state=="G13")
+
+ga_cty_elev<-zonal.stats(ga_cty,dem)
+
+ga_cty_elev1 <- ga_cty %>%
+  bind_cols(ga_cty_elev)
+```
+ 
+Towns County has the highest mean elevation in the dataset. Let's map that out.
+
+```{r}
+tm_shape(ga_cty_elev1)+
+  tm_polygons("mean.dem_ga_clip",style="jenks")
+```
+
+###Mapping countours and slope
+
+Let's subset out county data to just Rabun county in NE Georgia and map out the terrain. We can use the countour function to add countours to a plot of the elevations. The `add=TRUE` parameter keeps the underlying map.
+
+```{r}
+rabun<-ga_cty %>%
+  filter(str_detect(NAME,"Rabun"))
+
+dem_rabun<-crop(dem,rabun)
+
+plot(dem_rabun)
+contour(dem_rabun,add=TRUE,col="brown")
+```
+
+The terrain function allows you to extract properties like slope and aspect. Here, we map both slope and then select only those areas with a slope greater than 10 degrees.
+
+```{r}
+x <- terrain(dem_rabun, opt = "slope", unit = "degrees")
+plot(x$slope)
+
+x1<-x >= 10
+
+plot(x1$slope)
+```
+
+### Working with categorical raster data
+
+What if we wanted to work with categorical data? We can load data from the National Land Cover Database. We'll also pull in a set of values from the FedData package to see the NLCD classifications
+
+```{r}
+nlcd<-raster("data/nlcd2016_ga.tif")
+plot(nlcd)
+legend<-FedData::pal_nlcd()
+```
+
+We can use the `mask` function in raster to crop this to just Fulton county. We do this in two steps--first cropping the image to a bounding box and then masking with a county polygon.
+
+```{r}
+cty<-st_read("data/ACSCtyData_2019ACS_simplify.gpkg") %>%
+  filter(cty_name == "Fulton County, Georgia") %>%
+  st_transform(crs(nlcd)) #Important to align the projection
+
+nlcd_crop<-crop(nlcd,cty)
+plot(nlcd_crop)
+
+nlcd_mask<-mask(nlcd_crop,cty)
+plot(nlcd_mask)
+```
+
+
+What's the distribution of land uses for this area?
+
+```{r}
+values<-data.frame(freq(nlcd_mask[[1]])) %>%
+  mutate(code=as.character(value)) %>%
+  left_join(legend) %>%
+  filter(is.na(class)==FALSE)
+```
+
+We could sum the total pixels to calculate a percentage and filter for only those above 1%.
+
+```{r}
+total_pix<-sum(values$count)
+
+values<-values %>%
+  mutate(count_pct=round(count/total_pix*100,1)) %>%
+  filter(count_pct>1)
+```
+
+**You try it!**
+Pick another county in Georgia and compare its land use to that of Fulton County.
+
+```{r}
+
+```
+
+Lastly, we could use the `clamp` function to select only certain pixel values, like those for forests (41-43).
+
+```{r}
+nlcd_forest<-clamp(nlcd_mask,lower=41,upper=43)
+
+plot(nlcd_forest)
+```
+
+Note that raster is an older package, and both `terra` (created as the successor to `raster`) and `stars` are newer. However, the other packages used on this page do not yet work seamlessly with those newer tools. 
+
+For 3D Visualization, the rayshader package can do some pretty amazing things. Here's one walkthrough: https://wcmbishop.github.io/rayshader-demo/. Examples:
+
+```{r}
+library(rayshader)
+
+#2D image
+elmat = raster_to_matrix(dem_rabun) 
+elmat %>%
+  sphere_shade(texture = "desert", progbar=FALSE) %>%
+  plot_map()
+
+#3d image
+elmat1<-elmat %>%
+  sphere_shade(texture = "desert", progbar = FALSE)
+
+elmat1 %>%
+  plot_3d(elmat, linewidth=0)
+
+rgl::rglwidget()
+```
+
+>>>>>>> a04d55d2104921270dffbc621c3e37de8c731efe
