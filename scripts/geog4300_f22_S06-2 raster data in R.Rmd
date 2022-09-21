@@ -7,7 +7,6 @@ editor_options:
 
 ```{r setup, include=FALSE}
 library(knitr)
-opts_chunk$set(echo = TRUE)
 ```
 
 ## Working with raster data in R
@@ -36,7 +35,7 @@ What if you have point data and want to extract values for the raster? Let's loa
 usg_schools<-read_csv("data/usg_schools_geo.csv") %>%
   st_as_sf(coords=c("lon","lat"),remove=FALSE,crs=4326)
 
-usg_schools_elev<-extract(dem,usg_schools)
+usg_schools_elev<-raster::extract(dem,usg_schools)
 ```
 
 The resulting object is just a simple vector of elevation values. We have to bind it back to the original data frame. The easiest way to do so is using base R.
@@ -92,6 +91,16 @@ plot(dem_rabun)
 contour(dem_rabun,add=TRUE,col="brown")
 ```
 
+The terrain function allows you to extract properties like slope and aspect. Here, we map both slope and then select only those areas with a slope greater than 10 degrees.
+
+```{r}
+x <- terrain(dem_rabun, opt = "slope", unit = "degrees")
+plot(x$slope)
+
+x1<-x >= 10
+
+plot(x1)
+```
 
 ### Working with categorical raster data
 
