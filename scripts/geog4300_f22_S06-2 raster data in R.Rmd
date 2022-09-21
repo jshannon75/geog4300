@@ -92,6 +92,16 @@ plot(dem_rabun)
 contour(dem_rabun,add=TRUE,col="brown")
 ```
 
+The terrain function allows you to extract properties like slope and aspect. Here, we map both slope and then select only those areas with a slope greater than 10 degrees.
+
+```{r}
+x <- terrain(dem_rabun, opt = "slope", unit = "degrees")
+plot(x$slope)
+
+x1<-x >= 10
+
+plot(x1$slope)
+```
 
 ### Working with categorical raster data
 
