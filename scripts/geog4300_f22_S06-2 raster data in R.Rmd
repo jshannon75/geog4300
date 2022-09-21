@@ -78,6 +78,21 @@ tm_shape(ga_cty_elev1)+
   tm_polygons("mean.dem_ga_clip",style="jenks")
 ```
 
+###Mapping countours and slope
+
+Let's subset out county data to just Rabun county in NE Georgia and map out the terrain. We can use the countour function to add countours to a plot of the elevations. The `add=TRUE` parameter keeps the underlying map.
+
+```{r}
+rabun<-ga_cty %>%
+  filter(str_detect(NAME,"Rabun"))
+
+dem_rabun<-crop(dem,rabun)
+
+plot(dem_rabun)
+contour(dem_rabun,add=TRUE,col="brown")
+```
+
+
 ### Working with categorical raster data
 
 What if we wanted to work with categorical data? We can load data from the National Land Cover Database. We'll also pull in a set of values from the FedData package to see the NLCD classifications
@@ -137,4 +152,26 @@ nlcd_forest<-clamp(nlcd_mask,lower=41,upper=43)
 plot(nlcd_forest)
 ```
 
-For 3D Visualization, the rayshader package can do some pretty amazing things. Here's one walkthrough: https://wcmbishop.github.io/rayshader-demo/
+Note that raster is an older package, and both `terra` (created as the successor to `raster`) and `stars` are newer. However, the other packages used on this page do not yet work seamlessly with those newer tools. 
+
+For 3D Visualization, the rayshader package can do some pretty amazing things. Here's one walkthrough: https://wcmbishop.github.io/rayshader-demo/. Examples:
+
+```{r}
+library(rayshader)
+
+#2D image
+elmat = raster_to_matrix(dem_rabun) 
+elmat %>%
+  sphere_shade(texture = "desert", progbar=FALSE) %>%
+  plot_map()
+
+#3d image
+elmat1<-elmat %>%
+  sphere_shade(texture = "desert", progbar = FALSE)
+
+elmat1 %>%
+  plot_3d(elmat, linewidth=0)
+
+rgl::rglwidget()
+```
+

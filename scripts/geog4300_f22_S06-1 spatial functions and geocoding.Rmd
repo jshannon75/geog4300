@@ -14,7 +14,7 @@ library(tidyverse)
 library(tmaptools)
 library(tmap)
 library(tidygeocoder)
-
+library(sf)
 ```
 
 ## Overview
@@ -109,3 +109,44 @@ How many blocks are NOT within a one mile buffer of a Waffle House? Use st_centr
 
 ```
 
+### Measuring proximity
+
+There are several functions in R packages that allow for distance mapping. The `sf` package has `st_distance` that creates a distance matrix between points. For example, the code below creates a matrix showing the distance in meters between each block centroid and each of the dollar stores geocoded in Fulton county.
+
+```{r}
+distances<-blocks %>%
+  st_transform(st_crs(wh_sel_geo)) %>%
+  st_centroid() %>%
+  st_distance(wh_sel_geo) 
+```
+
+What if we wanted to then select the distance to the *closest* Waffle House for each block? We can do so by converting this distance matrix to a data frame, binding those columns to the block data, pivoting longer, and selecting the minimum distance with group_by and summarise.
+
+```{r}
+
+blocks_wh<-blocks %>%
+  st_set_geometry(NULL) %>%
+  bind_cols(data.frame(distances)) %>% 
+  pivot_longer(X1:X34,names_to="store",values_to="dist") %>%
+  group_by(GEOID20) %>%
+  summarise(dist=min(dist))
+```
+
+We can then join this back to the original blocks data frame and plot the results. We will create block centroids for ease of mapping
+
+```{r}
+blocks_wh1<-blocks %>%
+  st_centroid() %>%
+  left_join(blocks_wh)
+
+tm_shape(blocks_wh1)+
+  tm_dots("dist",style="jenks")
+
+```
+
+For large datasets, the `nngeo` package runs more quickly than `st_distance`. More on that here: https://github.com/michaeldorman/nngeo
+
+For network/travel distances, Google and Mapbox are two of several providers whose API provides routing and travel time/distances. Both are available via R packages.
+
+* Google example: https://hwangnyc.medium.com/calculating-travel-time-and-distance-using-google-maps-api-in-r-bbc5b74df066
+* Mapbox example: https://walker-data.com/mapboxapi/articles/navigation.html
