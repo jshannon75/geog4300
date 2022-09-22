@@ -194,21 +194,21 @@ library(tmap)
 You can make maps with ggplot, but it's not the best option out there. The tmap package is a popular tool for mapping spatial data. Here's a basic plot in tmap, which follows a similar logic to ggplot:
 
 ```{r}
-tm_shape(atl_pumas_count)+
+tm_shape(atl_pumas_join)+
   tm_polygons()
 ```
 
 You can make a choropleth map by adding a variable. 
 
 ```{r}
-tm_shape(atl_pumas_count)+
+tm_shape(atl_pumas_join)+
   tm_polygons("dg_lq")
 ```
 
 Or you can add restaurants as points. The style parameter here sets Jenks natural breaks for the data classification scheme. Notice how we also filter the dataset on the third line to show just sandwich restaurants.
 
 ```{r}
-tm_shape(atl_pumas_count)+
+tm_shape(atl_pumas_join)+
   tm_polygons("dg_lq",style="jenks")+
 tm_shape(dollars_puma %>% filter(dollar_type=="Dollar General"))+
   tm_dots(size=0.1,alpha=0.5) 
@@ -217,7 +217,7 @@ tm_shape(dollars_puma %>% filter(dollar_type=="Dollar General"))+
 We can make this map prettier, adding a north arrow and scale bar and moving the legend outside.
 
 ```{r}
-tm_shape(atl_pumas_count)+
+tm_shape(atl_pumas_join)+
   tm_polygons("dg_lq",style="jenks")+
 tm_shape(dollars_puma %>% filter(dollar_type=="Dollar General"))+
   tm_dots(size=0.1,alpha=0.5) +
@@ -237,7 +237,7 @@ You can also make interactive maps with tmap. Make sure you set the output to th
 ```{r}
 tmap_mode("view") #To shift back to static maps, use tmap_mode("plot")
 
-tm_shape(atl_pumas_count)+
+tm_shape(atl_pumas_join)+
   tm_polygons("dg_pct",style="jenks",alpha=0.4)+
 tm_shape(dollars_puma %>% filter(dollar_type=="Dollar General"))+
   tm_dots(size=0.1)
