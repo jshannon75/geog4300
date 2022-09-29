@@ -9,7 +9,7 @@ editor_options:
 library(tidyverse)
 ```
 
-Confidence intervals can be easily computed in R. You need to know three things: sample mean, standard error, and z-score. Suppose you have a sample (n=174) with a mean of 43 and a sample sd of 6.2. For a 95% confidence interval, do the following:
+Confidence intervals can be easily computed in R. You need to know three things: sample mean, standard error, and z-score. Suppose you have a sample (n=174) with a mean of 43 and a standard deviation of 6.2. For a 95% confidence interval, do the following:
 
 ```{r}
 mean<-43
@@ -86,10 +86,10 @@ Note that in the geom_line function we used reorder to sort states by the earn_m
 
 ###CI for proportions. 
 
-Confidence intervals for proportions would require a different standard error calculation. If 64.75% of geographers (n=400) voted to hold the next AAG in Maui, here's how we'd figure that out. 
+Confidence intervals for proportions would require a different standard error calculation. If 64.75% of geographers (n=400) voted to hold the next AAG in Miami, here's how we'd figure that out. 
 
 ```{r}
-p<-.6475
+p<-0.6475
 se<-sqrt((.6475*(1-.6475))/399)
 z.score<-qnorm(.975)
 moe<-se*z.score
