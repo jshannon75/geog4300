@@ -22,6 +22,11 @@ CI.upper<-mean+error
 
 **You try it!** Adjust the code above for a 90% confidence interval and a sample size of only 80.
 
+```{r}
+
+```
+
+
 We can also visualize these confidence intervals. Let's load the microdata you are working within the current lab.
 
 ```{r}
@@ -55,8 +60,8 @@ cps_data_south_summary<-cps_data_south %>%
 We also need the z score for 95% confidence. This this includes both the top and bottom end, we want 2.5% on either side of the distribution (0.025 and 0.975 as the cutoffs). We'll use .975 in this case to get a positive number, but notice that the z.score for 0.025 is the same--just negative.
 
 ```{r}
-z.score=qnorm(0.975)
-z.score_low=qnorm(0.025)
+z.score_upper=qnorm(0.975)
+z.score_lower=qnorm(0.025)
 ```
 
 
@@ -64,7 +69,7 @@ Lastly, we can calculate the error term, which is the z score for a 95% confiden
 
 ```{r}
 cps_data_south_summary<-cps_data_south_summary %>%
-  mutate(error=z.score*se,
+  mutate(error=z.score_upper*se,
          ci_high=earn_mean+error,
          ci_low=earn_mean-error)
 ```
@@ -83,6 +88,11 @@ ggplot(cps_data_south_visual)+
 Note that in the geom_line function we used reorder to sort states by the earn_mean variable. 
 
 **You try it!** Calculate the confidence intervals for weekly income by census region (the Region variable).
+
+```{r}
+
+```
+
 
 ###CI for proportions. 
 
