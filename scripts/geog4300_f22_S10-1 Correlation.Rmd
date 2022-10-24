@@ -17,7 +17,7 @@ library(broom)
 
 Correlation
 
-Here's the fictitious dataset we used in lecture.
+Here's the fictitious dataset used in the video lecture.
 ```{r}
 MHI<-c(40000, 59000, 61000, 66000, 68000, 71000, 78000, 82000, 89000, 103000, 104000,113000, 129000, 141000,156000)
 VCR<-c(45.2, 44.6, 39.2, 42.4, 37.4, 29.4, 38.1, 28.5, 21.4, 19.4, 25.1, 28.5, 22.5, 17.3, 13.5)
@@ -30,9 +30,6 @@ crimedata
 A simple scatterpot shows possible correlation.
 
 ```{r}
-plot(crimedata$MHI, crimedata$VCR)
-
-#Same plot in ggplot
 ggplot(crimedata,aes(x=MHI,y=VCR))+geom_point()
 ```
 
@@ -62,32 +59,6 @@ We can also extract these correlations using tidy from the broom package. You ca
 cor_values<-tidy(pollen_cor)
 ```
 
-What if we wanted to see the association of precipitation and spruce trees (picea) across two regions? We could subset these data and then run the analysis. We'll subset results so we just have correlation with precpyr
-
-```{r}
-pollen_reg1<-Midwest_Pollen_Data %>%
-  filter(Region==1) %>%
-  select(precpyr,Picea:Betula)
-
-pollen_reg2<-Midwest_Pollen_Data %>%
-  filter(Region==2) %>%
-  select(precpyr,Picea:Betula)
-
-cor_reg1<-rcorr(as.matrix(pollen_reg1),type="spearman")
-cor_reg2<-rcorr(as.matrix(pollen_reg2),type="spearman")
-cor_all<-bind_rows(tidy(cor_reg1) %>% mutate(region="1"),
-                   tidy(cor_reg2) %>% mutate(region="2")) %>%
-  filter(column2=="precpyr")
-```
-
-Now we can visualize those results in a ladder plot, which shows lines between two regions.
-
-```{r}
-ggplot(cor_all,aes(x=region,y=estimate,group=column1,color=column1))+
-  geom_line()+
-  geom_point()
-```
-
 You can visualize associations using the pairs function, which is part of "base R" (comes installed). This creates scatterplots for every variable pair.
 ```{r}
 cor_all<-Midwest_Pollen_Data %>% 
@@ -99,13 +70,17 @@ pairs(cor_all)
 That's a lot! Let's just visualize those variables with correlations of 0.6 or more (or -0.6 or less).
 
 ```{r}
-
+#Generate tidy version of the correlation matrix
 cor_values<-tidy(rcorr(as.matrix(cor_all)))
 
+#Filter for only those correlations that are 0.6 magnitude
 pollen_select<-cor_values %>%
   filter(estimate > 0.6 | estimate < -0.6) 
+
+#Create list of species that are in significant corrrelations
 pollen_list<-unique(c(pollen_select$column1,pollen_select$column2))
 
+#Select only the precipitation column and the species we just identified
 pollen_filter<-Midwest_Pollen_Data %>%
   select(c(precpyr,pollen_list))
 
@@ -141,7 +116,7 @@ For non-parametric data, specify spearman's rho in the rcorr package.
 rcorr(as.matrix(pollen), type="spearman")
 ```
 
-You can also specify test for the cor command.
+You can also specify the test (spearman/non-parametric vs. pearson/parametric) for the cor command.
 ```{r}
 M<-cor(pollen,method="spearman")
 corrgram(M, panel=panel.shade)
