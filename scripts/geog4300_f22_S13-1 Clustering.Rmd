@@ -10,22 +10,21 @@ editor_options:
 library(tidyverse)
 library(tmap)
 library(sf)
-library(albersusa)
 ```
 
 ##K-means Clustering
-Let's read in our elections data. We'll pull county boundaries from the albersusa package (the counties_sf function).
+Let's read in our elections data. We'll use the same county shapefile as Lab 6.
 
 ```{r}
 countydata<-read_csv("data/elections0816_demog_pct.csv") %>%
   filter(year==2016 & indpop_ag_pct>-1 & region == "Midwest Region")
 
-countydata_sf<-counties_sf("laea") %>%
-  rename(fips_code=fips) %>%
+countydata_sf<-st_read("data/US_counties_albersusa.shp") %>%
+#  rename(fips_code=fips) %>%
   inner_join(countydata)
 ```
 
-We can cluster these counties based on the industry that residents work in. Here's how you would use kmeans to do so. First we remove all other variables except the ones of interest. We'll also have to remove the geometry column. We then use the kmeans function to identify four clusters. The set.seed fimcyopm specifies which observation to start with, which will give the same results every time.
+We can cluster these counties based on the industry that residents work in. Here's how you would use kmeans to do so. First we remove all other variables except the ones of interest. We'll also have to remove the geometry column. We then use the kmeans function to identify four clusters. The set.seed function specifies which observation to start with, which will give the same results every time.
 
 ```{r}
 vars_select<-c("indpop_ag_pct","indpop_info_pct",
@@ -100,6 +99,11 @@ ggplot(cluster_vars1,aes(x=cluster_char,y=value,fill=cluster_char))+
 
 
 You try it! Pick out 3-5 variables of interest to you and use k-means to create clusters that you can map.
+
+```{r}
+
+```
+
 
 #Hierarchical clustering
 For hierarchical clustering, we use the `hclust` function in base R. First, we need to calculate a distance matrix, showing the difference between observations. Then we use hclust to group observations at different levels based on difference. We can plot the resulting dendrogram. The hca_clust function draws boxes showing how different numbers of clusters (set using k=?) would be grouped.
