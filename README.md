@@ -9,4 +9,6 @@ Lab repositories
 * Lab 3: [Master Repo](https://github.com/jshannon75/geog4300_lab3) | [Github Classroom Link](https://classroom.github.com/a/9_tCC4OF)
 * Lab 4: [Master Repo](https://github.com/jshannon75/geog4300_lab4) | [Github Classroom Link](https://classroom.github.com/a/_eZCAhif)
 * Lab 5: [Master Repo](https://github.com/jshannon75/geog4300_lab5) | [Github Classroom Link](https://classroom.github.com/a/bRl82j5_)
-* Lab 6: [Master Repo](https://github.com/jshannon75/geog4300_lab5) | [Github Classroom Link](https://classroom.github.com/a/CZ57CBs0)
+* Lab 6: [Master Repo](https://github.com/jshannon75/geog4300_lab6) | [Github Classroom Link](https://classroom.github.com/a/CZ57CBs0)
+* Lab 7: [Master Repo](https://github.com/jshannon75/geog4300_lab7) | [Github Classroom Link](https://classroom.github.com/a/en5J46uN)
+

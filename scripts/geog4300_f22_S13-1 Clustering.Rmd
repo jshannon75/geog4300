@@ -119,10 +119,7 @@ rect.hclust(hca_clust, k = 8)
 The `cutree` function then creates a list of clusters for each observation.
 
 ```{r}
-groups<-data.frame(hca_clust=cutree(hca_clust,k=8))
-
-countyind_hca<-bind_cols(countydata_sf,groups) %>%
-  mutate(hcaclust_char=as.character(hca_clust)) 
+countydata_sf$hcaclust_char<-as.character(cutree(hca_clust,k=8))
 
 tm_shape(countyind_hca)+
   tm_polygons("hcaclust_char")
