@@ -64,10 +64,10 @@ table(census_data_elites1$St_name)
 ##Filter all counties with a poverty rate (pov_pop_pct) > 20% (BADeg_pct)
 #Call this census_data_pov
 
-#Build a tally of high poverty counties by state 
-#We're using base R to create and plot this table. 
-table(census_data_pov$St_name)
-state_pov<-data.frame(table(census_data_pov$St_name))
+#Build a tally of "elite" counties by state 
+#We're using the tidyverse function "count" here to count rows by a categorical variable.
+census_data_elites_tbl<-census_data_elites %>%
+  count(St_name)
 
 #The "select" command allows you to reduce the number of variables
 #You can select by column names or numbers
@@ -87,9 +87,11 @@ census_data_ed<-census_data_ed %>%
 hist(census_data_ed$LessBA_pct)
 boxplot(census_data_ed$LessBA_pct)
 
-#You try it! Information about REM songs on Spotify is available in the data folder: rem_songs.csv
-#On Github it's: https://github.com/jshannon75/geog4300/raw/master/data/rem_songs.csv
-#Load the data into R. Then do the following
-# *Filter the dataset to look at only songs in A major (key_mode)
-# *Create a histogram for the danceability variable
-# *Create a new variable using mutate that sums danceability, energy, and loudness.
+# You try it! Information about Taylor Swift and Beyonce songs on 
+# Spotify is available in the data folder: swift_beyonce_spotify.csv
+# Load the data into R. Then try the following
+# * Filter the dataset to look at only songs in A major (key_mode)
+# * Count the number of songs by key AND artist name (hint: the `count` function can take multiple variables)
+# * Create a histogram for the danceability variable for an artist of your choosing
+# * Create a new variable using mutate that sums danceability, energy, and loudness
+# * Calculate which artist has the highest mean value for your new variable

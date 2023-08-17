@@ -21,9 +21,6 @@ print("Hello, world!")
 Text<-"Hello, world!"
 Text
 
-Text1="Hello, world!"
-Text1
-
 A<-1
 A
 
@@ -47,8 +44,6 @@ A+B
 
 B<-as.numeric(B)
 A+B
-
-
 
 #A group of values is called a vector. Each vector can have only one type of data
 #Use "c()" to group objects together into a vector
