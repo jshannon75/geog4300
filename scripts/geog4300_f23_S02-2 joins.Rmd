@@ -53,3 +53,7 @@ daymet_texas<-daymet %>%
 ```
 
 Now you try using other kinds of joins between this Texas data and the census data to see what each one does: right_join, full_join, inner_join, and anti_join. What is the difference between them?
+
+```{r}
+
+```

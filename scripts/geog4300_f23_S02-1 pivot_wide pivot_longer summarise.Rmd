@@ -31,6 +31,11 @@ badeg_state2<-census_data %>%
 
 Now you try it! Calculate the median, mean, and standard deviation for the county poverty rate (pov_pop_pct) by state.
 
+```{r}
+
+```
+
+
 ###Long and wide format
 Summarizing multiple variables can be tricky. You can calculate each mean separately, but this can be cumbersome for a large number of variables. One solution is to use functions that collapse multiple variables down to just two columns: one for the variable name and the other for the observational values. This "long" format is useful in lots of ways, but for our purposes, it can allow us to summarize multiple variables in just one line of code. The two commands we use for this in the tidyverse are pivot_wide and pivot_longer.
 
@@ -42,7 +47,6 @@ edvars<-census_data %>%
   pivot_longer(LessHS_pct:GradDeg_pct,
                names_to="variable",
                values_to="rate")
-View(edvars)
 ```
 
 You'll notice that this new table has just four columns, the county and state names, and then the variable and values for all of those education variables. We can now use group_by and summarise to calculate the mean values.
@@ -53,7 +57,7 @@ edvars1<-edvars %>%
   summarise(mean_rate=mean(rate))
 ```
 
-Easy, right? But the resulting table is hard to read. We can now use 'pivot_wider' to push out the data out *wide*. In this case, we just have to identify the variable with the new variable names (using 'names_from') and values (using 'values_from').
+Easy, right? But the resulting table is hard to read. We can now use 'pivot_wider' to push out the data *wide*. In this case, we just have to identify the variable with the new variable names (using 'names_from') and values (using 'values_from').
 
 ```{r}
 edvars2<-edvars1 %>%
@@ -76,3 +80,8 @@ edvars3<-census_data %>%
 ```
 
 Now you try it! Calculate the mean value by state for the nat_ins_pct, fbnat_ins_pct, and fb_ins_pct variables.
+
+```{r}
+
+```
+
