@@ -57,16 +57,6 @@ ggplot(census_ins_plot,aes(x=value,y=St_name,color=var))+
   ylab("") #Y axis label
 ```
 
-Identifying standard deviation and interquartile range is pretty easy with group_by and summarise. For rates of health insurance, we could do it this way. (Notice that there's one NA in these results--think about why that is.)
-
-```{r}
-census_ins_dist<-census_data %>%
-  group_by(St_name) %>%
-  summarise(nat_ins_pct_sd=sd(nat_ins_pct),
-            nat_ins_pct_IQR=IQR(nat_ins_pct))
-```
-
-
 Boxplots are a very common way to visualize distributions, showing the median, quartiles, and outliers. Let's visualize that insurance variable for the Midwest. We'll also rotate the axis labels slightly to make them easier to read.
 
 ```{r}
@@ -94,23 +84,7 @@ ggplot(census_midwest,aes(x=nat_ins_pct))+
   facet_wrap(~St_name)
 ```
 
-Density plots are another alternative that gets everything in one graph. We can use the alpha parameter to make them semi-transparent.
-
-```{r}
-ggplot(census_midwest,aes(x=nat_ins_pct,fill=St_name))+
-  geom_density(alpha=0.5)
-```
-
-You can combine these! See this for more info: http://www.cookbook-r.com/Graphs/Plotting_distributions_(ggplot2)/
-
-```{r}
-ggplot(census_midwest,aes(x=nat_ins_pct))+
-  geom_histogram(aes(y=..density..,alpha=0.5)) +
-  geom_density(color="#70010a")+
-  facet_wrap(~St_name)
-```
-
-Ridge plots are similar. We'll also use the viridis package for fill, which brings in MatLab colors.
+Ridge plots are another strategy for visualizing smoothed density distributions. We'll also use the viridis package for fill, which brings in MatLab colors.
 
 ```{r}
 #install.packages("ggridges")

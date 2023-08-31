@@ -25,7 +25,7 @@ census_api_key(key, overwrite = FALSE, install = TRUE)
 Let's start by downloading a list of available variables from the 2015-19 American Community Survey. We'll specify the year, dataset, and whether to cache this file locally on your computer.
 
 ```{r}
-v20 <- load_variables(2020, "acs5", cache = TRUE)
+v21 <- load_variables(2021, "acs5", cache = TRUE)
 ```
 
 You can open this downloaded file to see the list. You have a variable ID (name), specific variable label (label), and table name (concept). To find variables related to internet usage, filter the data frame and search for Internet under concept. It looks like we want table B19013, which has several variables related to median household income. 
@@ -33,9 +33,9 @@ You can open this downloaded file to see the list. You have a variable ID (name)
 Let's download those variables. We'll first create a subsetted dataframe showing just variables from B19013. We'll then use get_acs to download them.
 
 ```{r}
-var_select<-v20 %>% filter(substr(name,1,6)=="B19013")
+var_select<-v21 %>% filter(substr(name,1,6)=="B19013")
 
-cty_medinc<-get_acs(geography="county",variables=var_select$name,year=2020)
+cty_medinc<-get_acs(geography="county",variables=var_select$name,year=2021)
 ```
 
 To work with these data, it might be useful to have them in wide format. To do so, we need to remove the margin of error column (`moe`) and then use `pivot_wider`. We can also separate the county and state name using separate.
