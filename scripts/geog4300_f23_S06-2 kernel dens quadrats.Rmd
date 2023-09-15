@@ -1,6 +1,6 @@
 ---
-title: "Kernel density and quadrats"
-output: github_notebook
+title: "Kernel density and quadrats with spatstat"
+output: html_notebook
 editor_options: 
   chunk_output_type: console
 ---
@@ -10,9 +10,7 @@ For this script, you'll need tidyverse and sf, as well as a new (to us) package 
 ```{r}
 #library(sf)
 library(knitr)
-opts_knit$set(root.dir = "~/path/to/folder/")
-
-#install.packages(c("spatstat","rgdal","maptools"))
+#install.packages(c("spatstat","maptools"))
 library(tidyverse)
 library(spatstat)
 library(sf)
@@ -73,7 +71,7 @@ plot(density(tornado_ppp,500000))
 Spatstat can also create a contour map. The lines indicate the value of the kernel density map.
 
 ```{r}
-map<-contour(density(tornado_ppp,100000),)
+map<-contour(density(tornado_ppp,100000))
 ```
 
 Spatstat can create a quadrat map with square cells. The two numbers are the count of columns and rows.
@@ -92,3 +90,11 @@ quad_map<-quadratcount(tornado_ppp,6,3)
 plot(kernel_map,add=TRUE)
 plot(quad_map, add=TRUE,col="grey")
 ```
+
+### You try it!
+Create a kernel density map of states in the Southeast showing the frequency of tornados rated F3 or higher. The Fujita rating is listed under the "MAG" variable.
+
+```{r}
+
+```
+
