@@ -1,0 +1,151 @@
+---
+title: "Spatial data in R"
+output:
+  html_notebook:
+editor_options: 
+  chunk_output_type: console
+---
+### Loading and manipulating spatial data
+
+There are several packages available to create and edit spatial data in R. This includes both raster and vector data. This script focuses on the latter. The sf (stands for "simple features") package is one efficient way to load vector data. Other popular packages for spatial data are raster, terra, and stars.
+
+
+```{r, message=FALSE}
+#install.packages("sf")
+library(tidyverse)
+library(sf)
+library(tidycensus)
+library(viridis)
+```
+
+The main way to read in data using sf is the function `st_read`, which uses gdal to read a variety of vector file formats (shapefile, geopackage, geojson, etc.). The resulting object is formatted just like a data frame. For example, we could read our census county dataset this way:
+
+```{r}
+cty<-st_read("data/ACSCtyData_2019ACS_simplify.gpkg")
+```
+
+For this script, we won't be using st_read. Instead, we will download public use microdata area (PUMA) boundaries for Atlanta. PUMAs have uniform populations, making them smaller than counties in metro areas but larger in rural ones. We will download boundaries using the tidycensus package and then filter for those whose name refers to Atlanta. Alternatively, you can use load the `atl_pumas` geopackage file in the data folder
+
+```{r}
+atl_pumas<-get_acs(geography="puma", #Use PUMA data
+                   state="GA", #Only download the state of Georgia
+                   variable="B01001_001", #Get the total population variable
+                   geometry=TRUE) %>% #Include the spatial boundaries
+  filter(str_detect(NAME,"Atlanta")) %>% #Filter for just Atlanta boundaries using the name
+  st_transform(4326) #Transform projection to WGS 84
+#atl_pumas<-st_read("data/atl_pumas.gpkg")
+
+ggplot(atl_pumas) + 
+  geom_sf()
+```
+
+For this analysis, we'll be looking at dollar stores in the Atlanta metro in 2020. We will read in a csv file with a national dollar store listing, select only those identified as being in Atlanta and still open (no end year). Lastly, we will use st_as_sf to convert to spatial data
+
+```{r}
+dollars<-read_csv("data/dollars.csv") %>%
+  filter(str_detect(msa_name,"Atlanta") & is.na(end_year)) %>%
+  st_as_sf(coords=c("x","y"), #Identify the coordinate variables
+           crs=4326, #Identify the projection (4326 is WGS84)
+           remove=FALSE) %>% #Don't remove the coordinate variables
+  st_intersection(atl_pumas) #Select only those points that intersect the pumas layer
+```
+
+The sf package also has a set of spatial functions that can be used on these data. For example, you could convert the PUMA polygons to centroids. We then use geom_sf in ggplot to visualize those points.
+
+```{r}
+ggplot(atl_pumas) + geom_sf()
+
+atl_pumas_points<-atl_pumas %>%
+  st_centroid()
+ggplot(atl_pumas_points) + 
+  geom_sf()
+
+#What if the color matched population?
+ggplot(atl_pumas_points,aes(color=estimate)) + 
+  geom_sf()
+```
+
+
+### Tools for viewing/mapping spatial data
+```{r}
+#install.packages("tmap")
+library(tmap)
+```
+
+You can make maps with ggplot, but it's not the best option out there. The tmap package is a popular tool for mapping spatial data. Here's a basic plot in tmap, which follows a similar logic to ggplot:
+
+```{r}
+tm_shape(atl_pumas)+
+  tm_polygons()
+```
+
+You can make a choropleth map by adding a variable. Here we, will use the count of total population using the Jenks natural breaks classification method.
+
+```{r}
+tm_shape(atl_pumas)+
+  tm_polygons("estimate", style="jenks")
+```
+
+<<<<<<< HEAD
+## You try it!
+Load our county census data in geopackage format: `ACSCtyData_2019ACS_simplify.gpkg` in the data folder. Create a map of those data showing the percentage of foreign born residents: `fb_pct`. Use the Albers conic projection (CRS 5070) and Jenks natural breaks classification.
+
+```{r}
+
+```
+
+
+=======
+>>>>>>> 7045e2fa114c77df56681358befc66c84887248d
+You can you can also add dollar stores as points. The style parameter here sets Jenks natural breaks for the data classification scheme. We select just Dollar Generals for mapping and use the `st_intersection` function to keep only those in our dataset.
+
+```{r}
+dollars_dg<-dollars %>%
+  filter(dollar_type=="Dollar General") 
+
+tm_shape(atl_pumas)+
+  tm_polygons("estimate",style="jenks")+
+tm_shape(dollars_dg)+
+  tm_dots(size=0.1,alpha=0.5) 
+```
+
+We can make this map prettier, adding a north arrow and scale bar and moving the legend outside.
+
+```{r}
+tm_shape(atl_pumas)+
+  tm_polygons("estimate",style="jenks")+
+tm_shape(dollars_dg)+
+  tm_dots(size=0.1,alpha=0.5) +
+tm_compass()+
+tm_scale_bar(position="left")+
+tm_legend(legend.outside=TRUE)
+```
+
+###You try it!
+Make a map showing total population and another dollar store chain besides Dollar General. How does it compare to Dollar General's map?
+```{r}
+
+```
+
+You can also make interactive maps with tmap. Make sure you set the output to the Console using the gear icon above.
+
+```{r}
+tmap_mode("view") #To shift back to static maps, use tmap_mode("plot")
+
+tm_shape(atl_pumas)+
+  tm_polygons("estimate",style="jenks",alpha=0.4)+
+tm_shape(dollars_dg)+
+  tm_dots(size=0.1)
+```
+
+There are other good mapping packages available. For example, mapview (https://r-spatial.github.io/mapview/) provides quick interactive maps and the the leaflet package (https://rstudio.github.io/leaflet/) creates maps using that popular javascript library.
+
+### You try it!
+
+The `wh_locations_coords.csv` file in the data folder has most Waffle House locations. Load that file and filter to just those in that Atlanta metro area. Create a map that shows those Waffle House locations and the Atlanta PUMAs.
+
+```{r}
+
+```
+
+Learn more about spatial analysis in R in Manuel Gimond's web textbook: https://mgimond.github.io/Spatial/
