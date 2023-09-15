@@ -86,6 +86,17 @@ tm_shape(atl_pumas)+
   tm_polygons("estimate", style="jenks")
 ```
 
+<<<<<<< HEAD
+## You try it!
+Load our county census data in geopackage format: `ACSCtyData_2019ACS_simplify.gpkg` in the data folder. Create a map of those data showing the percentage of foreign born residents: `fb_pct`. Use the Albers conic projection (CRS 5070) and Jenks natural breaks classification.
+
+```{r}
+
+```
+
+
+=======
+>>>>>>> 7045e2fa114c77df56681358befc66c84887248d
 You can you can also add dollar stores as points. The style parameter here sets Jenks natural breaks for the data classification scheme. We select just Dollar Generals for mapping and use the `st_intersection` function to keep only those in our dataset.
 
 ```{r}
