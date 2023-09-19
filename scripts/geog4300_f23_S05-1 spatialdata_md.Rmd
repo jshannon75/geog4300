@@ -35,11 +35,14 @@ atl_pumas<-get_acs(geography="puma", #Use PUMA data
   st_transform(4326) #Transform projection to WGS 84
 #atl_pumas<-st_read("data/atl_pumas.gpkg")
 
+#If tidycensus isn't working, use this:
+#atl_pumas<-st_read("data/atl_pumas.gpkg")
+
 ggplot(atl_pumas) + 
   geom_sf()
 ```
 
-For this analysis, we'll be looking at dollar stores in the Atlanta metro in 2020. We will read in a csv file with a national dollar store listing, select only those identified as being in Atlanta and still open (no end year). Lastly, we will use st_as_sf to convert to spatial data
+For this analysis, we'll be looking at dollar stores in the Atlanta metro in 2020. We will read in a csv file with a national dollar store listing, select only those identified as being in Atlanta and still open (no end year). Lastly, we will use st_as_sf to convert to spatial data.
 
 ```{r}
 dollars<-read_csv("data/dollars.csv") %>%
@@ -53,10 +56,12 @@ dollars<-read_csv("data/dollars.csv") %>%
 The sf package also has a set of spatial functions that can be used on these data. For example, you could convert the PUMA polygons to centroids. We then use geom_sf in ggplot to visualize those points.
 
 ```{r}
-ggplot(atl_pumas) + geom_sf()
+ggplot(atl_pumas) + 
+  geom_sf()
 
 atl_pumas_points<-atl_pumas %>%
   st_centroid()
+
 ggplot(atl_pumas_points) + 
   geom_sf()
 
@@ -86,7 +91,6 @@ tm_shape(atl_pumas)+
   tm_polygons("estimate", style="jenks")
 ```
 
-<<<<<<< HEAD
 ## You try it!
 Load our county census data in geopackage format: `ACSCtyData_2019ACS_simplify.gpkg` in the data folder. Create a map of those data showing the percentage of foreign born residents: `fb_pct`. Use the Albers conic projection (CRS 5070) and Jenks natural breaks classification.
 
@@ -94,14 +98,12 @@ Load our county census data in geopackage format: `ACSCtyData_2019ACS_simplify.g
 
 ```
 
-
-=======
->>>>>>> 7045e2fa114c77df56681358befc66c84887248d
 You can you can also add dollar stores as points. The style parameter here sets Jenks natural breaks for the data classification scheme. We select just Dollar Generals for mapping and use the `st_intersection` function to keep only those in our dataset.
 
 ```{r}
 dollars_dg<-dollars %>%
-  filter(dollar_type=="Dollar General") 
+  filter(dollar_type=="Dollar General") %>%
+  st_intersection(atl_pumas)
 
 tm_shape(atl_pumas)+
   tm_polygons("estimate",style="jenks")+
