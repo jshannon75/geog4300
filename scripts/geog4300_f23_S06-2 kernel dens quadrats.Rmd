@@ -5,7 +5,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-For this script, you'll need tidyverse and sf, as well as a new (to us) package called spatstat. We're also going to use a couple of other spatial packages--rgdal and maptools.
+For this script, you'll need tidyverse and sf, as well as a new (to us) package called spatstat. We're also going to use a couple of other spatial packages--`rgdal` and `maptools`. `rgdal` is an older R package that ports the GDAL library (used in a LOT of GIS software) into R.
 
 ```{r}
 #library(sf)
@@ -17,7 +17,11 @@ library(sf)
 library(maptools)
 ```
 
-We will continue work with tornado data for this analysis. We will also load a spatial file (in geopackage format) for states in the Southeast. Spatstat requires a projection, so we will use UTM 15.
+We will work with tornado data for this analysis. We will also load a spatial file (in geopackage format) for states in the Southeast. Spatstat requires *projected data*, not just raw WGS84 coordinates. This dataset thus gives coordinates in that projection format. 
+
+The raw data are available at https://www.spc.noaa.gov/gis/svrgis/.
+
+The `as.owin` package creats an operating window for spatstat to use. `as_Spatial` converts the sf data into the older SpatialPolygons format used by rgdal.
 
 ```{r}
 tornado_points<-read_csv("data/tornado_pointsSE.csv") %>%
@@ -39,7 +43,7 @@ maxlon<-max(tornado_points$x_utm)
 minlon<-min(tornado_points$x_utm)
 ```
 
-Spatstat needs a "ppp" object. To create that, use the ppp function, providing X and Y points plus the range of your X and Y coordinates.
+Spatstat needs a "ppp" object, which is a point pattern dataset. To create that, use the ppp function, providing X and Y points plus the range of your X and Y coordinates.
 
 ```{r}
 tornado_ppp<-ppp(tornado_points$x_utm,tornado_points$y_utm,
@@ -48,30 +52,53 @@ Window(tornado_ppp)<-states1
 plot(tornado_ppp)
 ```
 
+If desired, we can add a *convex hull* polygon, which is the simplest polygon including all observed points. To do so, we create the initial plot, create that polygon with the `convexhull` polygon, and add it using the `lines` function.
+
+```{r}
+plot(tornado_ppp)
+
+hull<-convexhull(tornado_ppp)
+lines(hull$bdry[[1]]$x,hull$bdry[[1]]$y,lty=2)
+```
+
 We can use the density function to create a kernel density map.
 
 ```{r}
-plot(density(tornado_ppp))
-
 kernel_map<-density(tornado_ppp)
 plot(kernel_map)
 ```
 
 We can change the size of the "kernel" used to interpolate this map. Again, remember that the unit here is meters. Which is best?
 
+We also add state boundaries to each map by using `add=TRUE`.
+
 ```{r}
 plot(density(tornado_ppp,1000))
+plot(states1,add=TRUE,border="white")
+
 plot(density(tornado_ppp,5000))
+plot(states1,add=TRUE,border="white")
+
 plot(density(tornado_ppp,10000))
+plot(states1,add=TRUE,border="white")
+
 plot(density(tornado_ppp,50000))
+plot(states1,add=TRUE,border="white")
+
 plot(density(tornado_ppp,100000))
+plot(states1,add=TRUE,border="white")
+
 plot(density(tornado_ppp,500000))
+plot(states1,add=TRUE,border="white")
+
 ```
 
 Spatstat can also create a contour map. The lines indicate the value of the kernel density map.
 
 ```{r}
 map<-contour(density(tornado_ppp,100000))
+plot(states1,add=TRUE,lty=2)
+
 ```
 
 Spatstat can create a quadrat map with square cells. The two numbers are the count of columns and rows.
@@ -92,7 +119,7 @@ plot(quad_map, add=TRUE,col="grey")
 ```
 
 ### You try it!
-Create a kernel density map of states in the Southeast showing the frequency of tornados rated F3 or higher. The Fujita rating is listed under the "MAG" variable.
+Create a kernel density map of states in the Southeast showing the frequency of tornados rated F3 or higher. The Fujita rating is listed under the "MAG" variable. Add state boundaries.
 
 ```{r}
 
