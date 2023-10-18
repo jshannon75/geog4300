@@ -6,6 +6,7 @@ editor_options:
 ---
 
 Chi-square tests. First, we create the data and then run the test. Here we use the Thanksgiving.chisquare dataset from lecture.
+
 ```{r}
 white<-c(15, 25)
 dark<-c(25, 10)
@@ -15,7 +16,7 @@ thanksgiving<-data.frame(cbind(white, dark, tofurkey))
 chisq.test(thanksgiving)
 ```
 
-Here's the same procedure for our in class problem.
+Here's the same procedure for our in-class problem.
 
 ```{r}
 car<-c(58, 199, 205)
@@ -32,11 +33,9 @@ library(tidyverse)
 tornado<-read_csv("data/tornado_pointsSE.csv")
 
 tornado_table<-tornado %>%
-  group_by(ST,MAG) %>%
-  summarise(count=n()) %>%
+  count(ST,MAG,name = "count") %>%
   pivot_wider(names_from=MAG,values_from=count,values_fill=0) %>%
-  select(-`-9`) %>%
-  ungroup()
+  select(-`-9`) 
 ```
 
 We can then do a chi-square on just the count variables, removing the state variable.
