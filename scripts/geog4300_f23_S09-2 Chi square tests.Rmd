@@ -57,3 +57,4 @@ tornado_table_pct<-tornado_table %>%
 
 Which states have the highest percentage of category 4 and 5 tornadoes? 
 How would you describe the observed differences between states?
+
