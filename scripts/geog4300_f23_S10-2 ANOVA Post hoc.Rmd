@@ -31,7 +31,7 @@ summary(drugtest)
 We can also use the tidy function on ANOVA objects:
 
 ```{r}
-drugtest_sf<-tidy(drugtest)
+drugtest_tidy<-tidy(drugtest)
 ```
 
 For post-hoc testing, we can use pairwise t test without and with Bonferroni correction.

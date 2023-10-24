@@ -39,7 +39,6 @@ Use the cor function to see the correlation.
 cor(crimedata$MHI,crimedata$VCR)
 ```
 
-
 Correlations are often shown as a matrix. Here, we can use the pollen data for the Midwest. The rcorr function in the Hmisc package does this well.
 
 ```{r}
@@ -67,24 +66,18 @@ cor_all<-Midwest_Pollen_Data %>%
 pairs(cor_all)
 ```
 
-That's a lot! Let's just visualize those variables with correlations of 0.6 or more (or -0.6 or less).
+That's a lot! Let's just visualize a subset of these variables--precipitation plus the first five.
 
 ```{r}
-#Generate tidy version of the correlation matrix
-cor_values<-tidy(rcorr(as.matrix(cor_all)))
-
-#Filter for only those correlations that are 0.6 magnitude
-pollen_select<-cor_values %>%
-  filter(estimate > 0.6 | estimate < -0.6) 
-
-#Create list of species that are in significant corrrelations
-pollen_list<-unique(c(pollen_select$column1,pollen_select$column2))
+pollen_list<-c("Abies","Picea","Carya","Alnus","Quercus")
 
 #Select only the precipitation column and the species we just identified
 pollen_filter<-Midwest_Pollen_Data %>%
-  select(c(precpyr,pollen_list))
+  select(c(precpyr,tmeanyr,pollen_list))
 
 pairs(pollen_filter)
+
+pairs(as.matrix(pollen_filter),lower.panel=panel.smooth,upper.panel=panel.ellipse)
 ```
 
 There's lots of ways to visualize correlation matrices, and we often want to look at lots of variable combinations at once. Here's ggcorrplot. (More info: http://www.sthda.com/english/wiki/ggcorrplot-visualization-of-a-correlation-matrix-using-ggplot2)
@@ -123,4 +116,11 @@ corrgram(M, panel=panel.shade)
 ```
 
 
+## You try it!
+Load the 2019 census data from our class repository. Assess how poverty rate (poc_pop_pct) is correlated with the population rates of the educational variables.
+
+```{r}
+census19<-read_csv("data/ACSCtyData_2019ACS.csv")
+
+```
 
