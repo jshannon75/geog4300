@@ -26,7 +26,6 @@ crimedata<-as_tibble(cbind(MHI,VCR))
 crimedata
 ```
 
-
 A simple scatterpot shows possible correlation.
 
 ```{r}
@@ -80,6 +79,19 @@ pairs(pollen_filter)
 pairs(as.matrix(pollen_filter),lower.panel=panel.smooth,upper.panel=panel.ellipse)
 ```
 
+If you want to visualize the association between a specific pair of variables, you can do so using `geom_smooth` in ggplot, which plots a trend line. The default is a loess curve, but you can also use lm, glm, or gam, which are all types of regression models.
+
+```{r}
+ggplot(pollen_filter,aes(x=tmeanyr,y=Abies))+
+  geom_point()+
+  geom_smooth()
+
+ggplot(pollen_filter,aes(x=tmeanyr,y=Abies))+
+  geom_point()+
+  geom_smooth(method="lm")
+```
+
+
 There's lots of ways to visualize correlation matrices, and we often want to look at lots of variable combinations at once. Here's ggcorrplot. (More info: http://www.sthda.com/english/wiki/ggcorrplot-visualization-of-a-correlation-matrix-using-ggplot2)
 
 ```{r}
@@ -94,7 +106,7 @@ ggcorrplot(correlation_matrix,
     insig = "blank") #Leave out insignificant cells
 ```
 
-The corrgram function in the corrgram package is another option. https://rawgit.com/kwstat/corrgram/master/vignettes/corrgram_examples.html
+The corrgram function in the corrgram package is another option. https://rawgit.com/kwstat/corrgram/master/vignettes/corrgram_examples.html.
 
 ```{r}
 corrgram(correlation_matrix, order=FALSE,
@@ -103,8 +115,15 @@ corrgram(correlation_matrix, order=FALSE,
          main="Census correlations")
 ```
 
+## You try it! 
+Look at the other panel options for `corrgram`. Try a few out based on the code above.
+
+```{r}
+
+```
 
 For non-parametric data, specify spearman's rho in the rcorr package.
+
 ```{r}
 rcorr(as.matrix(pollen), type="spearman")
 ```
