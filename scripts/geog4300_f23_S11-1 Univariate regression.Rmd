@@ -93,12 +93,11 @@ R comes with some diagnostic plots baked in. To see them, just plot the model. T
 plot(model)
 ```
 
-
 Here's a more detailed process for looking at model diagnostics:
 
 *Normality of residuals: Plot/test the residuals. The "residuals" function pulls residuals from the model.
 ```{r}
-pollen_data_sf$residuals<-residuals(model) #Pull the residuals from the model
+pollen_data_sf$residuals<-residuals(model) #Pull the residuals from the model and add them to the dataset
 ggplot(pollen_data_sf,aes(sample=residuals))+
   stat_qq()+stat_qq_line()
 shapiro.test(pollen_data_sf$residuals)
@@ -130,10 +129,10 @@ ggplot(cooks_dist,aes(x=x,y=cooks,label=x))+
   geom_hline(yintercept=cooks_mean*4,col="red")
 ```
 
-We can go even further. Let's join these distances back to the dataset. We can add a "dummy variable" using if_else highlighting just those observations above that cutoff line.
+We can go even further. Let's join these distances back to the dataset. We can add a "dummy variable" called `outlier` using if_else. That dummy variable will be 1 if it falls above that 4x the mean threshhold for Cooks distance. This allows us to highlight just those observations above that cutoff.
 
 ```{r}
-pollen_data_sf<-pollen_data_sf %>%
+pollen_data_sf_cooks<-pollen_data_sf %>%
   bind_cols(cooks_dist) %>%
   mutate(outlier=if_else(cooks>cooks_mean*4,"1","0")) 
 ```
@@ -141,24 +140,47 @@ pollen_data_sf<-pollen_data_sf %>%
 Where do those outliers fit in the overall distribution?
 
 ```{r}
-ggplot(pollen_data_sf,aes(y=Betula,x=tmeanyr,color=outlier))+
+ggplot(pollen_data_sf_cooks,aes(y=Betula,x=tmeanyr,color=outlier))+
   geom_point()
 ```
 
-Where are these outliers?
+**Where** are these outliers? We can map it out.
+
 ```{r}
-tm_shape(pollen_data_sf) +
+tm_shape(pollen_data_sf_cooks) +
   tm_dots("outlier",size=0.2)
 ```
 
-Let's run a model without the outliers.
+Let's run a model without the outliers to see if anything significant changes.
+
 ```{r}
-pollen_data_sf1<-pollen_data_sf %>%
+pollen_data_sf1<-pollen_data_sf_cooks %>%
   filter(outlier==0)
 model_rev<-lm(Betula~tmeanyr,data=pollen_data_sf1)
 summary(model_rev)
 
 plot(Betula~tmeanyr,data=pollen_data_sf1)
 abline(model_rev)
+```
+
+How does that new model compare to the old one? Look at the R2 for both as well as the size, direction, and significance of model coefficients. The `sjPlot` library allows us to print/compare these models side by side.
+
+```{r}
+summary(model)
+summary(model_rev)
+
+#install.packages("sjPlot")
+library(sjPlot)
+tab_model(model,model_rev)
+```
+
+How would you describe the difference between these models?
+
+##You try it! 
+
+Create a regression model for temperature and another tree species. Run model diagnostics to identify any issues in the model. Then summarise what you found.
+
+```{r}
+
 ```
 
