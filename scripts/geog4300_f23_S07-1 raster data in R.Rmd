@@ -69,19 +69,21 @@ What if we wanted to get descriptive statistics for elevation by counties? The `
 ```{r}
 library(terra)
 ga_cty<-st_read("data/us_county_simplify_SE_2014pop.gpkg") %>%
-  filter(state=="G13")
+  filter(state=="G13") 
 
-ga_cty_elev<-zonal(rast(dem),vect(ga_cty),fun="mean",na.rm=TRUE)
+ga_cty_rast<-rasterize(ga_cty,dem,field="FID_1")
+plot(ga_cty_rast)
 
-ga_cty_elev1 <- ga_cty %>%
-  bind_cols(ga_cty_elev)
+ga_cty_elev<-terra::zonal(rast(dem),rast(ga_cty_rast),"mean",na.rm=TRUE)
+
+ga_cty$meanelev <- ga_cty_elev$min
 ```
  
 Towns County has the highest mean elevation in the dataset. Let's map that out.
 
 ```{r}
-tm_shape(ga_cty_elev1)+
-  tm_polygons("min",style="jenks")
+tm_shape(ga_cty)+
+  tm_polygons("meanelev",style="jenks")
 ```
 
 ###Mapping countours and slope
@@ -137,9 +139,9 @@ What's the distribution of land uses for this area?
 
 ```{r}
 values<-data.frame(freq(nlcd_mask[[1]])) %>%
-  mutate(ID=as.numeric(value)) %>%
+  mutate(code=as.character(value)) %>%
   left_join(legend) %>%
-  filter(is.na(Class)==FALSE)
+  filter(is.na(class)==FALSE)
 ```
 
 We could sum the total pixels to calculate a percentage and filter for only those above 1%.

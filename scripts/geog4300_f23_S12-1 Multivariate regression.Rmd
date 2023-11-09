@@ -41,7 +41,7 @@ summary(model_elev)
 summary(model_dist)
 ```
 
-To do a multivariate regression, simply add more dependent variables using +.
+To do a multivariate regression, simply add more dependent variables using `+`.
 ```{r}
 model_all<-lm(AvgDLSpF~Latitude+Elevation+DisttoCoas,data=dlsf)
 
@@ -55,7 +55,7 @@ model_all1<-lm(AvgDLSpF~Latitude+elev100+dist50,data=dlsf1)
 summary(model_all1)
 ```
 
-You can check for multicollinearity using the vif test (variance inflation factor). The vif function is in the car package. You want values below 5
+You can check for multicollinearity using the VIF test (variance inflation factor). The `vif` function is in the car package. You want values below 5
 ```{r}
 vif(model_all)
 ```
@@ -77,28 +77,33 @@ Let's test for outliers. We can plot the Cook's distance generally using the cod
 
 ```{r}
 cooks_dist<-cooks.distance(model_all)
-plot(cooks_dist, pch="*", cex=2, main="Influential Obs by Cooks distance")
 
-abline(h = 4*mean(cooks_dist, na.rm=T), col="red") 
+cooks_dist<-data.frame(cooks=cooks.distance(model_all),
+                       x=1:nrow(dlsf))
+cooks_mean<-mean(cooks_dist$cooks)
 
-text(x=1:length(cooks_dist)+1, y=cooks_dist, labels=ifelse(cooks_dist>4*mean(cooks_dist, na.rm=T),names(cooks_dist),""), col="red")  
+ggplot(cooks_dist,aes(x=x,y=cooks,label=x))+
+  geom_point()+
+  geom_text(hjust=-0.2, vjust=0)+
+  geom_hline(yintercept=cooks_mean*4,col="red")
 ```
 
 Let's add a dummy variable for those outliers in the original dataset.
 
 ```{r}
-cooks_d<-data.frame(cooks_dist)
-cutoff<-mean(cooks_dist)*4
+cutoff<-mean(cooks_dist$cooks)*4
 
 dlsf_outliers<-dlsf %>%
-  bind_cols(cooks_d) %>%
-  mutate(outlier=if_else(cooks_dist>cutoff,1,0)) 
+  bind_cols(cooks_dist) %>%
+  mutate(outlier=if_else(cooks>cutoff,1,0)) 
 
 tm_shape(dlsf_outliers) +
   tm_dots("outlier")
 ```
 
-There are many ways to identify and deal with outliers. You can top or bottom code them, interpolate values from your model, add additional control variables, or remove observations if you feel they are spurious. One easy option is to see if the model results change much if you just remove the outliers. This allows you to assess whether they change the "headline story" of your model. If they don't, you may choose to leave them be. 
+There are many ways to identify and deal with outliers. You can (1) top or bottom code them, (2) interpolate values from your model, (3) add additional control variables, or ($) remove observations if you feel they are spurious. 
+
+One easy option is to see if the model results change much if you just remove the outliers. This allows you to assess whether they change the "headline story" of your model. If they don't, you may choose to leave them be. 
 
 ```{r}
 dlsf_no_outlier<-dlsf_outliers %>%

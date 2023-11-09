@@ -50,19 +50,7 @@ model_count1<-(lm(wh_count~totpop_race+pov_pop_pct+LessHS_pct,
                  data=census_sel))
 summary(model_count1)
 
-#Model with a logged dependent variable
-hist(census_sel$wh_100k)
-hist(log(census_sel$wh_100k))
-
-model_log<-(lm(log(wh_100k)~pov_pop_pct+LessHS_pct, 
-                  data=census_sel))
-summary(model_log)
-
-plot(model_log)
-
-vif(model_log)
-
-
-#To interpret coefficients in models with a logged dependent variable, you need to exponentiate
-exp(coef(model_log))
-summary(model)
+##What other variables could we try? 
+model_count<-(lm(wh_100k~??, 
+                 data=census_sel))
+summary(model_count)
