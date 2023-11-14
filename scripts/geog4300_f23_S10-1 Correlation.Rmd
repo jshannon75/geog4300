@@ -7,7 +7,7 @@ editor_options:
 
 ```{r setup}
 library(tidyverse)
-#install.packages("Hmisc","broom","ggcorplot","corrgram")
+#install.packages(c("Hmisc","broom","ggcorrplot","corrgram"))
 library(Hmisc)
 library(ggcorrplot)
 library(corrgram)
