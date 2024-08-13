@@ -1,0 +1,38 @@
+---
+title: "Doing R with ChatGPT"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
+---
+
+ChatGPT can write R code! Let's try it out.
+
+First, we'll load some existing data.
+
+```{r}
+library(tidyverse)
+library(sf)
+
+census_cty<-st_read("data/ACSCtyData_2019ACS_simplify.gpkg")
+cpsdata<-read_csv("data/IPUMS_CPS_FoodSec.csv")
+```
+
+For your first task, ask ChatGPT to map out the poverty rate variable (`pov_pop_pct`) using tmap. You can also add it to add elements like a north arrow and scale bar.
+
+```{r}
+#Code goes here.
+```
+
+For your third task, ask ChatGPT to test the normality of the EARNWEEK variable, filtering out any responses over 5000. Then ask it to create a qqplot for that variable.
+
+```{r}
+#Code goes here.
+```
+
+
+For your third task, ask ChatGPT to write code changes FSSTATUS_cat to a dummy variable (0=food secure, 0=food insecure) and then calculates a confidence interval for the rate of food insecurity nationally.
+
+```{r}
+#Code goes here.
+```
+

@@ -2,19 +2,19 @@
 library(tidycensus)
 library(tidyverse)
 
-old<-read_csv("data/ACSCtyData_2014ACS.csv") %>%
+old<-read_csv("data/ACSCtyData_2019ACS.csv") %>%
   select(GEOID:Region) %>%
   mutate(GEOID=as.character(GEOID))
 
-vars<-load_variables(2019,"acs5",cache=TRUE)
+vars<-load_variables(2022,"acs5",cache=TRUE)
 
-var_list<-c("B03002","B15003","B17025","B27020")
+var_list<-c("B03002","B15003","B17025","B19019","B27020","B28011","B14001")
 
 var_select<-vars %>%
   filter(substr(name,1,6) %in% var_list)
 write_csv(var_select,"data/censusvars.csv")
 
-ctydata<-get_acs(geography="county",variable=var_select$name,year=2019)
+ctydata<-get_acs(geography="county",variable=var_select$name,year=2022)
 
 ctydata_format<-ctydata %>%
   select(-moe) %>%
@@ -38,6 +38,14 @@ ctydata_format<-ctydata %>%
          SomeCol=B15003_019+B15003_021,
          BADeg=B15003_022,
          GradDeg=B15003_023+B15003_024+B15003_025,
+         ugrad_pop=B14001_008,
+         gradstd_pop=B14001_009,
+         totpop_intnet=B28011_001,
+         intnet_all_pop=B28011_002,
+         intnet_dial_pop=B28011_003,
+         intnet_brd_pop=B28011_004,
+         intnet_none_pop=B28011_008,
+         medinc=B19019_001,
          totpop_pov=B17025_001,
          pov_pop=B17025_002,
          allcit_pop=B27020_001,
@@ -61,6 +69,12 @@ ctydata_format<-ctydata %>%
          SomeCol_pct=SomeCol/totpop_ed*100,
          BADeg_pct=BADeg/totpop_ed*100,
          GradDeg_pct=GradDeg/totpop_ed*100,
+         ugrad_pct=ugrad_pop/B14001_001*100,
+         gradstd_pct=gradstd_pop/B14001_001*100,
+         intnet_all_pct=intnet_all_pop/totpop_intnet*100,
+         intnet_dial_pct=intnet_dial_pop/totpop_intnet*100,
+         intnet_brd_pct=intnet_brd_pop/totpop_intnet*100,
+         intnet_none_pct=intnet_none_pop/totpop_intnet*100,
          pov_pop_pct=pov_pop/totpop_pov*100,
          nat_pct=nat_pop/allcit_pop*100,
          fbnat_pct=fb_pop/allcit_pop*100,
@@ -68,16 +82,20 @@ ctydata_format<-ctydata %>%
          nat_ins_pct=if_else(nat_pop>0,nat_ins/nat_pop*100,0),
          fbnat_ins_pct=if_else(fbnat_pop>0,fbnat_ins/fbnat_pop*100,0),
          fb_ins_pct=if_else(fb_pop>0,fb_ins/fb_pop*100,0)) %>%
-  select(-B03002_001:-B27020_017,-NAME)
+  select(-B03002_001:-B28011_008,-NAME)
 
 ctydata_all<-old %>%
   mutate(GEOID=str_pad(GEOID,5,pad="0")) %>%
-  left_join(ctydata_format)
+  left_join(ctydata_format) %>%
+  rename(gisjn_cty=GISJn_Cty,
+         gisjn_st=GISJn_St,
+         st_name=St_name,
+         region=Region)
 
-write_csv(ctydata_all,"data/ACSCtyData_2019ACS.csv")
+write_csv(ctydata_all,"data/ACSCtyData_2022ACS.csv")
 
 library(sf)
-cty_boundary<-st_read("data/ACSCtyData_2014ACS_simplify.gpkg") %>%
+cty_boundary<-st_read("data/ACSCtyData_2019ACS_simplify.gpkg") %>%
   select(GEOID) %>%
   left_join(ctydata_all)
-st_write(cty_boundary,"data/ACSCtyData_2019ACS_simplify.gpkg")
+st_write(cty_boundary,"data/ACSCtyData_2022ACS_simplify.gpkg",delete_dsn=TRUE)

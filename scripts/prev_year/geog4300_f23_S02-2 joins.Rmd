@@ -1,0 +1,59 @@
+---
+title: 'Data manipulation: Joins'
+output:
+  html_document:
+    df_print: paged
+editor_options:
+  chunk_output_type: console
+---
+
+In this script, we'll go over learn a few more functions from the tidyverse: gather, spread, left_join, and anti_join. We'll start by calling the tidyverse package and reading in the county census data we've worked with before.
+
+```{r}
+library(tidyverse)
+
+census_data<-read_csv("data/ACSCtyData_2019ACS.csv")
+```
+
+###Introducing joins
+
+If you've used a GIS desktop package, you should be familiar with the idea of joins. Based on some common variable, joins provide a way to merge two datasets together. The tidyverse has LOTS of ways to join. Here's a couple of summaries of them all: 
+* https://medium.com/@HollyEmblem/joining-data-with-dplyr-in-r-874698eb8898
+* https://mikoontz.github.io/data-carpentry-week/lesson_joins.html
+
+The most common, at least in my experience, is the left_join. When joining datasets A and B, this command keeps all rows in A and includes matching values from B. It will NOT add new values from B that don't have a match in A--you'd want right_join or full_join for that. By contrast, inner_join keeps only those observations that are present in both datasets.
+
+Here's an example. Our data folder also has a data file with climate data from the Daymet at county level for 2010-2021. The date field has the years and months for each dataset. Let's look at just July 2020.
+
+```{r, exercise=TRUE}
+daymet<-read_csv("data/daymet_monthly_median_2010-2021.csv") %>%
+  filter(date=="Y2020-7")
+```
+
+Let's say we want to add total population and poverty rate to these data. First we will select these variables. We will also rename the join field to match the one in the daymet data frame.
+
+```{r}
+census_data_sel<-census_data %>%
+  select(GISJn_Cty,totpop_pov,pov_pop_pct) %>%
+  rename(CTY_TXT=GISJn_Cty)
+```
+
+To connect this new variable to our existing data frame, we can use left_join. As long as the matching variable (gisjn_cty in this case) is the same in both datasets, the function will detect it automatically. You'll see what variables it used in red text. It looks like this:
+
+```{r}
+daymet_census<-daymet %>%
+  left_join(census_data_sel)
+```
+
+What if we only had climate data for the state of Texas? The Census FIPS code for Texas is 48, so using the substring function (`substr`), we can create that Texas dataset.
+
+```{r}
+daymet_texas<-daymet %>%
+  filter(substr(CTY_TXT,2,3)=="48")
+```
+
+Now you try using other kinds of joins between this Texas data and the census data to see what each one does: right_join, full_join, inner_join, and anti_join. What is the difference between them?
+
+```{r}
+
+```

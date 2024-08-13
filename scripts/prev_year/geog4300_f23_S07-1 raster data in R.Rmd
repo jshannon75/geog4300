@@ -1,0 +1,223 @@
+---
+title: "Geog4/6300-Working with raster data"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
+---
+
+## Working with raster data in R
+
+The raster package in R provides a suite of tools for loading and working with raster data. We can load a digital elevation model (DEM) geotiff of elevation in Georgia using the raster function as shown below.
+
+```{r cars}
+#install.packages("raster")
+library(raster)
+library(sf)
+library(tidyverse)
+
+dem<-raster("data/dem_ga_clip.tif")
+plot(dem)
+```
+
+You can look at the distribution of values for these elevations using a regular histogram.
+
+```{r}
+hist(dem)
+```
+
+What if you have point data and want to extract values for the raster? Let's load the points for campuses in the University System of Georgia. Which one is the highest? The extract function (from raster) pulls the value for each point.
+
+```{r}
+usg_schools<-read_csv("data/usg_schools_geo.csv") %>%
+  st_as_sf(coords=c("lon","lat"),remove=FALSE,crs=4326)
+
+usg_schools_elev<-raster::extract(dem,usg_schools)
+```
+
+The resulting object is just a simple vector of elevation values. We have to bind it back to the original data frame. The easiest way to do so is using base R.
+
+```{r}
+usg_schools$elev<-usg_schools_elev
+
+View(usg_schools)
+```
+
+The highest campus in Georgia is University of North Georgia, with an elevation of 440 meters. We can also plot this using tmap.
+
+```{r}
+library(tmap)
+tmap_mode("view")
+
+tm_shape(usg_schools)+
+  tm_dots("elev")
+```
+
+##You try it!
+Load the Waffle House dataset shown below. Which Waffle House in Georgia has the highest elevation?
+
+```{r}
+wh<-read_csv("data/wh_georgia_safegraph_xy.csv") %>%
+  distinct(location_name,street_address,city,postal_code,lat,long) %>%
+  st_as_sf(coords=c("long","lat"),crs=4326)
+
+
+```
+
+
+What if we wanted to get descriptive statistics for elevation by counties? The `zonal` function in the terra package allows us to do so. We can then use bind_cols to connect it back to the county dataset. The `rast` and `vect` commands here transform the raster and vector data to terra's format.
+
+```{r}
+library(terra)
+ga_cty<-st_read("data/us_county_simplify_SE_2014pop.gpkg") %>%
+  filter(state=="G13") 
+
+ga_cty_rast<-rasterize(ga_cty,dem,field="FID_1")
+plot(ga_cty_rast)
+
+ga_cty_elev<-terra::zonal(rast(dem),rast(ga_cty_rast),"mean",na.rm=TRUE)
+
+ga_cty$meanelev <- ga_cty_elev$min
+```
+ 
+Towns County has the highest mean elevation in the dataset. Let's map that out.
+
+```{r}
+tm_shape(ga_cty)+
+  tm_polygons("meanelev",style="jenks")
+```
+
+###Mapping countours and slope
+
+Let's subset out county data to just Rabun county in NE Georgia and map out the terrain. We can use the `contour` function to add contours to a plot of the elevations. The `add=TRUE` parameter keeps the underlying map.
+
+```{r}
+rabun<-ga_cty %>%
+  filter(str_detect(NAME,"Rabun"))
+
+dem_rabun<-crop(dem,rabun)
+
+plot(dem_rabun)
+contour(dem_rabun,add=TRUE,col="brown")
+```
+
+The terrain function allows you to extract properties like slope and aspect. Here, we map both slope and then select only those areas with a slope greater than 10 degrees. The third line of code is a raster reclassification, making a raster where 1 represents cells that meet the criteria (slope > 10%) and 0 is those cells that don't.
+
+```{r}
+x <- terrain(dem_rabun, opt = "slope", unit = "degrees")
+plot(x$slope)
+
+x1<-x >= 10
+
+plot(x1)
+```
+
+### Working with categorical raster data
+
+What if we wanted to work with categorical data? We can load data from the National Land Cover Database. We'll also pull in a set of values from the FedData package to see the NLCD classifications
+
+```{r}
+nlcd<-raster("data/nlcd2016_ga.tif")
+plot(nlcd)
+legend<-FedData::pal_nlcd()
+```
+
+We can use the `mask` function in raster to crop this to just Fulton county. We do this in two steps--first cropping the image to a bounding box and then masking with a county polygon. Computationally this is faster than directly masking the full state. We also use terra's `mask` function, as it is faster than the one in raster.
+
+```{r}
+cty<-st_read("data/ACSCtyData_2019ACS_simplify.gpkg") %>%
+  filter(cty_name == "Fulton County, Georgia") %>%
+  st_transform(crs(nlcd)) #Important to align the projection
+
+nlcd_crop<-crop(nlcd,cty)
+plot(nlcd_crop)
+
+nlcd_mask<-terra::mask(rast(nlcd),vect(cty))
+plot(nlcd_mask)
+```
+
+What's the distribution of land uses for this area?
+
+```{r}
+values<-data.frame(freq(nlcd_mask[[1]])) %>%
+  mutate(code=as.character(value)) %>%
+  left_join(legend) %>%
+  filter(is.na(class)==FALSE)
+```
+
+We could sum the total pixels to calculate a percentage and filter for only those above 1%.
+
+```{r}
+total_pix<-sum(values$count)
+
+values<-values %>%
+  mutate(count_pct=round(count/total_pix*100,1)) %>%
+  filter(count_pct>1)
+```
+
+**You try it!**
+Pick another county in Georgia and compare its land use to that of Fulton County.
+
+```{r}
+
+```
+
+## Rasters with functional programming
+
+What if we wanted to do each census tract in Fulton county? To do so, we can use something called functional programming. Similar to a "for loop" in other languages, we can create a function that does all the above steps and apply it to each county in sequence. For example, here's the function:
+
+```{r}
+tracts<-tigris::tracts(state=13,county=121)%>%
+  st_transform(crs(nlcd)) 
+  
+nlcd_count<-function(geoid_sel){
+  tract_sel<-tracts %>% 
+    filter(GEOID == geoid_sel) %>%
+    st_transform(crs(nlcd)) #Important to align the projection
+  
+  nlcd_crop<-terra::crop(rast(nlcd),vect(tract_sel))
+
+  nlcd_mask<-terra::mask(rast(nlcd),vect(tract_sel))
+  
+  values<-data.frame(freq(nlcd_mask[[1]])) %>%
+    mutate(ID=as.numeric(value)) %>%
+    left_join(legend) %>%
+    filter(is.na(Class)==FALSE)
+  
+  total_pix<-sum(values$count)
+
+  values<-values %>%
+    mutate(count_pct=round(count/total_pix*100,1)) %>%
+    filter(count_pct>1) %>%
+    mutate(tct_fips=geoid_sel)
+  }
+```
+
+We can then get a list of county names. For this exercise, we'll just use the first three names, as this function takes awhile to run.
+
+```{r}
+tct_names<-unique(tracts$GEOID)[1:3]
+```
+
+Lastly, we can use the `map_df` function from the broom package to apply this function to our dataset.
+
+```{r}
+tct_nlcd<-map_df(tct_names,nlcd_count)
+```
+
+We can then map these values. Let's look at the forest class.
+
+```{r}
+cty_nlcd_forest<-cty_all %>%
+  inner_join(cty_nlcd %>% filter(description=="Deciduous Forest")) 
+
+tm_shape(cty_nlcd_forest)+
+  tm_polygons("count_pct",style="jenks")
+```
+
+
+Note that raster is an older package, and both `terra` (created as the successor to `raster`) and `stars` are newer. 
+
+Here's another walkthrough of raster data in R with some more advanced functions:
+https://ourcodingclub.github.io/tutorials/spatial/
+
+For 3D Visualization, the rayshader package can do some pretty amazing things. Here's one walkthrough: https://wcmbishop.github.io/rayshader-demo.

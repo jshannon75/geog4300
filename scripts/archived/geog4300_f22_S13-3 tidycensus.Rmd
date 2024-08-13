@@ -1,0 +1,93 @@
+---
+title: "Geog6300: Tidycensus"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup}
+library(tidyverse)
+library(sf)
+library(tmap)
+#install.packages(c("tidycensus","tigris"))
+library(tidycensus)
+library(tigris)
+```
+
+
+### Working with U.S. Census data through tidycensus
+
+There's much more info on the tidycensus package in Kyle Walker's book: https://walker-data.com/census-r/.
+
+This page is also useful: https://walker-data.com/tidycensus/articles/basic-usage.html
+
+To use tidycensus, you need to register for a Census API Key. You can do so here: https://api.census.gov/data/key_signup.html
+
+We're going to map out the percentage of households with no broadband access by county.
+
+To start with, you need to register your key. Just replace "key" below with the key you received. The overwrite parameter replaces previous keys and install saves the key for future work sessions.
+
+```{r}
+census_api_key(key, overwrite = FALSE, install = TRUE)
+```
+
+Let's start by downloading a list of available variables from the 2015-19 American Community Survey. We'll specify the year, dataset, and whether to cache this file locally on your computer.
+
+```{r}
+v19 <- load_variables(2019, "acs5", cache = TRUE)
+```
+
+You can open this downloaded file to see the list. You have a variable ID (name), specific variable label (label), and table name (concept). To find variables related to internet usage, filter the data frame and search for Internet under concept. It looks like we want table B28002, which has several variables related to internet subscriptions. 
+Let's download those variables. We'll first create a subsetted dataframe showing just variables from B28002. We'll then use get_acs to download them.
+
+```{r}
+var_select<-v19 %>% filter(substr(name,1,6)=="B28002")
+
+cty_internet<-get_acs(geography="county",variables=var_select$name,year=2019)
+```
+
+The downloaded table has five fields: the county FIPS code (GEOID), the county name (NAME), the variable code (variable), an estimated household count (estimate), and the margin of error (moe). 
+
+It's always good to check margin of error to see how precise your estimates are, but for this exercise, we'll delete that and make our variables wide.
+
+```{r}
+cty_internet_wide<-cty_internet %>%
+  select(-moe) %>%
+  pivot_wider(names_from=variable,values_from=estimate)
+```
+
+Now we can compute the percentage of homes in each county without broadband internet. Looking back at our variable list, we need total households (B28002_001) and households WITH broadband of any type (B28002_004). We can use these to calculate households WITHOUT Internet, since those are listed under several categories. See the code below:
+
+```{r}
+cty_internet_wide_nobroad<-cty_internet_wide %>%
+  mutate(nobroad=(B28002_001-B28002_004),
+         nobroad_pct=nobroad/B28002_001*100)
+```
+
+To map these data, we can either join to an already existing spatial file or download Census files directly through tidycensus. We'll use get_acs again with just a total population variable (B01001_001) and specify geometry=TRUE. 
+
+```{r}
+cty<-get_acs(geography="county",variables="B01001_001",geometry=TRUE)
+```
+
+Or you can use Kyle's earlier tigris package to download county boundaries. Here we get a version of them that moves Alaska and Hawaii down below the 48 states.
+
+```{r}
+cty1<-counties(class="sf",resolution="20m") %>%
+  shift_geometry(position="below")
+```
+
+
+Now we can join the data table to these boundaries and map! We'll create an interactive tmap in this case. To speed up the mapping, we'll select just counties in Texas (FIPS code 48)
+
+```{r}
+cty_data<-cty1 %>%
+  inner_join(cty_internet_wide_nobroad %>%
+              filter(substr(GEOID,1,2)==48))
+
+tmap_mode("view")
+tm_shape(cty_data)+
+  tm_polygons("nobroad_pct",style="jenks",alpha=0.5)
+```
+
+That's all there is to it. Happy census mapping!
