@@ -11,3 +11,5 @@ Lab repositories
 * Lab 5: [Github Classroom Link]
 * Lab 6: [Github Classroom Link]
 * Lab 7: [Github Classroom Link]
+
+Link to the [Github Classroom page](https://classroom.github.com/classrooms/53152729-geog4-6300-data-science-in-geography-fall-2024)
