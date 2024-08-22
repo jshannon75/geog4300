@@ -12,7 +12,7 @@ In this script, we'll go over learn a few more functions from the tidyverse: gat
 ```{r}
 library(tidyverse)
 
-census_data<-read_csv("data/ACSCtyData_2019ACS.csv")
+census_data<-read_csv("data/ACSCtyData_2022ACS.csv")
 ```
 
 ###Introducing joins
@@ -34,8 +34,8 @@ Let's say we want to add total population and poverty rate to these data. First 
 
 ```{r}
 census_data_sel<-census_data %>%
-  select(GISJn_Cty,totpop_pov,pov_pop_pct) %>%
-  rename(CTY_TXT=GISJn_Cty)
+  select(gisjn_cty,totpop_pov,pov_pop_pct) %>%
+  rename(cty_txt=gisjn_cty)
 ```
 
 To connect this new variable to our existing data frame, we can use left_join. As long as the matching variable (gisjn_cty in this case) is the same in both datasets, the function will detect it automatically. You'll see what variables it used in red text. It looks like this:
@@ -49,7 +49,7 @@ What if we only had climate data for the state of Texas? The Census FIPS code fo
 
 ```{r}
 daymet_texas<-daymet %>%
-  filter(substr(CTY_TXT,2,3)=="48")
+  filter(substr(cty_txt,2,3)=="48")
 ```
 
 Now you try using other kinds of joins between this Texas data and the census data to see what each one does: right_join, full_join, inner_join, and anti_join. What is the difference between them?

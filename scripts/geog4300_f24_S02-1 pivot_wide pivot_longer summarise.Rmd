@@ -10,7 +10,7 @@ In this script, we'll go over learn a few more functions from the tidyverse: gro
 ```{r}
 library(tidyverse)
 
-census_data<-read_csv("data/ACSCtyData_2019ACS.csv")
+census_data<-read_csv("data/ACSCtyData_2022ACS.csv")
 ```
 
 ###Group_by and summarise
@@ -20,13 +20,13 @@ Note that summarise is similar to, but different from mutate. It condenses multi
 
 ```{r}
 badeg_state<-census_data %>%
-  group_by(St_name) %>%
+  group_by(st_name) %>%
   summarise(BA_mean=mean(BADeg_pct))
 
 badeg_state2<-census_data %>%
-  group_by(St_name) %>%
+  group_by(st_name) %>%
   mutate(BA_mean=mean(BADeg_pct)) %>%
-  select(cty_name,St_name,BADeg_pct,BA_mean)
+  select(cty_name,st_name,BADeg_pct,BA_mean)
 ```
 
 Now you try it! Calculate the median, mean, and standard deviation for the county poverty rate (pov_pop_pct) by state.
@@ -43,7 +43,7 @@ Here's how they work. Let's say we wanted to summarize all the education variabl
 
 ```{r}
 edvars<-census_data %>%
-  select(cty_name,St_name,LessHS_pct:GradDeg_pct) %>%
+  select(cty_name,st_name,LessHS_pct:GradDeg_pct) %>%
   pivot_longer(LessHS_pct:GradDeg_pct,
                names_to="variable",
                values_to="rate")
@@ -53,7 +53,7 @@ You'll notice that this new table has just four columns, the county and state na
 
 ```{r}
 edvars1<-edvars %>%
-  group_by(St_name,variable) %>%
+  group_by(st_name,variable) %>%
   summarise(mean_rate=mean(rate))
 ```
 
@@ -69,17 +69,17 @@ If we prefer, we can do all this in one long, piped chain:
 
 ```{r}
 edvars3<-census_data %>%
-  select(cty_name,St_name,LessHS_pct:GradDeg_pct) %>%
+  select(cty_name,st_name,LessHS_pct:GradDeg_pct) %>%
   pivot_longer(LessHS_pct:GradDeg_pct,
          names_to="variable",
          values_to="rate") %>%
-  group_by(St_name,variable) %>%
+  group_by(st_name,variable) %>%
   summarise(mean_rate=mean(rate)) %>%
   pivot_wider(names_from=variable,
               values_from=mean_rate)
 ```
 
-Now you try it! Calculate the mean value by state for the nat_ins_pct, fbnat_ins_pct, and fb_ins_pct variables.
+Now you try it! Calculate the mean value by state for the `intnet_brd_pct` (Percent with broadband internet) and `ugrad_pct` (Percent enrolled in an undergraduate program) variables.
 
 ```{r}
 
