@@ -1,0 +1,78 @@
+---
+title: "Introduction to functional programming"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
+---
+
+Sometimes you come across a part of your analysis where you need to run the same steps repeatedly--conducting the same analysis for different regions or across different years. In those cases, functional programming can be a helpful strategy. Rather than repeat the same code over and over, this allows you to write the function once and then just run it as a function when needed. This produces shorter code and, more importantly, means you only have to revise that code in one place should your analysis strategy change.
+
+This script shows you a simple example. We'll start by loading the necessary packages.
+
+```{r setup}
+library(tidyverse)
+```
+
+In the data folder of the course repo, you'll see a folder called `census_pulse_2023.` This includes data for multiple rounds of the U.S. Census Pulse survey: 
+
+https://www.census.gov/data/experimental-data-products/household-pulse-survey.html
+
+Started during the pandemic, the Pulse Survey is meant to provide quick snapshots of the population for issues such as health and housing. These files are "microdata," meaning they reflect individual responses to the survey questions, not aggregated data as you would see in the ACS data we have used.
+
+The folder currently has 12 data files and one data dictionary/metadata file. One option is we can just create a list of the files and read them in. To do the former, we can use the `list.files` function that's part of base R. 
+
+To read them in, we can use the `map` function from the `purrr` package, which provides a set of tools relevant for tasks like these. The first parameter in `map` is usually a vector of characters (file names in this case). These are then all passed to the function listed as the second parameter (`read_csv` here). In this code we use `map_df`, which merges all these files into a single data frame. 
+
+In essence, the map_df function below just applies the `read_csv` function to each file listed in the `pulse_files` object.
+
+```{r}
+pulse_files<-list.files(path="data/census_pulse_2023", #What folder to search
+                        pattern="puf_", #Text string to identify relevant files (not the data dictionary)
+                        full.names=TRUE) #Include the folders, not just the file names
+
+pulse_all<-map_df(pulse_files,read_csv)
+
+```
+
+To get to the functional programming part, we can just define our own function. For example, imagine that we wanted to create a table showing the number of people in the past week doing various amounts of telework (see the `TWDAYS` variable in the data dictionary for an explanation of the codes). If we just wanted to do this for one csv file, it would look like the function below. 
+
+We sum the `HWEIGHT` variable because each respondant is weighted to get a representative profile of households. HWEIGHT is the number of households that respondent represents.
+
+```{r}
+pulse_52<-read_csv("data/census_pulse_2023/pulse2022_puf_52.csv")
+
+pulse_52_tw<-pulse_52 %>%
+  group_by(WEEK,TWDAYS) %>%
+  summarise(pop_est=sum(HWEIGHT)) %>%
+  pivot_wider(names_from=TWDAYS,values_from=pop_est)
+```
+
+Now let's say we want to do this function for each file as it's read in before combining them. We could do so by creating new function and then applying it. The code below defines the function and then applies it to the same file as we used above.
+
+```{r}
+tw_table<-function(file_sel){
+  pulse_file<-read_csv(file_sel)
+  
+  pulse_file_tw<-pulse_file %>%
+    group_by(WEEK,TWDAYS) %>%
+    summarise(pop_est=sum(HWEIGHT)) %>%
+    pivot_wider(names_from=TWDAYS,values_from=pop_est)
+}
+
+pulse_52_tw2<-tw_table("data/census_pulse_2023/pulse2022_puf_52.csv")
+
+```
+
+Now we can just use `map_df` to apply that function to all the files
+
+```{r}
+pulse_tw_all<-map_df(pulse_files,tw_table)
+```
+
+##You try it!!##
+Create a new function that creates a similar table for the `FREEFOOD` variable. Apply it to the pulse files using the `map_df` function.
+
+```{r}
+
+```
+
