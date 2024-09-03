@@ -36,7 +36,7 @@ pulse_all<-map_df(pulse_files,read_csv)
 
 To get to the functional programming part, we can just define our own function. For example, imagine that we wanted to create a table showing the number of people in the past week doing various amounts of telework (see the `TWDAYS` variable in the data dictionary for an explanation of the codes). If we just wanted to do this for one csv file, it would look like the function below. 
 
-We sum the `HWEIGHT` variable because each respondant is weighted to get a representative profile of households. HWEIGHT is the number of households that respondent represents.
+We sum the `HWEIGHT` variable because each respondent is weighted to get a representative profile of households. HWEIGHT is the number of households that respondent represents.
 
 ```{r}
 pulse_52<-read_csv("data/census_pulse_2023/pulse2022_puf_52.csv")
