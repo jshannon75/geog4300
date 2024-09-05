@@ -49,7 +49,16 @@ cty_medinc_wide<-cty_medinc %>%
 
 There's more info on the tidycensus package in Kyle's book: https://walker-data.com/census-r/. This page is also useful: https://walker-data.com/tidycensus/articles/basic-usage.html
 
-##Visualizing the data with ggplot
+##You try it!
+Can you download data on tenure status (owner/renter)  at county level using tidycensus?
+
+```{r}
+
+```
+
+
+
+#Visualizing the data with ggplot
 
 ggplot is the most common tool used for data visualization in R. It is extremely flexible and versatile, which is why it is so popular. There's a cheat sheet on using ggplot on the RStudio page that explains the basic structure it uses: https://www.rstudio.com/resources/cheatsheets/
 
