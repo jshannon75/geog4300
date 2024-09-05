@@ -2,9 +2,12 @@
 library(tidycensus)
 library(tidyverse)
 
-old<-read_csv("data/ACSCtyData_2019ACS.csv") %>%
-  select(GEOID:Region) %>%
-  mutate(GEOID=as.character(GEOID))
+old<-read_csv("data/archive/ACSCtyData_2019ACS.csv") %>%
+  select(GISJn_St,St_name,Region) %>%
+  rename(gisjn_st=GISJn_St,
+         st_name=St_name,
+         region=Region) %>%
+  distinct()
 
 vars<-load_variables(2022,"acs5",cache=TRUE)
 
@@ -82,20 +85,18 @@ ctydata_format<-ctydata %>%
          nat_ins_pct=if_else(nat_pop>0,nat_ins/nat_pop*100,0),
          fbnat_ins_pct=if_else(fbnat_pop>0,fbnat_ins/fbnat_pop*100,0),
          fb_ins_pct=if_else(fb_pop>0,fb_ins/fb_pop*100,0)) %>%
-  select(-B03002_001:-B28011_008,-NAME)
+  select(-B03002_001:-B28011_008) %>%
+  rename(cty_name=NAME,cty_fips=GEOID) %>%
+  mutate(gisjn_st=paste("G",substr(cty_fips,1,2),sep=""))
 
 ctydata_all<-old %>%
-  mutate(GEOID=str_pad(GEOID,5,pad="0")) %>%
-  left_join(ctydata_format) %>%
-  rename(gisjn_cty=GISJn_Cty,
-         gisjn_st=GISJn_St,
-         st_name=St_name,
-         region=Region)
+  left_join(ctydata_format) 
 
 write_csv(ctydata_all,"data/ACSCtyData_2022ACS.csv")
 
 library(sf)
-cty_boundary<-st_read("data/ACSCtyData_2019ACS_simplify.gpkg") %>%
+cty_boundary<-st_read("data/archive/ACSCtyData_2019ACS_simplify.gpkg") %>%
   select(GEOID) %>%
+  rename(cty_fips=GEOID) %>%
   left_join(ctydata_all)
 st_write(cty_boundary,"data/ACSCtyData_2022ACS_simplify.gpkg",delete_dsn=TRUE)
