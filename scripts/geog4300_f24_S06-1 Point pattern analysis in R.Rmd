@@ -1,0 +1,258 @@
+---
+title: "Point pattern analysis in R"
+output: html_notebook:
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup}
+library(tidyverse)
+library(sf)
+library(tmap)
+library(tmaptools)
+
+dollars<-read_csv("data/dollars.csv") %>%
+  st_as_sf(coords=c("x","y"),crs=4326)
+
+atl_pumas<-st_read("data/atl_pumas.gpkg")
+
+```
+
+
+##Nearest neighbors
+
+The spatialEco package has a "nni" function that allows you to easily calculate the Nearest Neighbor Index, a measure of spatial clustering. The NNI and z-score tell you the index and a measure of significance--generally any absolute value higher than 1.96 or lower than -1.96 would be significant.
+
+```{r}
+#install.packages("spatialEco")
+library(spatialEco)
+nni(dollars)
+```
+
+####You try it!
+Create new data frames from the dollar store dataset for Family Dollar and Dollar General. Compute the NNI index for each. What does each result tell you?
+
+```{r}
+
+```
+
+
+##Point pattern analysis with PUMAs
+What if our goal is to look at the concentration of chains across the metro? To do that, we need to create counts of each store within each PUMA. This will follow these steps:
+
+1) Use a spatial join to connect the PUMA identifier to the dollar stores
+2) Use `count` (which combines group_by and summarise) to count the number of stores within each PUMA by chain
+3) Calculate the percentage of each chain for each PUMA or any other statistics we want to use
+
+To start, we can use st_join to do a *spatial join* between stores and the underlying PUMAs. See [this page](https://gisgeography.com/spatial-join/) for an explanation of spatial joins. The st_join function will join all the variables for the PUMA each store is in based on its location--in this case whether the store is *within* the PUMA polygon (st_within). The census data is not in WGS 84, so we will set the projection while joining.
+
+```{r}
+dollars_puma<-dollars %>%
+  st_join(atl_pumas %>% st_transform(4326), #st_transform changes the projection to the listed EPSG number
+          join=st_within) %>%
+  filter(is.na(GEOID)==FALSE)
+
+#Plot stores by tract
+tm_shape(dollars_puma) + 
+  tm_dots("GEOID",size=0.2)+
+  tm_legend(legend.show=FALSE)
+```
+
+We can then remove the geometry column (which contains the spatial data) using the st_set_geometry function. This will transform the stores back to a regular data frame. 
+
+```{r}
+dollars_puma_df<-dollars_puma %>%
+  st_set_geometry(NULL) 
+```
+
+Now we can see how many stores there are in each PUMA. We can tally these points using the GEOID field (tract fips code) and the store category variable using the count function, which basically combines group_by and summarise.
+
+```{r}
+dollars_puma_count<-dollars_puma_df %>%
+  count(GEOID,dollar_type)
+```
+
+These data are in long format. We can use pivot_wider and mutate to make this easier to read and calculate the total number of stores and the percentage of stores that are Family Dollars in each PUMA. 
+
+```{r}
+dollars_puma_count_wide<-dollars_puma_count %>%
+  pivot_wider(names_from=dollar_type,
+              values_from=n,
+              values_fill=0) %>% #values_fill replaces any NAs with 0
+  mutate(total_stores=`Dollar General`+`Family Dollar`+`Dollar Tree`,
+         fd_pct=`Family Dollar`/total_stores*100)
+```
+
+Now we can join those summary data to the PUMA boundary dataset and map it. 
+
+```{r}
+atl_pumas_join<-atl_pumas %>%
+  left_join(dollars_puma_count_wide)
+
+tm_shape(atl_pumas_join)+
+  tm_polygons("fd_pct")
+```
+
+IMPORTANT: Note that in order to preserve the geometry column, you always want to join non-spatial data TO spatial data. That is, it should always looks like this: spatial data %>% left_join(non-spatial data).
+
+###You try it!
+Calculate the percentage of stores that are Dollar Generals and Dollar Trees in each PUMA by adapting the above code. For an extra challenge, use `tmap_arrange` to put all three maps in a single figure. 
+
+See this example of `tmap_arrange`: https://thinking-spatial.org/courses/angewandte_geodatenverarbeitung/kurs04/#by-using-the-tmap_arrange-function
+
+```{r}
+
+```
+
+
+###Quadrats in R
+Quadrat analysis is also possible in R. To create quadrats, you can use `st_make_grid` from the sf package. You can change the size and shape (hex/square).
+
+```{r}
+grid1<-st_make_grid(atl_pumas,cellsize=0.05)
+grid2<-st_make_grid(atl_pumas,cellsize=0.1)
+grid3<-st_make_grid(atl_pumas,cellsize=0.05,square=FALSE)
+
+tm_shape(grid1)+
+  tm_borders(col="red",alpha=0.3)+
+tm_shape(atl_pumas)+
+  tm_borders()
+  
+tm_shape(grid2)+
+  tm_borders(col="red",alpha=0.3)+
+tm_shape(atl_pumas)+
+  tm_borders()
+
+tm_shape(grid3)+
+  tm_borders(col="red",alpha=0.3)+
+tm_shape(atl_pumas)+
+  tm_borders()
+
+```
+
+To add a row number ID, just use the `row_number` function. This can be useful for spatial joins, as you can join the cell identifier (`rowID`in this case) to each store first, and then count the number of stores by this ID field.
+
+```{r}
+grid1<-st_make_grid(atl_pumas,cellsize=0.05) %>%
+  mutate(rowID=row_number())
+```
+
+###Calculating location quotient
+What if we wanted the location quotient for the percentage of Family Dollar stores in each PUMA to be able to more easily compare them? 
+
+We already have most of the data we need to calculate this figure. First, we need to calculate a rate for the whole metro area. We can use the `nrow` function to count restaurants and then create an object with the percentage that are Dollar Generals.
+
+```{r}
+total_rest=nrow(dollars_puma) #Calculates total number of rows in the dataset
+fd_rest=nrow(dollars_puma %>% filter(dollar_type=="Family Dollar")) #Does the same for just Family Dollar
+area_ratio=dg_rest/total_rest*100 #Calculates the percentage that are FD (39%)
+```
+
+Getting the LQ is simple using mutate. We divide the percentage of stores in each PUMA that are Family Dollar by the overall rate of those stores in the metro.
+
+```{r}
+atl_pumas_join<-atl_pumas_join %>%
+  mutate(fd_lq=fd_pct/area_ratio)
+```
+
+#You try it!
+Calculate the LQ for another chain of your choosing. Can you map that LQ?
+
+```{r}
+
+```
+
+#Kernel density mapping
+Kernel density and contour mapping provide another way to visualize point density. What if we wanted to visualize tornado density in the Southeast? Traditionally, R users have employed the `spatstat` package for this purpose, and you might check that out if you're interested. For this script, we will use the relatively new `eks` package, which allows us to use `ggplot` for mapping.
+
+```{r}
+#install.packages("eks")
+library(eks)
+```
+
+We will work with tornado data for this analysis. We will also load a spatial file (in geopackage format) for states in the Southeast.  
+
+The raw tornado data are available at https://www.spc.noaa.gov/gis/svrgis/.
+
+The code below is drawn from this tutorial: https://adelieresources.com/2022/10/making-contour-maps-in-r/ 
+
+```{r}
+tornado_points<-read_csv("data/tornado_pointsSE.csv") %>%
+  st_as_sf(coords=c("x_utm","y_utm"),remove=FALSE,crs=32615) #Coordinate system is UTM 15, which will look better.
+
+tor1<-st_kde(tornado_points) #Transform the data into KDE format (kernel density estimation).
+
+#Basic plot of these densities
+plot(tor1) 
+
+#Let's use ggplot to map these contours
+ggplot(st_get_contour(tor1))+
+  geom_sf(aes(fill=label_percent(contlabel)),
+          alpha=0.6)
+```
+
+This is fine, but what if we want more context for these contours? We can use the `ggspatial` package, specifically the `annotation_map_tile` function. 
+
+```{r}
+#install.packages("ggspatial")
+library(ggspatial)
+
+Base_ggspatial <- ggplot(tornado_points) +
+    annotation_map_tile(zoomin=-1,progress="none") +
+    geom_sf(alpha=0.05,col="#a66607")
+Base_ggspatial
+```
+
+That gets us a basemap. What if we want to emphasize state boundaries?
+
+```{r}
+#Read in state data
+states<-st_read("data/states_se.gpkg") %>%
+  st_transform(32615) #Transform to UTM 15
+
+ggspatial_st <- ggplot(states) +
+    annotation_map_tile(zoomin=-1,progress="none") +
+    geom_sf(data=tornado_points,alpha=0.05,col="#a66607")+
+    geom_sf(fill=NA,alpha=0.2) #Make the state fills transparent and borders mostly transparent
+ggspatial_st
+```
+
+Lastly, we can add our contour map.
+
+```{r}
+ggspatial_cont<-ggplot(states)+
+  annotation_map_tile(zoomin=-1,progress="none") +
+  geom_sf(data=st_get_contour(tor1,cont=c(20,40,60,80)), 
+          aes(fill=label_percent(contlabel)),
+          alpha=0.6)+
+  geom_sf(data=tornado_points,alpha=0.1,col="#a66607",stroke=0.1)+
+  geom_sf(data=states,fill=(alpha=0.01))
+ggspatial_cont
+
+```
+
+You can also map these with tmap. #
+
+```{r}
+#Make a polygon object with the contours and add a variable with labels
+contours<-st_get_contour(tor1,cont=c(20,40,60,80)) %>%
+  mutate(value=as.numeric(levels(contlabel)))
+
+tmap_mode("view")
+tm_shape(states,col="black", size=0.5)+ 
+  tm_borders()+
+tm_shape(contours) +
+  tm_polygons(col="value",
+                      palette=rev(get_brewer_pal("Blues", n = 6)), 
+                      alpha=0.5 )
+```
+
+##You try it!
+Add the tornado points to the tmap plot above 
+AND/OR
+Change the contour levels to see how the pattern changes
+
+```{r}
+
+```
+

@@ -88,7 +88,7 @@ tm_shape(blocks)+
   tm_polygons()
 ```
 
-Blocks are very detailed! What if we wanted to dissolve these to tracts? We can just use group_by and summarise, and sf will dissolve the boundaries.
+Blocks are very detailed! What if we wanted to use a dissolve to connect these to tracts? We can just use group_by and summarise, and sf will dissolve the boundaries.
 
 ```{r}
 blocks_tract<-blocks %>%
@@ -96,9 +96,30 @@ blocks_tract<-blocks %>%
   summarise()
 
 tm_shape(blocks_tract)+
-  tm_polygons()+
+  tm_polygons(border.col = "blue")+
 tm_shape(st_centroid(blocks))+
   tm_dots()
+```
+
+We could also do a "difference" of those tract polygons to map those areas outside the buffers were created around stores. We will do so using the `ms_erase` function from `rmapshaper` (which also has an excellent online platform: https://mapshaper.org/)
+
+```{r}
+#install.packages(rmapshaper)
+library(rmapshaper)
+
+st_crs(wh_buffer)
+
+blocks_whdesert<- blocks_tract %>%
+  summarise() %>%
+  st_transform(st_crs(6445)) %>%
+  ms_erase(wh_buffer)
+
+st_write(blocks_whdesert,"test_whdesert.gpkg")
+
+tm_shape(blocks_tract)+
+  tm_polygons(border.alpha=0,col="#bfb90d")+
+tm_shape(blocks_whdesert)+
+  tm_polygons(col="#1204b3",border.alpha=0.5)
 ```
 
 **You try it!**
@@ -108,42 +129,42 @@ How many blocks are NOT within a one mile buffer of a Waffle House? Use st_centr
 
 ```
 
+Take a look through the documentation for sf by clicking on the Packages tab in the lower right pane and then clicking on `sf.` What other spatial functions stick out to you?
+
 ### Measuring proximity
-
-There are several functions in R packages that allow for distance mapping. The `sf` package has `st_distance` that creates a distance matrix between points. For example, the code below creates a matrix showing the distance in meters between each block centroid and each of the dollar stores geocoded in Fulton county.
-
-```{r}
-distances<-blocks %>%
-  st_transform(st_crs(wh_sel_geo)) %>%
-  st_centroid() %>%
-  st_distance(wh_sel_geo) 
-```
-
-What if we wanted to then select the distance to the *closest* Waffle House for each block? We can do so by converting this distance matrix to a data frame, binding those columns to the block data, pivoting longer, and selecting the minimum distance with group_by and summarise.
+There are several functions in R packages that allow for distance mapping. Outside of `sf`, the `nngeo` package has a function called "st_nn" that is helpful for identifying the closest neighbors by Euclidean (straight-line) distance. We will also convert the block polygons to centroids to make mapping easier (point to point is faster than polygon to point).
 
 ```{r}
+#install.packages("nngeo")
+library(nngeo)
 
 blocks_wh<-blocks %>%
-  st_set_geometry(NULL) %>%
-  bind_cols(data.frame(distances)) %>% 
-  pivot_longer(X1:X34,names_to="store",values_to="dist") %>%
-  group_by(GEOID20) %>%
-  summarise(dist=min(dist))
+  st_transform(st_crs(wh_sel_geo)) %>%  #Transform blocks to use the same crs as the WH data 
+  st_centroid() #change from polygons to centroids
+
+dist_calc<-st_nn(blocks_wh,wh_sel_geo,returnDist = TRUE) #returnDist includes the distance in meters
 ```
 
-We can then join this back to the original blocks data frame and plot the results. We will create block centroids for ease of mapping
+Notice that the wh_dist object is a *list*, not a data frame. That list actually includes TWO dataframes. One gives the row number of the closest Waffle House location in the `wh_sel_geo` dataset. The second gives the distance in meters. Let's add the values for that second one as a new column in our WH dataset
 
 ```{r}
-blocks_wh1<-blocks %>%
-  st_centroid() %>%
-  left_join(blocks_wh)
+blocks_wh$dist<-as.numeric(dist_calc$dist)
 
-tm_shape(blocks_wh1)+
+tm_shape(blocks_wh) +
   tm_dots("dist",style="jenks")
-
 ```
 
-For large datasets, the `nngeo` package runs more quickly than `st_distance`. More on that here: https://github.com/michaeldorman/nngeo
+##You try it!
+What if we want to map these as polygons rather than dots? How could we do that?
+AND/OR
+What if we wanted the distances to be in kilometers rather than meters?
+AND/OR
+Does st_nn allow you to find the distance to the THIRD closest Waffle House? How would you do it if so?
+
+
+```{r}
+
+```
 
 For network/travel distances, Google and Mapbox are two of several providers whose API provides routing and travel time/distances. Both are available via R packages.
 

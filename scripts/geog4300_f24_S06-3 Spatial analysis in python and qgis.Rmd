@@ -1,0 +1,68 @@
+---
+title: "Spatial analysis in Python an d QGIS"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
+---
+
+R is a versatile language, but sometimes there are tools in other languages that just work better. One feature of RStudio is that it can incorporate Python, the closest sibling to R in the data science family tree. To do that, you just change that `r` at the start of the code chunk to `python`. This makes use of the `reticulate` package, and allows you to easily translate datasets. (https://rstudio.github.io/reticulate/)
+
+Note that you also need to have Python installed on your computer for this script to function. You also need to install necessary packages. To do so, you need to click on the terminal tab of the lower left quadrant and type the following commands:
+
+pip install pandas
+pip install numpy
+pip install geopandas
+pip install geoplot
+pip install shapely
+
+#Using reticulate to move datasets between R and Python
+
+Here's one basic example. Let's read in data on tornadoes over the last 50 years, provided by NOAA.
+
+```{r}
+library(tidyverse)
+library(reticulate)
+
+tornado<-read_csv("data/tornado_pointsSE.csv")
+```
+
+Let's imagine that this is the output from some intense R analysis, but now we want to move it into Python. Doing so is simple. We'll read that in and then use the `pandas` package to filter them just to the state of Georgia
+
+```{python}
+import pandas as pd
+import numpy
+
+tornado_py=r.tornado
+
+tornado_ga=tornado_py[tornado_py['ST']=='GA']
+```
+
+Notice how RStudio opens a new tab in the Environment tab with the `tornado_py` object. After doing our filtering, we can send this object back to R:
+
+```{r}
+tornado_ga_r<-py$tornado_ga
+```
+
+
+#Using QGIS
+You can use other such tools in R. For example, the `qgisprocess` package allows you to run functions from QGIS within the R environment: https://r-spatial.github.io/qgisprocess/. This is helpful when 1) QGIS has a function not yet implemented in R or 2) QGIS does the task better than the equivalent R function. Spatial joins, for example, go MUCH faster in QGIS than they do in R.
+
+Let's use the tornado and ACS data and do a spatial join in QGIS--mapping which county each tornado started in and its characteristics. The easiest way to figure out the code here is to run a similar process in GIS, which provides you the code used in that software. This is a place where ChatGPT can also help (that's what I started with).
+
+```{r}
+#install.packages("qgisprocess")
+library(qgisprocess)
+
+qgis_run_algorithm(
+  "native:joinattributesbylocation", # QGIS algorithm ID
+  INPUT = "data/tornadopoints_SE.gpkg",  # Target layer (e.g., polygons)
+  JOIN = "data/ACSCtyData_2022ACS_simplify.gpkg",     # Join layer (e.g., points)
+  PREDICATE = 5,   # Spatial predicate: 1 means "intersects", etc. We use 5 here for "within" as the spatial relationship.
+  METHOD = 0,         # Join method: 0 = Take attributes of the first matching feature
+  DISCARD_NONMATCHING = FALSE,  # Keep non-matching features or not
+  PREFIX = "",       # Prefix for the joined fields
+  OUTPUT = "output_layer1.gpkg"  # Path to the output shapefile
+)
+
+output<-st_read("output_layer1.gpkg")
+```

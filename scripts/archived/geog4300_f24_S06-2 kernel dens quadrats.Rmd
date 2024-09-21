@@ -15,6 +15,9 @@ library(tidyverse)
 library(spatstat)
 library(sf)
 library(maptools)
+
+install.packages("eks")
+library(eks)
 ```
 
 We will work with tornado data for this analysis. We will also load a spatial file (in geopackage format) for states in the Southeast. Spatstat requires *projected data*, not just raw WGS84 coordinates. This dataset thus gives coordinates in that projection format. 
@@ -26,6 +29,9 @@ The `as.owin` package creats an operating window for spatstat to use. `as_Spatia
 ```{r}
 tornado_points<-read_csv("data/tornado_pointsSE.csv") %>%
   st_as_sf(coords=c("x_utm","y_utm"),remove=FALSE,crs=32615) #Coordinate system is UTM 15
+
+tor1<-st_kde(tornado_points)
+plot(tor1,ad)
 
 states<-st_read("data/states_se.gpkg") %>%
   st_transform(32615) #Transform to UTM 15
