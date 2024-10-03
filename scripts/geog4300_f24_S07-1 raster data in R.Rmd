@@ -1,0 +1,185 @@
+---
+title: "Geog4/6300-Working with raster data"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
+---
+
+## Working with raster data in R
+
+The raster package in R provides a suite of tools for loading and working with raster data. We can load a digital elevation model (DEM) geotiff of elevation in Georgia using the raster function as shown below.
+
+```{r cars}
+#install.packages("raster")
+library(raster)
+library(sf)
+library(tidyverse)
+library(tidycensus)
+library(FedData)
+library(tmap)
+
+houston<-st_read("data/US_ua_2020_urban.gpkg") %>%
+  filter(str_detect(NAME10,"Houston")) %>%
+  select(NAME10) %>%
+  st_transform(4326)
+
+legend<-pal_nlcd()
+
+nlcd21<-raster("data/nlcd/nlcd_houston21.tif")
+plot(nlcd21,col=legend$Color)
+```
+
+
+You can look at the distribution of values for these elevations using a regular histogram.
+
+```{r}
+hist(nlcd21)
+```
+
+This is categorical data, so you could also look at the number of pixels/cells in each category using the `freq` function, wrapped in a data frame so that it comes out as usable table.
+
+```{r}
+freq_table<-data.frame(freq(nlcd21))
+
+#Remove the black/0 value cells and add in a description of each land use type
+freq_table_join<-freq_table %>%
+  filter(value!=0) %>%
+  left_join(legend %>% rename(value=ID))
+```
+
+##You try it!
+How could you calculate the percentage of land in Houston covered by each land use type? You'd need to get the total number of pixels and then divide the counts for each area by that number.
+
+```{r}
+
+```
+
+#Value extraction
+
+What if you have point data and want to extract values for the raster? Let's load points for Starbucks in Houston. The extract function (from raster) pulls the value for each point. What's the most common land use type for each one?
+
+```{r}
+starbucks_houston<-read_csv("data/brandlocations.csv") %>%
+  st_as_sf(coords=c("X","Y"),crs=4326) %>%
+  st_join(houston,join=st_within) %>%
+  filter(!is.na(NAME10) & brands=="Starbucks")
+
+starbucks_nlcd<-raster::extract(nlcd21,starbucks_houston)
+```
+
+The resulting object is just a simple vector of elevation values. We have to bind it back to the original data frame. The easiest way to do so is using base R.
+
+```{r}
+starbucks_houston$nlcd<-starbucks_nlcd
+
+View(starbucks_houston)
+```
+
+We can also plot these values using tmap.
+
+```{r}
+library(tmap)
+
+tm_shape(starbucks_houston)+
+  tm_dots("nlcd")
+```
+
+##You try it!
+How could you count the number of Starbucks locations in each land use type?
+
+```{r}
+
+```
+
+We can also use a different package, `exactextractr`, to identify the most common land use type in a subarea. Here, we create a simple hex cell grid using `st_make_grid`.
+
+You can see more of what's possible with this package at this link: https://cran.r-project.org/web/packages/exactextractr/vignettes/vig2_categorical.html
+
+```{r}
+library(exactextractr)
+nlcd_grid<-st_make_grid(nlcd21,cellsize = 10000) %>% st_as_sf()
+
+extracted_values <- exact_extract(nlcd21, nlcd_grid,'mode') 
+
+nlcd_grid$ID<-extracted_values
+
+nlcd_grid<-nlcd_grid %>%
+  left_join(legend)
+
+ggplot(nlcd_grid)+
+  geom_sf(aes(fill=Class))
+```
+
+#You try it!
+Make some change to this summary of land use by changing the cell size or shape. How does that change the pattern?
+
+```{r}
+
+```
+
+#Working with elevation data
+The NLCD is categorical data. What about continuous/ratio data like elevation? We can load a digital elevation model (DEM) dataset for the Houston area with the raster package.
+
+```{r}
+houston_dem<-raster("data/dem_houston.tif")
+plot(houston_dem)
+```
+
+What if we wanted to get mean values of this elevation data by area? This is called zonal statistics. We often use this with census geographies to be able to link raster data to demographics characteristics. In this case, we'll just make a simple hexagonal grid to aggregate these data.
+
+The `exact_extract` function can also be used to calculate the mean elevation per cell.
+
+```{r}
+library(terra)
+houston_bbox=st_bbox(houston_dem) %>% st_as_sfc()
+
+houston_grid<-st_make_grid(houston_bbox,cellsize=0.05,square=FALSE) %>%
+  st_as_sf() %>%
+  mutate(id=row_number())
+plot(houston_grid)
+
+dem_extract<-exact_extract(houston_dem,houston_grid,"mean")
+
+houston_grid1<-houston_grid %>%
+  bind_cols(data.frame(dem_houston=dem_extract)) %>%
+  filter(is.na(dem_houston)==FALSE)
+
+``` 
+ 
+It looks like grid cell 407 has the highest elevation. Let's map that out.
+
+```{r}
+tm_shape(houston_grid1)+
+  tm_polygons("dem_houston",style="jenks")
+
+
+ggplot(houston_grid1)+
+  geom_sf(aes(fill=dem_houston))
+```
+
+###Mapping countours and slope
+
+We can use the `contour` function to add contours to a plot of the elevations. The `add=TRUE` parameter keeps the underlying map.
+
+```{r}
+plot(houston_dem)
+contour(houston_dem,add=TRUE,col="brown")
+```
+
+The terrain function allows you to extract properties like slope and aspect. Here, we map both slope and then select only those areas with a slope greater than 10 degrees. The third line of code is a raster reclassification, making a raster where 1 represents cells that meet the criteria (slope > 10%) and 0 is those cells that don't.
+
+```{r}
+x <- terrain(houston_dem, opt = "slope", unit = "degrees")
+plot(x$slope)
+
+x1<-x >= 5
+
+plot(x1)
+```
+
+Note that raster is an older package, and both `terra` (created as the successor to `raster`) and `stars` are newer. 
+
+Here's another walkthrough of raster data in R with some more advanced functions:
+https://ourcodingclub.github.io/tutorials/spatial/
+
+For 3D Visualization, the rayshader package can do some pretty amazing things. Here's one walkthrough: https://wcmbishop.github.io/rayshader-demo.
