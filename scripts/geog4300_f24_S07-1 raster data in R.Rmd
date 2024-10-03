@@ -121,6 +121,9 @@ Make some change to this summary of land use by changing the cell size or shape.
 The NLCD is categorical data. What about continuous/ratio data like elevation? We can load a digital elevation model (DEM) dataset for the Houston area with the raster package.
 
 ```{r}
+#Unzip the dem if necessary
+#unzip("data/dem_houston.zip",exdir="data")
+
 houston_dem<-raster("data/dem_houston.tif")
 plot(houston_dem)
 ```
