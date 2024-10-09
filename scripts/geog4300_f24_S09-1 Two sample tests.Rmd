@@ -7,19 +7,21 @@ editor_options:
 
 ###Two sample tests
 
-Let's start by creating two samples that we know are (slightly) different.
+Two sample t tests are relatively simple in R. Let's start by creating two samples that we know are (slightly) different.
+
 ```{r}
 library(tidyverse)
 
 sample1<-data.frame(sample1=rnorm(50, mean=51.7, sd=6))
 sample2<-data.frame(sample2=rnorm(50, mean=53.4, sd=3))
 
-sample<-bind_cols(sample1,sample2) #Combine the two variables
+sample<-bind_cols(sample1,sample2) %>% #Combine the two variables
+  mutate(row=row_number())
 ```
 
 Do they look different?
 ```{r}
-sample_long<-sample %>% gather(key="sample",value="value")
+sample_long<-sample %>% pivot_longer(c(sample1,sample2),names_to="sample",values_to="value")
 ggplot(sample_long,aes(y=value,x=sample)) + geom_boxplot() 
 ggplot(sample_long,aes(x=value, fill=sample)) + 
   geom_histogram() + 
@@ -40,12 +42,12 @@ t.test(sample1, sample2, var.equal=FALSE)
 
 You can also specify 1 or 2 tailed tests
 ```{r}
-sample1<-data.frame(sample1=rnorm(50, mean=51.7, sd=6))
-sample2<-data.frame(sample2=rnorm(50, mean=53.4, sd=3))
+sample1<-data.frame(sample1=rnorm(50, mean=51.4, sd=6))
+sample2<-data.frame(sample2=rnorm(50, mean=53.8, sd=3))
 
-t.test(sample1, sample2, var.equal=FALSE, alternative="two.sided")
-t.test(sample1, sample2, var.equal=FALSE, alternative="greater")
-t.test(sample1, sample2, var.equal=FALSE, alternative="less")
+t.test(sample1, sample2, alternative="two.sided")
+t.test(sample1, sample2, alternative="greater")
+t.test(sample1, sample2, alternative="less")
 ```
 
 ##Two sample test of proportions
@@ -56,7 +58,7 @@ prop1<-data.frame(coin1=rbinom(100, 1 , .5)) #Regular coin
 prop2<-data.frame(coin2=rbinom(100, 1 ,.75)) #Altered coin
 
 prop_sample<-bind_cols(prop1,prop2) #Combine the two variables
-prop_samplelong<-prop_sample %>% gather(key="coin",value="result") #Reshape the dataset so all values are in one column
+prop_samplelong<-prop_sample %>% pivot_longer(c(coin1,coin2),names_to="coin",values_to="result") #Reshape the dataset so all values are in one column
 ```
 
 Then we'll use group_by and summarise to get the counts of each outcome (0=tails, 1=heads). We can use prop.test to check whether these outcomes were significantly different. We use group_by and summarise to count the number of heads and tails by coin, spread those results to separate columns (labeled 0 and 1), and then calculate the total of all coin flips--100 in each case. The prop.test function looks at the numbers of "successes" and the total number of trials.
@@ -68,6 +70,15 @@ prop_sample.table<-prop_samplelong %>%
   pivot_wider(names_from=result,values_from=count) %>%
   mutate(total=`0`+`1`)
 prop.test(prop_sample.table$`1`,prop_sample.table$total) #Run prop.test on the table
+```
+
+You could also create this table yourself. Let's say coin 1 had 56 heads in 100 coin flips while coin 2 had 44 heads in 100 coin flips. Is there a difference? We can create one vector with the count of "successess" (in this case, the coin flip results in heads) and a second with the number of trials (100 flips in both). `prop.test` can then test for the difference.
+
+```{r}
+heads<-c(56, 44)
+flips<-c(100, 100)
+
+prop.test(heads,flips)
 ```
 
 
@@ -90,19 +101,22 @@ t.test(stream.1990, stream.2010)
 ##You try it!
 
 1) Let's compare liters of coffee sold on campus per 100 students each day on Mondays and Wednesdays at seven coffee stands. 
+
 ```{r}
 mon<-c(12.4, 13.9, 14.6, 11.3, 18.1, 15.2, 13.9)
 wed<-c(10.7, 11.1, 16.2, 12.5, 10.8, 16.7, 12.7)
 ```
 
-Assume the data is normal. Is there a difference?
+Assume the data is normal. Run the appropriate t.test and then interpret the results. State which test you used, describe your results, and interpret what they tell you about a difference between these two days.
 
-
-2) Pollution levels in multiple California towns were measured before and after new guidlines. 
 ```{r}
-prepolicy<-c(398,413,521,645,513,310)
-postpolicy<-c(375,403,410,552,406,308)
+#Code here
 ```
 
-These levels are normally distributed at the state level. Did pollution go down?
+2) Motorists in two cities were surveyed about whether or not they carpooled when driving to work. In the first city, 398 motorists out of 985 answered yes. In the second, 445 of 912 did. Is there a difference in rates between these cities? State which test you used, describe your results, and interpret what they tell you about a difference between these cities.
+
+```{r}
+#Code here
+```
+
 
