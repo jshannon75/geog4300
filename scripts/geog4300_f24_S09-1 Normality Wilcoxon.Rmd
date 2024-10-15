@@ -9,7 +9,6 @@ editor_options:
 library(tidyverse)
 ```
 
-
 Normality tests and Wilcoxon non-parametric tests. This code chunk generates a skewed datsaet and then creates a qq plot of that dataset.
 
 ```{r}
@@ -36,31 +35,33 @@ ggplot(test2,aes(sample=var2)) +
   stat_qq_line()
 ```
 
-Shapiro-Wilk test: the null hypothesis is that the data ARE normal, so a low p value indicates that the dataset is skewed/not normal.
+The Shapiro-Wilk test is a more rigorous way to assess the normality of your data. The null hypothesis is that the data ARE normal, so a low p value indicates that the dataset is skewed/not normal.
+
 ```{r}
 shapiro.test(test1$var1) #skewed data
 shapiro.test(test2$var2) #normal data
 ```
 
 ##You try it!
-Go back to our census data (ACSCtyData_2019_ACS). What's the most normal variable you can find?
+Go back to our census data (ACSCtyData_2022_ACS). What's the most normal variable you can find?
 
 ```{r}
-acsdata<-read_csv("data/ACSCtyData_2019ACS.csv")
+acsdata<-read_csv("data/ACSCtyData_2022ACS.csv")
 
 
 ```
 
 
 ###Wilcoxon tests
-The wilcox.test command does both non-parametric Wilcoxon tests. Here's the rank sum example using lecture data. Think about what the null hypothesis is here. What does a significant p-value tell you?
+The wilcox.test command does both non-parametric Wilcoxon tests (the version of a t-test suitable for data that isn't normally distributed). Here's the rank sum example using lecture data. Think about what the null hypothesis is here. What does a significant p-value tell you?
+
 ```{r}
 el.nino<-c(0, 5,1,3, 4, 1, 2, 2, 0, 2, 4)
 la.nina<-c(4, 4,12, 2, 17, 7, 6, 10, 4, 8, 6)
 wilcox.test(el.nino, la.nina)
 ```
 
-Wilcox.test can also compute *signed rank* tests.
+Wilcox.test can also compute *signed rank* tests. This is similar to a matched pairs t-test.
 
 ```{r}
 data2000<-c(3, 11, 9, 14, 17, 7, 21, 13, 19, 5)
@@ -76,4 +77,5 @@ Let's look at a sample dataset of pollen reading for major tree species at sever
 pollen_data<-read_csv("data/Midwest_Pollen_Data.csv")
 
 ```
-Pick two species and determine their normality. Compare their pollen levels using the appropriate t-test.
+
+Pick two species and determine the normality of their pollen counts. Compare their pollen levels using the appropriate test of difference (t-test/Wilcoxon text). How would you interpret the results?
