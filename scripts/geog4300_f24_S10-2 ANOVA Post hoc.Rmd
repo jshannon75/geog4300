@@ -9,7 +9,6 @@ library(tidyverse)
 library(broom)
 ```
 
-
 ##Post-hoc ANOVA analysis
 
 Let's start by loading the "data" used in the video lecture.
@@ -48,13 +47,11 @@ pairwise.t.test(x=anova_data_navarro$result,
                 p.adjust.method="bonferroni")
 ```
 
-
 Tukey HSD test is a more sophisticated test with correction. We use the ANOVA object for it. How is this output similar or different to pairwise.t.test?
+
 ```{r}
 TukeyHSD(drugtest)
 ```
-
-
 
 Testing residuals for normality--just use the "residuals" function on the ANOVA object. We can then create a qqplot and use shapiro.test to look at normality.
 ```{r}
@@ -79,32 +76,22 @@ You try it! Test for differences in pollen levels for species across regions. Do
 pollen_data<-read_csv("data/Midwest_Pollen_Data.csv")
 ```
 
-Some examples below...
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ```{r}
-pollen_aov<-aov(Picea~Region_fac,data=pollen_data)
-summary(pollen_aov)
+#Code here
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #Bonus: Functional programming
 We could create a function that runs this analysis and then converts results to a tidy dataset using broom
@@ -112,6 +99,7 @@ We could create a function that runs this analysis and then converts results to 
 ```{r}
 pollen_long<-pollen_data %>%
     pivot_longer(Picea:Herbsum,names_to="Pollen",values_to="Count")
+
 region_aov<-function(pollen_type){
   pollen_sel<-pollen_long %>%
     filter(Pollen==pollen_type)
