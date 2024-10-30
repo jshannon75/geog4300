@@ -105,6 +105,8 @@ shapiro.test(pollen_data_sf$residuals)
 
 Map the residuals using tmap
 ```{r}
+tmap_mode("view")
+
 tm_shape(pollen_data_sf) +
   tm_dots("residuals",size=.2)
 ```
