@@ -77,6 +77,15 @@ plot(Betula~tmeanyr,data=pollen_data_sf)
 abline(model)
 ```
 
+##You try it! 
+
+Create a regression model for temperature and another tree species.
+
+```{r}
+
+```
+
+
 ##There's several diagnostics that can be used for regression.
 
 R comes with some diagnostic plots baked in. To see them, just plot the model. There are four screens: 
@@ -95,7 +104,8 @@ plot(model)
 
 Here's a more detailed process for looking at model diagnostics:
 
-*Normality of residuals: Plot/test the residuals. The "residuals" function pulls residuals from the model.
+##Normality of residuals 
+Plot/test the residuals. The "residuals" function pulls residuals from the model.
 ```{r}
 pollen_data_sf$residuals<-residuals(model) #Pull the residuals from the model and add them to the dataset
 ggplot(pollen_data_sf,aes(sample=residuals))+
@@ -111,13 +121,32 @@ tm_shape(pollen_data_sf) +
   tm_dots("residuals",size=.2)
 ```
 
-*Heteroskedasticity: We can use the Breusch-Pagan test in the lmtest package. The null hypothesis is that the data is uniform, NOT heteroskedastic.
+#You try it!
+
+Graph and map the residuals from the model you created above for a different tree species.
+
+```{r}
+
+```
+
+
+##Heteroskedasticity
+We can use the Breusch-Pagan test in the lmtest package. The null hypothesis is that the data is uniform, NOT heteroskedastic.
 ```{r}
 library(lmtest)
 bptest(model)
 ```
 
-*Outliers: We'll use Cook's Distance to assess outliers This is adapted from: http://r-statistics.co/Outlier-Treatment-With-R.html See also https://onlinecourses.science.psu.edu/stat501/node/340 and http://www.statisticshowto.com/cooks-distance/.
+##You try it! 
+Is your model heteroskedastic?
+
+```{r}
+
+```
+
+
+##Outliers
+We'll use Cook's Distance to assess outliers This is adapted from: http://r-statistics.co/Outlier-Treatment-With-R.html See also https://onlinecourses.science.psu.edu/stat501/node/340 and http://www.statisticshowto.com/cooks-distance/.
 
 In th example below, we plot the Cooke's distance for each observation, which shows the leverage it has in the model as a whole. We then add a cutoff line that shows values four times greater than the mean. Lastly, we add labels that give the row number of each identified outlier.
 
@@ -179,8 +208,7 @@ tab_model(model,model_rev)
 How would you describe the difference between these models?
 
 ##You try it! 
-
-Create a regression model for temperature and another tree species. Run model diagnostics to identify any issues in the model. Then summarise what you found.
+Identify any outliers in your models? Do you have ideas about why the model is doing a poor job with them?
 
 ```{r}
 

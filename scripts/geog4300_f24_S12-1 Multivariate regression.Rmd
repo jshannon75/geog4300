@@ -6,23 +6,25 @@ editor_options:
 ---
 
 ```{r setup}
-#install.packages(c("car","lmtest","stargazer"))
+#install.packages(c("car","lmtest"))
 library(car)
 library(tidyverse)
-library(stargazer)
 library(tmap)
 library(lmtest)
 library(sf)
 library(Hmisc)
+library(sjPlot)
 ```
 
 ##Multivariate regression
 Multivariate regression uses the same command as univariate regression. Just add more variables. 
 
-Let's start by loading the data illustrated in class: average date of the last spring frost:
+Let's start by loading the data illustrated in the class video: average date of the last spring frost:
 
 ```{r}
 dlsf<-read_csv("data/DLSF_data.csv") %>%
+  mutate(elev100=Elevation/100,
+         dist50=DisttoCoas/50) %>%
   st_as_sf(coords=c("Longitude","Latitude"),crs=4326,remove=FALSE)
 
 tmap_mode("view")
@@ -30,11 +32,12 @@ tm_shape(dlsf)+
   tm_bubbles(col="AvgDLSpF")
 ```
 
-Now we can do regression for each variable individually.
+Now we can do univariate regression for each variable.
+
 ```{r}
 model_lat<-lm(AvgDLSpF~Latitude,data=dlsf)
-model_elev<-lm(AvgDLSpF~Elevation,data=dlsf)
-model_dist<-lm(AvgDLSpF~DisttoCoas,data=dlsf)
+model_elev<-lm(AvgDLSpF~elev100,data=dlsf)
+model_dist<-lm(AvgDLSpF~dist50,data=dlsf)
 
 summary(model_lat)
 summary(model_elev)
@@ -43,16 +46,10 @@ summary(model_dist)
 
 To do a multivariate regression, simply add more dependent variables using `+`.
 ```{r}
-model_all<-lm(AvgDLSpF~Latitude+Elevation+DisttoCoas,data=dlsf)
-
+model_all<-lm(AvgDLSpF~Latitude+elev100+dist50,data=dlsf1)
 summary(model_all)
 
-dlsf1<-dlsf %>%
-  mutate(elev100=Elevation/100,
-         dist50=DisttoCoas/50)
-
-model_all1<-lm(AvgDLSpF~Latitude+elev100+dist50,data=dlsf1)
-summary(model_all1)
+tab_model(model_lat,model_elev,model_dist,model_all)
 ```
 
 You can check for multicollinearity using the VIF test (variance inflation factor). The `vif` function is in the car package. You want values below 5
@@ -109,26 +106,10 @@ One easy option is to see if the model results change much if you just remove th
 dlsf_no_outlier<-dlsf_outliers %>%
   filter(outlier==0)
 
-model_all2<-lm(AvgDLSpF~Latitude+Elevation+DisttoCoas,data=dlsf_no_outlier)
-summary(model_all2)
+model_all1<-lm(AvgDLSpF~Latitude+elev100+dist50,data=dlsf_no_outlier)
+summary(model_all1)
 summary(model_all)
-```
 
-Look at the change in model coefficients and R2. What do you notice about these two?
-
-The stargazer package allows you to compare/list model results in a more visually appealing format. See this page for more information on customizing stargazer: http://jakeruss.com/cheatsheets/stargazer.html
-
-```{r}
-stargazer(model_lat,model_elev,model_dist,model_all,model_all2,title="Comparison",type="text")
-
-stargazer(model_lat,model_elev,model_dist,model_all,title="Comparison",
-          type="text", #Sets type to text output,
-          no.space=TRUE,
-          out="models_s14-1.txt") #Saves the file in your project
-
-stargazer(model_lat,model_elev,model_dist,model_all,model_all2,title="Comparison",
-          type="html", #Sets type to text output,
-          no.space=TRUE,
-          out="models_s14-1.html") #Saves the file in your project
+tab_model(model_all,model_all1)
 ```
 
