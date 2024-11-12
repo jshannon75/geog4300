@@ -1,0 +1,86 @@
+---
+title: "Predicting Waffle Houses (multivariate regression)"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
+---
+
+Let's use multivariate regression to predict Waffle House density by county.
+
+Loading packages and our datasets
+
+```{r}
+library(tidyverse)
+library(sf)
+library(corrplot)
+library(car)
+
+wh_cty<-read_csv("data/wh_locations_coords.csv") %>%
+  count(cty_fips,name="wh_count") #Creates count of WH per county
+census<-read_csv("data/ACSCtyData_2022ACS.csv") %>%
+  left_join(wh_cty) %>%
+  mutate(wh_100k=wh_count/totpop_race*100000)
+```
+
+What's the normality of our main variables?
+
+```{r}
+hist(census$wh_100k)
+hist(census$pov_pop_pct)
+hist(census$LessHS_pct)
+
+```
+
+What about multicollinearity? How are these variables related?
+
+```{r}
+census_sel<-census %>%
+  filter(is.na(wh_100k)==FALSE) #Removes counties without Waffle Houses
+
+correlation_matrix <- cor(census_sel %>% select(totpop_race,wht_pop_pct:fb_ins_pct,wh_count,wh_100k))
+corrplot(correlation_matrix,order="hclust")
+
+```
+
+Here's a simple model:
+
+```{r}
+model<-lm(wh_100k~pov_pop_pct+LessHS_pct, data=census_sel)
+summary(model)
+```
+
+Check for multicollinearity in the model using VIF:
+
+```{r}
+vif(model)
+```
+
+Look at normality of residuals.
+
+```{r}
+hist(residuals(model))
+```
+
+Model with a few more variables
+
+```{r}
+model1<-(lm(wh_100k~pov_pop_pct+fb_pct+wht_pop_pct+intnet_all_pct, 
+           data=census_sel))
+summary(model1)
+vif(model1)
+hist(residuals(model1))
+
+```
+
+What if we add States as an additional categorical variable?
+
+```{r}
+model2<-(lm(wh_100k~pov_pop_pct+fb_pct+wht_pop_pct+intnet_all_pct+st_name, 
+           data=census_sel))
+summary(model2)
+```
+
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.

@@ -14,6 +14,7 @@ library(lmtest)
 library(sf)
 library(Hmisc)
 library(sjPlot)
+library(corrplot)
 ```
 
 ##Multivariate regression
@@ -46,7 +47,7 @@ summary(model_dist)
 
 To do a multivariate regression, simply add more dependent variables using `+`.
 ```{r}
-model_all<-lm(AvgDLSpF~Latitude+elev100+dist50,data=dlsf1)
+model_all<-lm(AvgDLSpF~Latitude+elev100+dist50,data=dlsf)
 summary(model_all)
 
 tab_model(model_lat,model_elev,model_dist,model_all)
@@ -62,7 +63,7 @@ You can also just look at the correlation matrix.
 dlsf_corr<-dlsf %>%
   select(AvgDLSpF,Latitude,Elevation,DisttoCoas) %>%
   st_set_geometry(NULL)
-rcorr(as.matrix(dlsf_corr))
+corrplot(cor(dlsf_corr))
 ```
 
 We can check for heterosktasticity using the bptest function from the lmtest package. The null hypothesis is that the data are NOT heteroskedastic.
@@ -111,5 +112,23 @@ summary(model_all1)
 summary(model_all)
 
 tab_model(model_all,model_all1)
+```
+
+If we add state names as an additional variable, R will automatically create dummy variables for each, keeping whatever one is first as a reference. We can switch the reference by changing this variable to a factor and listing the order.
+
+```{r}
+model_all_st<-lm(AvgDLSpF~Latitude+elev100+dist50+State,data=dlsf)
+summary(model_all_st)
+
+tab_model(model_all,model_all_st)
+
+#Make Florida the reference category
+dlsf1<-dlsf %>%
+  mutate(State=factor(State,levels=c("FL","AL","GA","NC","SC","VA")))
+
+model_all_st1<-lm(AvgDLSpF~Latitude+elev100+dist50+State,data=dlsf1)
+summary(model_all_st1)
+
+tab_model(model_all_st,model_all_st1)
 ```
 
