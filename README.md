@@ -13,3 +13,5 @@ Lab repositories
 * Lab 7: [Github Classroom Link]
 
 Lab master repos: [Lab 0](https://github.com/jshannon75/geog4300_lab0), [Lab 1](https://github.com/jshannon75/geog4300_lab1), [Lab 2](https://github.com/jshannon75/geog4300_lab2), [Lab 3](https://github.com/jshannon75/geog4300_lab3), [Lab 4](https://github.com/jshannon75/geog4300_lab4), [Lab 5](https://github.com/jshannon75/geog4300_lab5), [Lab 6](https://github.com/jshannon75/geog4300_lab6), [Lab 7](https://github.com/jshannon75/geog4300_lab7)
+
+Final research sprint: [Link](https://github.com/jshannon75/geog4300_finalsprint)
