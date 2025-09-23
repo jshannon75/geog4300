@@ -5,7 +5,7 @@ This repo contains files related to the Data Science in Geography course at the 
 Lab repositories
 * Lab 0: [Github Classroom link](https://classroom.github.com/a/ZNE2UF2E) Due by 11:59 PM September 4
 * Lab 1: [Github Classroom link](https://classroom.github.com/a/_0zuVVgR) Due by 11:59 PM September 18
-* Lab 2: 
+* Lab 2: [Github Classroom link](https://classroom.github.com/a/SfMKcqet) Due by 11:59 PM October 2
 * Lab 3: 
 * Lab 4: 
 * Lab 5: 
