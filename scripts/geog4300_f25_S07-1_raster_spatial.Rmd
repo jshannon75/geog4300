@@ -1,0 +1,157 @@
+---
+title: "geog4300_f25_S07-1_raster_spatial"
+output:
+  html_notebook:
+editor_options: 
+  chunk_output_type: console
+---
+
+#```{r setup, include=FALSE}
+#knitr::opts_chunk$set(echo = TRUE)
+#```
+
+Remember, when you use %>% or >|, the output of a previous function becomes the first argument of the next function, enabling chaining. 
+
+```{r Chaining}
+library(tidyverse)
+
+census_data<-read_csv("data/ACSCtyData_2022ACS.csv",show_col_types = FALSE)
+
+badeg_state2<-census_data %>%
+  group_by(st_name) %>%
+  mutate(BA_mean=mean(BADeg_pct)) %>%
+  select(cty_name,st_name,BADeg_pct,BA_mean)
+
+georgia_census<-census_data %>%
+  filter(st_name=='Georgia')
+
+```
+
+## Working with data
+This is a reminder of how we can use filter to subset rows in a dataset, or we can use square brackets [ ] to pull out select columns. The dataset nz from spData has geographic information for the 16 main regions in New Zealand. We use that to get geographic information about Cantebury, and then apply spatial subsetting to the dataset with geographic information about the 101 highest points in NZ (nz_height).
+```{r New Zealand, echo=FALSE, warning=FALSE, message=FALSE }
+#install.packages("spData")
+library(sf)
+library(terra)
+library(dplyr)
+library(spData)
+library(tmap)
+
+
+canterbury = nz |> filter(Name == "Canterbury")
+canterbury_height = nz_height[canterbury, ]
+
+#plot(nz)
+
+tm_shape(nz) + 
+  tm_polygons(fill = "white") +
+  tm_shape(nz_height) + 
+  tm_symbols(shape = 2, col = "red", size = 0.5, col_alpha = 0.75) +
+  tm_title("High points in New Zealand") +
+  tm_layout(bg.color = "lightblue")
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+The code below is from the Lovelace book, if you want to learn more about creating nice looking multi-panel graphics, take a look through it:
+
+```{r nz-subset, echo=FALSE, warning=FALSE, fig.cap="Spatial subsetting, with red triangles representing 101 high points in New Zealand, clustered near the central Canterbuy region (left). The points in Canterbury were created with the `[` subsetting operator (highlighted in gray, right).", fig.scap="Spatial subsetting.", message=FALSE}
+library(tmap)
+#tmap_mode("plot")
+p_hpnz1 = tm_shape(nz) + 
+  tm_polygons(fill = "white") +
+  tm_shape(nz_height) + 
+  tm_symbols(shape = 2, col = "red", size = 0.5, col_alpha = 0.75) +
+  tm_title("High points in New Zealand") +
+  tm_layout(bg.color = "lightblue")
+p_hpnz2 = tm_shape(nz) + 
+  tm_polygons(fill = "white") +
+  tm_shape(canterbury) +
+  tm_fill(col = "gray") + 
+  tm_shape(canterbury_height) + 
+  tm_symbols(shape = 2, col = "red", size = 0.5, col_alpha = 0.75) +
+  tm_title("High points in Canterbury") +
+  tm_layout(bg.color = "lightblue")
+tmap_arrange(p_hpnz1, p_hpnz2, ncol = 2)
+```
+
+Now let's work with Raster data ....
+
+Terra includes some useful ways to summarize statistics from raster data
+```{r}
+nlcd21<-rast("data/nlcd/nlcd_houston21.tif")
+
+plot(nlcd21)
+```
+
+You can look at the distribution of values for these elevations using a regular histogram.
+
+```{r}
+hist(nlcd21)
+```
+
+This is categorical data, so you could also look at the number of pixels/cells in each category using the `freq` function, wrapped in a data frame so that it comes out as usable table.
+
+```{r}
+freq_table<-data.frame(freq(nlcd21))
+
+freq_table2 <- freq_table %>%
+  filter(value!='Unclassified') %>%
+  select(-layer) %>%
+  rename(Class=value)
+```
+
+##You try it!
+How could you calculate the percentage of land in Houston covered by each land use type? You'd need to get the total number of pixels and then divide the counts for each area by that number.
+
+```{r}
+
+```
+
+## Next: Let's do some local statistics with Interval raster data.
+## Was July 2024 warmer or cooler than July 2023?
+```{r}
+
+july2023_files<-list.files(path="data/era5_temperature",full.names=T,
+                      pattern="temperature_2m_2023")
+july2023_data<-rast(july2023_files)- 273.15
+
+july2024_files<-list.files(path="data/era5_temperature",full.names=T,
+                      pattern="temperature_2m_2024")
+july2024_data<-rast(july2024_files)- 273.15
+
+july2023_mean = mean(july2023_data)
+july2024_mean = mean(july2024_data)
+
+temperature_diff = july2024_mean - july2023_mean
+
+plot(temperature_diff,main='July 2024 - July 2023',plg=list(title=expression("("*degree*"C)")))
+```
+
+Zonal statistics: Use the Terra package, zonal function to calculate statistics for a raster object within the boundaries of a vector object.
+
+```{r}
+states<-st_read("data/states_albers.gpkg") %>%
+  st_transform(crs(july2023_mean))
+#temp_data=zonal(temperature_diff,vect(states),fun="mean",na.rm=T)
+state_differences<-bind_cols(states,zonal(temperature_diff,vect(states),fun="mean",na.rm=T))
+
+#plot(temperature_diff)
+
+tm_shape(temperature_diff)+tm_raster()
+
+tm_shape(state_differences)+
+  tm_polygons("mean",border.alpha=0,style="jenks",
+              midpoint=0, palette='brewer.RdBu')+
+  tm_title("Temperature Difference")+
+  tm_legend(title=expression("("*degree*"C)"))+
+tm_shape(states)+
+  tm_borders()
+```
+
+What about global statistics?
+```{r}
+
+us_mean=global(temperature_diff,na.rm=T)
+
+```
