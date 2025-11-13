@@ -9,6 +9,4 @@ Lab repositories
 * Lab 3: [Github Classroom link](https://classroom.github.com/a/z5xUjWAp) Due by 11:59 PM October 23
 * Lab 4: [Github Classroom link](https://classroom.github.com/a/RUai1rzq) Due by 11:59 PM November 6
 * Lab 5: [Github Classroom link](https://classroom.github.com/a/WlXWqOxa) Due by 11:59 PM November 13
-* Lab 6: 
-* Lab 7: 
-
+* Lab 6: [Github Classroom link](https://classroom.github.com/a/AHvHqSUu) Due by 11:59 PM November 25 (Tuesday)
